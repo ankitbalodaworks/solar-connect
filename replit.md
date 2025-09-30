@@ -76,6 +76,7 @@ Preferred communication style: Simple, everyday language.
 ### External Dependencies
 
 **WhatsApp Integration**: Production-ready interactive message system with automated conversation flows
+- **WhatsApp Business account: NOW IN PRODUCTION MODE** - can message any phone number worldwide (no longer restricted to test numbers)
 - WhatsApp Business API integration with button and list message support (20-character button text limit enforced)
 - Image header support with media upload functionality (Sunshine Power logo: Media ID 4245254242364293)
 - Two-way conversation tracking with state machine for automated responses

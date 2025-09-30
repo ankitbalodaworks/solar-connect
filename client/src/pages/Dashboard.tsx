@@ -81,7 +81,7 @@ export default function Dashboard() {
       toast({
         title: "Failed to Send",
         description: errorMessage.includes("Messaging restricted")
-          ? `Cannot send to ${sendForm.customerPhone}. This number may not be verified in your WhatsApp Business account. In test mode, you can only message verified numbers.`
+          ? `Cannot send to ${sendForm.customerPhone}. Please verify the phone number format and ensure it's a valid WhatsApp number.`
           : errorMessage,
         variant: "destructive",
       });
