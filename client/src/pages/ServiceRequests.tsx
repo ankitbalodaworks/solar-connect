@@ -77,7 +77,8 @@ export default function ServiceRequests() {
     const matchesSearch = 
       request.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       request.customerPhone.includes(searchQuery) ||
-      request.customerVillage.toLowerCase().includes(searchQuery.toLowerCase());
+      request.customerVillage.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      request.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" || request.status === statusFilter;
     const matchesIssueType = issueTypeFilter === "all" || request.issueType === issueTypeFilter;
     const matchesUrgency = urgencyFilter === "all" || request.urgency === urgencyFilter;

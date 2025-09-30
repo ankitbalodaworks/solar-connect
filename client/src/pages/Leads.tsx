@@ -65,7 +65,8 @@ export default function Leads() {
   const filteredLeads = mockLeads.filter(lead => 
     lead.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     lead.customerPhone.includes(searchQuery) ||
-    lead.customerVillage.toLowerCase().includes(searchQuery.toLowerCase())
+    lead.customerVillage.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    lead.notes.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (

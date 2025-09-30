@@ -3,7 +3,8 @@ import { CampaignForm } from "@/components/CampaignForm";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Users, Send, Eye } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { MessageSquare, Users, Send, Eye, Search } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -22,6 +23,7 @@ import {
 export default function Campaigns() {
   const [campaigns, setCampaigns] = useState<any[]>([]);
   const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleCreateCampaign = (data: any) => {
     const newCampaign = {
@@ -43,6 +45,11 @@ export default function Campaigns() {
     console.log('Campaign sent:', id);
   };
 
+  const filteredCampaigns = campaigns.filter(campaign =>
+    campaign.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    campaign.message.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="space-y-6">
       <div>
@@ -56,12 +63,33 @@ export default function Campaigns() {
         <CampaignForm totalCustomers={156} onSubmit={handleCreateCampaign} />
 
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Campaign History</h2>
+          <div className="flex items-center justify-between gap-4 mb-2">
+            <h2 className="text-lg font-semibold">Campaign History</h2>
+          </div>
+
+          {campaigns.length > 0 && (
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search campaigns by name or message..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+                data-testid="input-search-campaigns"
+              />
+            </div>
+          )}
           
-          {campaigns.length === 0 ? (
+          {filteredCampaigns.length === 0 && campaigns.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center text-muted-foreground">
                 No campaigns yet. Create your first campaign to reach customers.
+              </CardContent>
+            </Card>
+          ) : filteredCampaigns.length === 0 ? (
+            <Card>
+              <CardContent className="py-12 text-center text-muted-foreground">
+                No campaigns found matching your search.
               </CardContent>
             </Card>
           ) : (
@@ -78,7 +106,7 @@ export default function Campaigns() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {campaigns.map((campaign) => (
+                    {filteredCampaigns.map((campaign) => (
                       <TableRow 
                         key={campaign.id} 
                         data-testid={`row-campaign-${campaign.id}`}
