@@ -1,10 +1,12 @@
 import axios from "axios";
+import crypto from "crypto";
 import { type MessageTemplate } from "@shared/schema";
 
 interface WhatsAppConfig {
   phoneNumberId: string;
   accessToken: string;
   verifyToken: string;
+  appSecret: string;
 }
 
 interface SendMessageResponse {
@@ -22,6 +24,7 @@ export class WhatsAppService {
       phoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID || "",
       accessToken: process.env.WHATSAPP_ACCESS_TOKEN || "",
       verifyToken: process.env.WHATSAPP_VERIFY_TOKEN || "",
+      appSecret: process.env.WHATSAPP_APP_SECRET || "",
     };
   }
 
@@ -135,7 +138,7 @@ export class WhatsAppService {
     buttonText: string,
     sections: Array<{
       title: string;
-      rows: Array<{ id: string; title: string; description?: string }>;
+      rows: Array<{ id: string; title: string; description?: string; nextStep?: string }>;
     }>,
     headerText?: string,
     footerText?: string
@@ -211,15 +214,16 @@ export class WhatsAppService {
     } else if (template.messageType === "list" && template.listSections) {
       const sections = template.listSections as Array<{
         title: string;
-        rows: Array<{ id: string; title: string; description?: string }>;
+        rows: Array<{ id: string; title: string; description?: string; nextStep?: string }>;
       }>;
+      const buttonText = template.footerText || "Options";
       return this.sendListMessage(
         to,
         template.bodyText,
-        "Select an option",
+        buttonText,
         sections,
         template.headerText || undefined,
-        template.footerText || undefined
+        undefined
       );
     } else {
       return this.sendTextMessage(to, template.bodyText);
@@ -231,6 +235,25 @@ export class WhatsAppService {
       return challenge;
     }
     return null;
+  }
+
+  verifyWebhookSignature(signature: string, body: string): boolean {
+    if (!this.config.appSecret) {
+      console.error("WHATSAPP_APP_SECRET not configured - webhook signature verification disabled");
+      return false;
+    }
+
+    try {
+      const expectedSignature = crypto
+        .createHmac("sha256", this.config.appSecret)
+        .update(body)
+        .digest("hex");
+
+      return `sha256=${expectedSignature}` === signature;
+    } catch (error) {
+      console.error("Error verifying webhook signature:", error);
+      return false;
+    }
   }
 
   parseIncomingMessage(webhookData: any): {

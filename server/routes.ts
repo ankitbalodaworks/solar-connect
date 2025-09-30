@@ -189,13 +189,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/whatsapp/webhook", async (req, res) => {
     try {
-      const incomingMessage = whatsappService.parseIncomingMessage(req.body);
+      const signature = req.headers["x-hub-signature-256"] as string;
+      
+      if (!signature) {
+        console.error("Missing webhook signature");
+        return res.status(403).send("Forbidden");
+      }
+
+      const rawBody = (req.body as Buffer).toString("utf8");
+      
+      if (!whatsappService.verifyWebhookSignature(signature, rawBody)) {
+        console.error("Invalid webhook signature");
+        return res.status(403).send("Forbidden");
+      }
+
+      const webhookData = JSON.parse(rawBody);
+      const incomingMessage = whatsappService.parseIncomingMessage(webhookData);
       
       if (!incomingMessage) {
         return res.status(200).send("OK");
       }
 
       const result = await conversationFlowEngine.handleIncomingMessage(incomingMessage);
+
+      if (result.error) {
+        console.error("Conversation flow error:", result.error);
+        return res.status(200).send("OK");
+      }
 
       if (result.shouldSend && result.template) {
         const sendResult = await whatsappService.sendTemplateMessage(
@@ -214,10 +234,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
               footerText: result.template.footerText,
               buttons: result.template.buttons,
               listSections: result.template.listSections,
+              messageId: sendResult.messageId,
             },
             status: "sent",
           });
         } else {
+          console.error("WhatsApp send error:", sendResult.error);
           await storage.createWhatsappLog({
             customerPhone: incomingMessage.customerPhone,
             direction: "outbound",
@@ -234,7 +256,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(200).send("OK");
     } catch (error) {
       console.error("Error processing WhatsApp webhook:", error);
-      res.status(500).send("Error");
+      res.status(200).send("OK");
     }
   });
 
