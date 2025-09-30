@@ -525,6 +525,7 @@ export class WhatsAppService {
 
     try {
       console.log(`Submitting template: ${template.name} (${template.category} - ${template.language})`);
+      console.log("Full template payload:", JSON.stringify(template, null, 2));
       
       const response = await axios.post(
         `https://graph.facebook.com/v21.0/${wabaId}/message_templates`,
@@ -545,8 +546,12 @@ export class WhatsAppService {
     } catch (error: any) {
       const errorMessage = error.response?.data?.error?.message || error.message;
       const errorCode = error.response?.data?.error?.code;
+      const errorDetails = error.response?.data?.error?.error_data || error.response?.data?.error || {};
       
       console.error(`❌ Failed to submit ${template.name}: ${errorMessage}`);
+      console.error("Full error response:", JSON.stringify(error.response?.data, null, 2));
+      console.error("Error details:", JSON.stringify(errorDetails, null, 2));
+      
       return {
         success: false,
         error: `${errorCode ? `[${errorCode}] ` : ""}${errorMessage}`,
