@@ -1,16 +1,17 @@
-import { Users, MessageSquare, FileText, Wrench, TrendingUp } from "lucide-react";
+import { Users, MessageSquare, FileText, Wrench } from "lucide-react";
 import { StatCard } from "@/components/StatCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { Badge } from "@/components/ui/badge";
 
 export default function Dashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-semibold mb-2">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Welcome to your WhatsApp lead management system
+        <h1 className="text-2xl font-semibold mb-1">Dashboard</h1>
+        <p className="text-sm text-muted-foreground">
+          PM Surya Ghar Rooftop Solar Installation Management
         </p>
       </div>
 
@@ -27,7 +28,7 @@ export default function Dashboard() {
           icon={MessageSquare}
         />
         <StatCard
-          title="Leads Generated"
+          title="Solar Leads"
           value={89}
           icon={FileText}
           trend={{ value: 24, isPositive: true }}
@@ -36,13 +37,12 @@ export default function Dashboard() {
           title="Service Requests"
           value={23}
           icon={Wrench}
-          trend={{ value: -8, isPositive: false }}
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between gap-2 pb-3">
+          <CardHeader>
             <CardTitle className="text-lg">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -55,51 +55,60 @@ export default function Dashboard() {
             <Link href="/campaigns">
               <Button className="w-full justify-start" variant="outline" data-testid="button-create-campaign">
                 <MessageSquare className="h-4 w-4 mr-2" />
-                Create New Campaign
+                Create WhatsApp Campaign
               </Button>
             </Link>
             <Link href="/leads">
               <Button className="w-full justify-start" variant="outline" data-testid="button-view-leads">
                 <FileText className="h-4 w-4 mr-2" />
-                View All Leads
+                View Solar Installation Leads
+              </Button>
+            </Link>
+            <Link href="/service-requests">
+              <Button className="w-full justify-start" variant="outline" data-testid="button-view-service-requests">
+                <Wrench className="h-4 w-4 mr-2" />
+                Manage Service Requests
               </Button>
             </Link>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between gap-2 pb-3">
+          <CardHeader>
             <CardTitle className="text-lg">Recent Activity</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-start gap-3">
-              <div className="h-8 w-8 rounded-full bg-green-100 dark:bg-green-950 flex items-center justify-center">
-                <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
+            <div className="flex items-start gap-3 pb-3 border-b">
+              <div className="h-8 w-8 rounded-full bg-green-100 dark:bg-green-950 flex items-center justify-center flex-shrink-0">
+                <FileText className="h-4 w-4 text-green-600 dark:text-green-400" />
               </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium">New lead captured</p>
-                <p className="text-xs text-muted-foreground">Rajesh Kumar - 3kW system inquiry</p>
-                <p className="text-xs text-muted-foreground mt-1">2 hours ago</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium">New Solar Installation Lead</p>
+                <p className="text-xs text-muted-foreground truncate">राजेश कुमार - 3kW सिस्टम इंस्टॉलेशन</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <Badge variant="outline" className="text-xs">PM Surya Ghar</Badge>
+                  <span className="text-xs text-muted-foreground">2 hours ago</span>
+                </div>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-950 flex items-center justify-center">
+            <div className="flex items-start gap-3 pb-3 border-b">
+              <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-950 flex items-center justify-center flex-shrink-0">
                 <MessageSquare className="h-4 w-4 text-blue-600 dark:text-blue-400" />
               </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium">Campaign sent</p>
-                <p className="text-xs text-muted-foreground">Summer Solar Promotion - 156 recipients</p>
-                <p className="text-xs text-muted-foreground mt-1">5 hours ago</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium">Campaign Sent</p>
+                <p className="text-xs text-muted-foreground truncate">PM Surya Ghar Awareness - 156 recipients</p>
+                <span className="text-xs text-muted-foreground mt-1 block">5 hours ago</span>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="h-8 w-8 rounded-full bg-purple-100 dark:bg-purple-950 flex items-center justify-center">
-                <Wrench className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+              <div className="h-8 w-8 rounded-full bg-orange-100 dark:bg-orange-950 flex items-center justify-center flex-shrink-0">
+                <Wrench className="h-4 w-4 text-orange-600 dark:text-orange-400" />
               </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium">Service request</p>
-                <p className="text-xs text-muted-foreground">Priya Sharma - Panel cleaning</p>
-                <p className="text-xs text-muted-foreground mt-1">1 day ago</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium">Service Request</p>
+                <p className="text-xs text-muted-foreground truncate">प्रिया शर्मा - पैनल क्लीनिंग</p>
+                <span className="text-xs text-muted-foreground mt-1 block">1 day ago</span>
               </div>
             </div>
           </CardContent>
@@ -108,29 +117,29 @@ export default function Dashboard() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Campaign Performance</CardTitle>
+          <CardTitle className="text-lg">PM Surya Ghar Campaign Performance</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Summer Solar Promotion</span>
+                <span className="text-sm font-medium">Summer Solar Installation Drive</span>
                 <span className="text-sm text-muted-foreground">156 sent</span>
               </div>
               <div className="w-full bg-muted rounded-full h-2">
                 <div className="bg-primary h-2 rounded-full" style={{ width: '68%' }}></div>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">68% delivery rate</p>
+              <p className="text-xs text-muted-foreground mt-1">68% delivery rate • 42 leads generated</p>
             </div>
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">PM Surya Ghar Awareness</span>
+                <span className="text-sm font-medium">PM Surya Ghar Subsidy Awareness</span>
                 <span className="text-sm text-muted-foreground">203 sent</span>
               </div>
               <div className="w-full bg-muted rounded-full h-2">
                 <div className="bg-primary h-2 rounded-full" style={{ width: '85%' }}></div>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">85% delivery rate</p>
+              <p className="text-xs text-muted-foreground mt-1">85% delivery rate • 67 leads generated</p>
             </div>
           </div>
         </CardContent>

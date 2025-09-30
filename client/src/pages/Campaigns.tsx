@@ -1,9 +1,17 @@
 import { useState } from "react";
 import { CampaignForm } from "@/components/CampaignForm";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Users, Send } from "lucide-react";
+import { MessageSquare, Users, Send, Eye } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function Campaigns() {
   const [campaigns, setCampaigns] = useState<any[]>([]);
@@ -31,9 +39,9 @@ export default function Campaigns() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-semibold mb-2">Campaigns</h1>
-        <p className="text-muted-foreground">
-          Create and manage WhatsApp marketing campaigns
+        <h1 className="text-2xl font-semibold mb-1">Campaigns</h1>
+        <p className="text-sm text-muted-foreground">
+          Create and manage WhatsApp campaigns for PM Surya Ghar solar installations
         </p>
       </div>
 
@@ -41,64 +49,83 @@ export default function Campaigns() {
         <CampaignForm totalCustomers={156} onSubmit={handleCreateCampaign} />
 
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Recent Campaigns</h2>
+          <h2 className="text-lg font-semibold">Campaign History</h2>
           
           {campaigns.length === 0 ? (
             <Card>
-              <CardContent className="py-8 text-center text-muted-foreground">
-                No campaigns yet. Create your first campaign to get started.
+              <CardContent className="py-12 text-center text-muted-foreground">
+                No campaigns yet. Create your first campaign to reach customers.
               </CardContent>
             </Card>
           ) : (
-            campaigns.map((campaign) => (
-              <Card key={campaign.id} data-testid={`card-campaign-${campaign.id}`}>
-                <CardHeader className="flex flex-row items-start justify-between gap-2 pb-3">
-                  <div>
-                    <CardTitle className="text-base mb-1">{campaign.name}</CardTitle>
-                    <p className="text-xs text-muted-foreground">
-                      Created {new Date(campaign.createdAt).toLocaleDateString('en-IN')}
-                    </p>
-                  </div>
-                  <Badge 
-                    variant={campaign.status === 'sent' ? 'default' : 'secondary'}
-                    data-testid={`badge-status-${campaign.id}`}
-                  >
-                    {campaign.status}
-                  </Badge>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <p className="text-sm line-clamp-2">{campaign.message}</p>
-                  
-                  <div className="flex items-center gap-4 text-sm">
-                    <div className="flex items-center gap-1">
-                      <Users className="h-4 w-4 text-muted-foreground" />
-                      <span>{campaign.recipientCount} recipients</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                      <span>≥{campaign.threshold} units</span>
-                    </div>
-                  </div>
-
-                  {campaign.status === 'draft' && (
-                    <Button 
-                      className="w-full" 
-                      onClick={() => handleSendCampaign(campaign.id)}
-                      data-testid={`button-send-${campaign.id}`}
-                    >
-                      <Send className="h-4 w-4 mr-2" />
-                      Send Campaign
-                    </Button>
-                  )}
-
-                  {campaign.status === 'sent' && (
-                    <div className="text-sm text-muted-foreground">
-                      Sent to {campaign.sentCount} customers
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ))
+            <Card>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Campaign Name</TableHead>
+                      <TableHead>Recipients</TableHead>
+                      <TableHead>Threshold</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="w-24">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {campaigns.map((campaign) => (
+                      <TableRow key={campaign.id} data-testid={`row-campaign-${campaign.id}`}>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">{campaign.name}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {new Date(campaign.createdAt).toLocaleDateString('en-IN')}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-1">
+                            <Users className="h-3 w-3 text-muted-foreground" />
+                            <span className="text-sm">{campaign.recipientCount}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline">≥{campaign.threshold} units</Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge 
+                            variant={campaign.status === 'sent' ? 'default' : 'secondary'}
+                            data-testid={`badge-status-${campaign.id}`}
+                          >
+                            {campaign.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            {campaign.status === 'draft' ? (
+                              <Button 
+                                size="sm"
+                                onClick={() => handleSendCampaign(campaign.id)}
+                                data-testid={`button-send-${campaign.id}`}
+                              >
+                                <Send className="h-3 w-3 mr-1" />
+                                Send
+                              </Button>
+                            ) : (
+                              <Button 
+                                variant="ghost" 
+                                size="icon"
+                                data-testid={`button-view-${campaign.id}`}
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
           )}
         </div>
       </div>
