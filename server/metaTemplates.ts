@@ -1,5 +1,7 @@
 // Meta WhatsApp Template Definitions for API Submission
 // These templates are compatible with Meta's approval requirements
+// Note: Only templates with buttons/lists or those initiating conversations need Meta approval
+// Text prompts within active 24-hour conversation windows can be sent as interactive messages
 
 export interface MetaTemplate {
   name: string;
@@ -26,11 +28,10 @@ export interface MetaButton {
   phone_number?: string;
 }
 
-// Campaign Lead Templates
-const campaignLeadTemplates: MetaTemplate[] = [
-  // Template 1: Language Selection (Campaign - English)
+// Campaign Entry Template (Entry point - MUST be approved by Meta)
+const campaignEntryTemplates: MetaTemplate[] = [
   {
-    name: "sunshine_campaign_language_en",
+    name: "sunshine_campaign_entry",
     category: "MARKETING",
     language: "en_US",
     components: [
@@ -43,372 +44,377 @@ const campaignLeadTemplates: MetaTemplate[] = [
       },
       {
         type: "body",
-        text: "Welcome to Sunshine Power!\n\nWe are a PM Surya Ghar registered vendor offering rooftop solar installations in Rajasthan.\n\nPlease reply with your preferred language:\n- Reply \"1\" for English\n- Reply \"2\" for हिंदी (Hindi)"
+        text: "Welcome to Sunshine Power!\n\nWe are a PM Surya Ghar registered vendor offering rooftop solar installations in Rajasthan.\n\nHow would you like to continue?"
       },
       {
         type: "footer",
         text: "Registered PM Surya Ghar Solar Vendor"
-      }
-    ]
-  },
-
-  // Template 2: Language Selection (Campaign - Hindi)
-  {
-    name: "sunshine_campaign_language_hi",
-    category: "MARKETING",
-    language: "hi",
-    components: [
-      {
-        type: "header",
-        format: "image",
-        example: {
-          header_handle: ["4245254242364293"]
-        }
-      },
-      {
-        type: "body",
-        text: "Sunshine Power में आपका स्वागत है!\n\nहम राजस्थान में छत पर सोलर इंस्टॉलेशन की पेशकश करने वाले PM Surya Ghar पंजीकृत विक्रेता हैं।\n\nकृपया अपनी पसंदीदा भाषा चुनें:\n- English के लिए \"1\" लिखें\n- हिंदी के लिए \"2\" लिखें"
-      },
-      {
-        type: "footer",
-        text: "पंजीकृत PM Surya Ghar सोलर विक्रेता"
-      }
-    ]
-  },
-
-  // Template 3: Solar Offer (Campaign - English)
-  {
-    name: "sunshine_solar_offer_en",
-    category: "MARKETING",
-    language: "en_US",
-    components: [
-      {
-        type: "header",
-        format: "text",
-        text: "PM Surya Ghar Solar Solutions"
-      },
-      {
-        type: "body",
-        text: "Great! Let me tell you about our PM Surya Ghar solar installation services:\n\n✅ Government subsidy up to 78,000 INR\n✅ 1kW, 2kW, 3kW, 5kW systems available\n✅ Professional installation in Rajasthan\n✅ 25-year panel warranty\n✅ Save up to 90% on electricity bills\n\nWould you like us to schedule a FREE site survey at your location?\n\n- Reply \"YES\" to schedule a survey\n- Reply \"INFO\" for more information"
-      },
-      {
-        type: "footer",
-        text: "Sunshine Power - Registered Vendor"
       },
       {
         type: "buttons",
         buttons: [
-          { type: "QUICK_REPLY", text: "Schedule Survey" },
-          { type: "QUICK_REPLY", text: "More Info" }
+          { type: "QUICK_REPLY", text: "हिंदी (Hindi)" },
+          { type: "QUICK_REPLY", text: "English" },
+          { type: "URL", text: "Visit Website", url: "https://sunshinepower.net.in" }
         ]
-      }
-    ]
-  },
-
-  // Template 4: Solar Offer (Campaign - Hindi)
-  {
-    name: "sunshine_solar_offer_hi",
-    category: "MARKETING",
-    language: "hi",
-    components: [
-      {
-        type: "header",
-        format: "text",
-        text: "PM Surya Ghar सोलर समाधान"
-      },
-      {
-        type: "body",
-        text: "बहुत बढ़िया! हमारी PM Surya Ghar सोलर इंस्टॉलेशन सेवाओं के बारे में जानें:\n\n✅ 78,000 रुपये तक सरकारी सब्सिडी\n✅ 1kW, 2kW, 3kW, 5kW सिस्टम उपलब्ध\n✅ राजस्थान में प्रोफेशनल इंस्टॉलेशन\n✅ 25 साल की पैनल वारंटी\n✅ बिजली बिल में 90% तक की बचत\n\nक्या आप अपने स्थान पर मुफ्त साइट सर्वे शेड्यूल करना चाहेंगे?\n\n- सर्वे के लिए \"हां\" लिखें\n- जानकारी के लिए \"जानकारी\" लिखें"
-      },
-      {
-        type: "footer",
-        text: "Sunshine Power - पंजीकृत विक्रेता"
-      },
-      {
-        type: "buttons",
-        buttons: [
-          { type: "QUICK_REPLY", text: "सर्वे बुक करें" },
-          { type: "QUICK_REPLY", text: "जानकारी" }
-        ]
-      }
-    ]
-  },
-
-  // Template 5: Survey Schedule (Campaign - English)
-  {
-    name: "sunshine_survey_schedule_en",
-    category: "MARKETING",
-    language: "en_US",
-    components: [
-      {
-        type: "header",
-        format: "text",
-        text: "Schedule Site Survey"
-      },
-      {
-        type: "body",
-        text: "Perfect! Please select your preferred time for the site survey:\n\nMORNING SLOTS:\n1. 9 AM - 11 AM (Morning survey)\n2. 11 AM - 1 PM (Late morning)\n\nAFTERNOON SLOTS:\n3. 2 PM - 4 PM (Afternoon survey)\n4. 4 PM - 6 PM (Evening survey)\n\nReply with the number (1, 2, 3, or 4) of your preferred time slot."
-      },
-      {
-        type: "footer",
-        text: "Our team will contact you to confirm"
-      }
-    ]
-  },
-
-  // Template 6: Survey Schedule (Campaign - Hindi)
-  {
-    name: "sunshine_survey_schedule_hi",
-    category: "MARKETING",
-    language: "hi",
-    components: [
-      {
-        type: "header",
-        format: "text",
-        text: "साइट सर्वे शेड्यूल करें"
-      },
-      {
-        type: "body",
-        text: "बढ़िया! कृपया साइट सर्वे के लिए अपना पसंदीदा समय चुनें:\n\nसुबह के समय:\n1. सुबह 9 - 11 बजे (सुबह का सर्वे)\n2. सुबह 11 - दोपहर 1 बजे (देर सुबह)\n\nदोपहर के समय:\n3. दोपहर 2 - 4 बजे (दोपहर का सर्वे)\n4. शाम 4 - 6 बजे (शाम का सर्वे)\n\nअपने पसंदीदा समय के लिए नंबर (1, 2, 3, या 4) लिखकर भेजें।"
-      },
-      {
-        type: "footer",
-        text: "हमारी टीम कन्फर्म करने के लिए आपसे संपर्क करेगी"
-      }
-    ]
-  },
-
-  // Template 7: Confirmation (Campaign - English)
-  {
-    name: "sunshine_lead_confirmation_en",
-    category: "UTILITY",
-    language: "en_US",
-    components: [
-      {
-        type: "body",
-        text: "Thank you for your interest in Sunshine Power solar installations! ☀️\n\nOur team will contact you shortly to confirm your survey details and answer any questions.\n\nFor immediate assistance, you can also call us at our office.\n\nWe look forward to helping you save on electricity with clean solar energy!"
-      }
-    ]
-  },
-
-  // Template 8: Confirmation (Campaign - Hindi)
-  {
-    name: "sunshine_lead_confirmation_hi",
-    category: "UTILITY",
-    language: "hi",
-    components: [
-      {
-        type: "body",
-        text: "Sunshine Power सोलर इंस्टॉलेशन में आपकी रुचि के लिए धन्यवाद! ☀️\n\nहमारी टीम जल्द ही आपसे संपर्क करेगी और आपके सर्वे की जानकारी कन्फर्म करेगी।\n\nतत्काल सहायता के लिए, आप हमारे ऑफिस में भी कॉल कर सकते हैं।\n\nहम स्वच्छ सौर ऊर्जा से बिजली बचाने में आपकी मदद करने के लिए उत्सुक हैं!"
       }
     ]
   }
 ];
 
-// Service Request Templates
-const serviceRequestTemplates: MetaTemplate[] = [
-  // Template 9: Service Language Selection (English)
+// Main Menu Templates
+const mainMenuTemplates: MetaTemplate[] = [
   {
-    name: "sunshine_service_language_en",
-    category: "UTILITY",
-    language: "en_US",
-    components: [
-      {
-        type: "header",
-        format: "image",
-        example: {
-          header_handle: ["4245254242364293"]
-        }
-      },
-      {
-        type: "body",
-        text: "Welcome to Sunshine Power Service! 🔧\n\nWe provide installation, maintenance, and repair services for solar systems in Rajasthan.\n\nPlease reply with your preferred language:\n- Reply \"1\" for English\n- Reply \"2\" for हिंदी (Hindi)"
-      },
-      {
-        type: "footer",
-        text: "Sunshine Power - Service Center"
-      }
-    ]
-  },
-
-  // Template 10: Service Language Selection (Hindi)
-  {
-    name: "sunshine_service_language_hi",
-    category: "UTILITY",
-    language: "hi",
-    components: [
-      {
-        type: "header",
-        format: "image",
-        example: {
-          header_handle: ["4245254242364293"]
-        }
-      },
-      {
-        type: "body",
-        text: "Sunshine Power सेवा में आपका स्वागत है! 🔧\n\nहम राजस्थान में सोलर सिस्टम के लिए इंस्टॉलेशन, रखरखाव और मरम्मत सेवाएं प्रदान करते हैं।\n\nकृपया अपनी पसंदीदा भाषा चुनें:\n- English के लिए \"1\" लिखें\n- हिंदी के लिए \"2\" लिखें"
-      },
-      {
-        type: "footer",
-        text: "Sunshine Power - सेवा केंद्र"
-      }
-    ]
-  },
-
-  // Template 11: Service Menu (English)
-  {
-    name: "sunshine_service_menu_en",
+    name: "sunshine_main_menu_en",
     category: "UTILITY",
     language: "en_US",
     components: [
       {
         type: "header",
         format: "text",
-        text: "Select Service Type"
+        text: "Main Menu"
       },
       {
         type: "body",
-        text: "How can we help you today? Please select the type of service you need:\n\n1. New Installation - Install new solar system\n2. Maintenance/Cleaning - Panel cleaning & checkup\n3. Repair/Technical Issue - Fix technical problems\n4. Other Services - Other inquiries\n\nReply with the number (1, 2, 3, or 4) for your required service."
+        text: "Thank you for choosing Sunshine Power!\n\nHow can we help you today?"
       },
       {
         type: "footer",
-        text: "Sunshine Power - Service Options"
+        text: "PM Surya Ghar Registered Vendor"
+      },
+      {
+        type: "buttons",
+        buttons: [
+          { type: "QUICK_REPLY", text: "Book site survey" },
+          { type: "QUICK_REPLY", text: "Price estimate" },
+          { type: "QUICK_REPLY", text: "Other help" }
+        ]
       }
     ]
   },
-
-  // Template 12: Service Menu (Hindi)
   {
-    name: "sunshine_service_menu_hi",
+    name: "sunshine_main_menu_hi",
     category: "UTILITY",
     language: "hi",
     components: [
       {
         type: "header",
         format: "text",
-        text: "सेवा प्रकार चुनें"
+        text: "मुख्य मेनू"
       },
       {
         type: "body",
-        text: "आज हम आपकी कैसे मदद कर सकते हैं? कृपया आवश्यक सेवा का प्रकार चुनें:\n\n1. नई इंस्टॉलेशन - नया सोलर सिस्टम लगाएं\n2. रखरखाव/सफाई - पैनल की सफाई और जांच\n3. मरम्मत/तकनीकी समस्या - तकनीकी समस्याओं को ठीक करें\n4. अन्य सेवाएं - अन्य पूछताछ\n\nअपनी आवश्यक सेवा के लिए नंबर (1, 2, 3, या 4) लिखें।"
+        text: "Sunshine Power चुनने के लिए धन्यवाद!\n\nआज हम आपकी कैसे मदद कर सकते हैं?"
       },
       {
         type: "footer",
-        text: "Sunshine Power - सेवा विकल्प"
+        text: "PM Surya Ghar पंजीकृत विक्रेता"
+      },
+      {
+        type: "buttons",
+        buttons: [
+          { type: "QUICK_REPLY", text: "साइट सर्वे बुक करें" },
+          { type: "QUICK_REPLY", text: "मूल्य अनुमान" },
+          { type: "QUICK_REPLY", text: "अन्य सहायता" }
+        ]
       }
     ]
-  },
+  }
+];
 
-  // Template 13: Problem Description (English)
+// Price Submenu Templates
+const priceSubmenuTemplates: MetaTemplate[] = [
   {
-    name: "sunshine_problem_description_en",
+    name: "sunshine_price_submenu_en",
     category: "UTILITY",
     language: "en_US",
     components: [
       {
         type: "header",
         format: "text",
-        text: "Describe Your Issue"
+        text: "Price & Expenditure Information"
       },
       {
         type: "body",
-        text: "Please describe your issue or service requirement in a few words. Our technician will review it and contact you soon.\n\nFor example: \"Solar panels not generating power\" or \"Need panel cleaning service\""
+        text: "Would you like to know about our pricing and packages?\n\nPlease select an option:"
       },
       {
         type: "footer",
-        text: "Reply with your description"
+        text: "Sunshine Power"
+      },
+      {
+        type: "buttons",
+        buttons: [
+          { type: "QUICK_REPLY", text: "Book site survey" },
+          { type: "QUICK_REPLY", text: "Request callback" },
+          { type: "QUICK_REPLY", text: "Other help" }
+        ]
       }
     ]
   },
-
-  // Template 14: Problem Description (Hindi)
   {
-    name: "sunshine_problem_description_hi",
+    name: "sunshine_price_submenu_hi",
     category: "UTILITY",
     language: "hi",
     components: [
       {
         type: "header",
         format: "text",
-        text: "अपनी समस्या बताएं"
+        text: "मूल्य और व्यय जानकारी"
       },
       {
         type: "body",
-        text: "कृपया अपनी समस्या या सेवा की आवश्यकता को कुछ शब्दों में बताएं। हमारा तकनीशियन इसकी समीक्षा करेगा और जल्द ही आपसे संपर्क करेगा।\n\nउदाहरण: \"सोलर पैनल बिजली नहीं बना रहे\" या \"पैनल की सफाई सेवा चाहिए\""
+        text: "क्या आप हमारी कीमतों और पैकेजों के बारे में जानना चाहते हैं?\n\nकृपया एक विकल्प चुनें:"
       },
       {
         type: "footer",
-        text: "अपना विवरण लिखकर भेजें"
+        text: "Sunshine Power"
+      },
+      {
+        type: "buttons",
+        buttons: [
+          { type: "QUICK_REPLY", text: "साइट सर्वे बुक करें" },
+          { type: "QUICK_REPLY", text: "कॉलबैक का अनुरोध" },
+          { type: "QUICK_REPLY", text: "अन्य सहायता" }
+        ]
       }
     ]
-  },
+  }
+];
 
-  // Template 15: Urgency Selection (English)
+// Help Submenu Templates
+const helpSubmenuTemplates: MetaTemplate[] = [
   {
-    name: "sunshine_urgency_select_en",
+    name: "sunshine_help_submenu_en",
     category: "UTILITY",
     language: "en_US",
     components: [
       {
         type: "header",
         format: "text",
-        text: "Select Priority Level"
+        text: "Help & Support"
       },
       {
         type: "body",
-        text: "How urgent is this service request?\n\n1. 🔴 Urgent - Immediate attention needed\n2. 🟡 Normal - Regular priority\n3. 🟢 Low - Can wait a few days\n\nReply with the number (1, 2, or 3) for urgency level."
+        text: "We are here to help you!\n\nPlease select what you need:"
       },
       {
         type: "footer",
-        text: "This helps us prioritize your request"
+        text: "Sunshine Power"
+      },
+      {
+        type: "buttons",
+        buttons: [
+          { type: "QUICK_REPLY", text: "Maintenance request" },
+          { type: "QUICK_REPLY", text: "Request callback" },
+          { type: "QUICK_REPLY", text: "Register issue" }
+        ]
       }
     ]
   },
-
-  // Template 16: Urgency Selection (Hindi)
   {
-    name: "sunshine_urgency_select_hi",
+    name: "sunshine_help_submenu_hi",
     category: "UTILITY",
     language: "hi",
     components: [
       {
         type: "header",
         format: "text",
-        text: "प्राथमिकता स्तर चुनें"
+        text: "सहायता और समर्थन"
       },
       {
         type: "body",
-        text: "यह सेवा अनुरोध कितना जरूरी है?\n\n1. 🔴 तुरंत - तत्काल ध्यान देने की आवश्यकता\n2. 🟡 सामान्य - नियमित प्राथमिकता\n3. 🟢 कम - कुछ दिन प्रतीक्षा कर सकते हैं\n\nतात्कालिकता स्तर के लिए नंबर (1, 2, या 3) लिखें।"
+        text: "हम आपकी मदद के लिए यहां हैं!\n\nकृपया चुनें आपको क्या चाहिए:"
       },
       {
         type: "footer",
-        text: "यह हमें आपके अनुरोध को प्राथमिकता देने में मदद करता है"
+        text: "Sunshine Power"
+      },
+      {
+        type: "buttons",
+        buttons: [
+          { type: "QUICK_REPLY", text: "रखरखाव अनुरोध" },
+          { type: "QUICK_REPLY", text: "कॉलबैक का अनुरोध" },
+          { type: "QUICK_REPLY", text: "समस्या दर्ज करें" }
+        ]
       }
     ]
-  },
+  }
+];
 
-  // Template 17: Service Confirmation (English)
+// Service Urgency Templates
+const serviceUrgencyTemplates: MetaTemplate[] = [
   {
-    name: "sunshine_service_confirmation_en",
+    name: "sunshine_service_urgency_en",
     category: "UTILITY",
     language: "en_US",
     components: [
       {
         type: "body",
-        text: "Thank you for contacting Sunshine Power! 🔧\n\nYour service request has been received. Our technician will review your request and contact you shortly to schedule a visit.\n\nExpected response: Within 24 hours\n\nFor urgent issues, please call our service center directly."
+        text: "Please select the issue urgency level:"
+      },
+      {
+        type: "footer",
+        text: "Sunshine Power"
+      },
+      {
+        type: "buttons",
+        buttons: [
+          { type: "QUICK_REPLY", text: "Low" },
+          { type: "QUICK_REPLY", text: "Medium" },
+          { type: "QUICK_REPLY", text: "High" }
+        ]
       }
     ]
   },
-
-  // Template 18: Service Confirmation (Hindi)
   {
-    name: "sunshine_service_confirmation_hi",
+    name: "sunshine_service_urgency_hi",
     category: "UTILITY",
     language: "hi",
     components: [
       {
         type: "body",
-        text: "Sunshine Power से संपर्क करने के लिए धन्यवाद! 🔧\n\nआपका सेवा अनुरोध प्राप्त हो गया है। हमारा तकनीशियन आपके अनुरोध की समीक्षा करेगा और जल्द ही विजिट शेड्यूल करने के लिए आपसे संपर्क करेगा।\n\nअपेक्षित प्रतिक्रिया: 24 घंटे के भीतर\n\nतत्काल मुद्दों के लिए, कृपया सीधे हमारे सेवा केंद्र पर कॉल करें।"
+        text: "कृपया समस्या की तात्कालिकता का स्तर चुनें:"
+      },
+      {
+        type: "footer",
+        text: "Sunshine Power"
+      },
+      {
+        type: "buttons",
+        buttons: [
+          { type: "QUICK_REPLY", text: "कम" },
+          { type: "QUICK_REPLY", text: "मध्यम" },
+          { type: "QUICK_REPLY", text: "उच्च" }
+        ]
+      }
+    ]
+  }
+];
+
+// Completion Templates (Thank you messages)
+const completionTemplates: MetaTemplate[] = [
+  // Survey Complete
+  {
+    name: "sunshine_survey_complete_en",
+    category: "UTILITY",
+    language: "en_US",
+    components: [
+      {
+        type: "body",
+        text: "Thank you! Your site survey request has been registered.\n\nOur team will contact you soon to confirm the appointment.\n\nFor any queries, visit: https://sunshinepower.net.in/"
+      },
+      {
+        type: "footer",
+        text: "Sunshine Power"
+      }
+    ]
+  },
+  {
+    name: "sunshine_survey_complete_hi",
+    category: "UTILITY",
+    language: "hi",
+    components: [
+      {
+        type: "body",
+        text: "धन्यवाद! आपका साइट सर्वे अनुरोध पंजीकृत हो गया है।\n\nहमारी टीम जल्द ही आपसे संपर्क करेगी।\n\nकिसी भी प्रश्न के लिए: https://sunshinepower.net.in/"
+      },
+      {
+        type: "footer",
+        text: "Sunshine Power"
+      }
+    ]
+  },
+  // Callback Complete
+  {
+    name: "sunshine_callback_complete_en",
+    category: "UTILITY",
+    language: "en_US",
+    components: [
+      {
+        type: "body",
+        text: "Thank you! Your callback request has been registered.\n\nOur team will call you soon.\n\nWebsite: https://sunshinepower.net.in/"
+      },
+      {
+        type: "footer",
+        text: "Sunshine Power"
+      }
+    ]
+  },
+  {
+    name: "sunshine_callback_complete_hi",
+    category: "UTILITY",
+    language: "hi",
+    components: [
+      {
+        type: "body",
+        text: "धन्यवाद! आपका कॉलबैक अनुरोध पंजीकृत हो गया है।\n\nहमारी टीम जल्द ही आपको कॉल करेगी।\n\nवेबसाइट: https://sunshinepower.net.in/"
+      },
+      {
+        type: "footer",
+        text: "Sunshine Power"
+      }
+    ]
+  },
+  // Service Complete
+  {
+    name: "sunshine_service_complete_en",
+    category: "UTILITY",
+    language: "en_US",
+    components: [
+      {
+        type: "body",
+        text: "Thank you! Your service request has been registered.\n\nOur technician will visit you soon.\n\nWebsite: https://sunshinepower.net.in/"
+      },
+      {
+        type: "footer",
+        text: "Sunshine Power"
+      }
+    ]
+  },
+  {
+    name: "sunshine_service_complete_hi",
+    category: "UTILITY",
+    language: "hi",
+    components: [
+      {
+        type: "body",
+        text: "धन्यवाद! आपका सेवा अनुरोध पंजीकृत हो गया है।\n\nहमारा तकनीशियन जल्द ही आपसे मिलेगा।\n\nवेबसाइट: https://sunshinepower.net.in/"
+      },
+      {
+        type: "footer",
+        text: "Sunshine Power"
+      }
+    ]
+  },
+  // Issue Complete
+  {
+    name: "sunshine_issue_complete_en",
+    category: "UTILITY",
+    language: "en_US",
+    components: [
+      {
+        type: "body",
+        text: "Thank you! Your issue has been registered.\n\nOur team will review and contact you soon.\n\nWebsite: https://sunshinepower.net.in/"
+      },
+      {
+        type: "footer",
+        text: "Sunshine Power"
+      }
+    ]
+  },
+  {
+    name: "sunshine_issue_complete_hi",
+    category: "UTILITY",
+    language: "hi",
+    components: [
+      {
+        type: "body",
+        text: "धन्यवाद! आपकी समस्या पंजीकृत हो गई है।\n\nहमारी टीम समीक्षा करेगी और जल्द ही संपर्क करेगी।\n\nवेबसाइट: https://sunshinepower.net.in/"
+      },
+      {
+        type: "footer",
+        text: "Sunshine Power"
       }
     ]
   }
@@ -416,40 +422,36 @@ const serviceRequestTemplates: MetaTemplate[] = [
 
 // Export all templates
 export const allMetaTemplates: MetaTemplate[] = [
-  ...campaignLeadTemplates,
-  ...serviceRequestTemplates
+  ...campaignEntryTemplates,
+  ...mainMenuTemplates,
+  ...priceSubmenuTemplates,
+  ...helpSubmenuTemplates,
+  ...serviceUrgencyTemplates,
+  ...completionTemplates
 ];
 
-// Template name to flow step mapping for future use
-export const templateMapping = {
-  campaign_lead: {
-    en: {
-      language_select: "sunshine_campaign_language_en",
-      offer: "sunshine_solar_offer_en",
-      survey_schedule: "sunshine_survey_schedule_en",
-      complete: "sunshine_lead_confirmation_en"
-    },
-    hi: {
-      language_select: "sunshine_campaign_language_hi",
-      offer: "sunshine_solar_offer_hi",
-      survey_schedule: "sunshine_survey_schedule_hi",
-      complete: "sunshine_lead_confirmation_hi"
-    }
-  },
-  service_request: {
-    en: {
-      language_select: "sunshine_service_language_en",
-      service_menu: "sunshine_service_menu_en",
-      problem_description: "sunshine_problem_description_en",
-      urgency_select: "sunshine_urgency_select_en",
-      complete: "sunshine_service_confirmation_en"
-    },
-    hi: {
-      language_select: "sunshine_service_language_hi",
-      service_menu: "sunshine_service_menu_hi",
-      problem_description: "sunshine_problem_description_hi",
-      urgency_select: "sunshine_urgency_select_hi",
-      complete: "sunshine_service_confirmation_hi"
-    }
-  }
+// Template name to database step key mapping
+// This helps map Meta template names to our database template step keys
+export const metaToStepKeyMapping: Record<string, { flowType: string, stepKey: string, language: string }> = {
+  "sunshine_campaign_entry": { flowType: "campaign", stepKey: "campaign_entry", language: "en" },
+  "sunshine_main_menu_en": { flowType: "campaign", stepKey: "main_menu", language: "en" },
+  "sunshine_main_menu_hi": { flowType: "campaign", stepKey: "main_menu", language: "hi" },
+  "sunshine_price_submenu_en": { flowType: "campaign", stepKey: "price_submenu", language: "en" },
+  "sunshine_price_submenu_hi": { flowType: "campaign", stepKey: "price_submenu", language: "hi" },
+  "sunshine_help_submenu_en": { flowType: "campaign", stepKey: "help_submenu", language: "en" },
+  "sunshine_help_submenu_hi": { flowType: "campaign", stepKey: "help_submenu", language: "hi" },
+  "sunshine_service_urgency_en": { flowType: "campaign", stepKey: "service_urgency", language: "en" },
+  "sunshine_service_urgency_hi": { flowType: "campaign", stepKey: "service_urgency", language: "hi" },
+  "sunshine_survey_complete_en": { flowType: "campaign", stepKey: "survey_complete", language: "en" },
+  "sunshine_survey_complete_hi": { flowType: "campaign", stepKey: "survey_complete", language: "hi" },
+  "sunshine_callback_complete_en": { flowType: "campaign", stepKey: "callback_complete", language: "en" },
+  "sunshine_callback_complete_hi": { flowType: "campaign", stepKey: "callback_complete", language: "hi" },
+  "sunshine_service_complete_en": { flowType: "campaign", stepKey: "service_complete", language: "en" },
+  "sunshine_service_complete_hi": { flowType: "campaign", stepKey: "service_complete", language: "hi" },
+  "sunshine_issue_complete_en": { flowType: "campaign", stepKey: "issue_complete", language: "en" },
+  "sunshine_issue_complete_hi": { flowType: "campaign", stepKey: "issue_complete", language: "hi" },
 };
+
+// Note: Text-based form field templates (name, mobile, address, village, date, time, description)
+// do not require Meta pre-approval as they are sent as interactive text messages 
+// within the active 24-hour conversation window after the initial template message

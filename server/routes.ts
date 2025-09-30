@@ -5,7 +5,7 @@ import { insertMessageTemplateSchema, insertLeadSchema, insertServiceRequestSche
 import { conversationFlowEngine } from "./conversationFlow";
 import { whatsappService } from "./whatsapp";
 import { notificationService } from "./notifications";
-import { allMetaTemplates, templateMapping } from "./metaTemplates";
+import { allMetaTemplates } from "./metaTemplates";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -82,22 +82,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Helper function to map database template to Meta template name using the templateMapping
+  // Helper function to map database template to Meta template name
   const getMetaTemplateName = (flowType: string, stepKey: string, language: string): string => {
-    // Use the templateMapping from metaTemplates.ts
-    const flowMapping = (templateMapping as any)[flowType];
-    if (!flowMapping) {
-      throw new Error(`Unsupported flowType: ${flowType}. Supported: ${Object.keys(templateMapping).join(", ")}`);
+    // Construct Meta template name based on stepKey and language
+    // Pattern: sunshine_{stepKey}_{language} (e.g., sunshine_main_menu_en)
+    // Exception: campaign_entry is English only (sunshine_campaign_entry)
+    
+    if (stepKey === "campaign_entry") {
+      return "sunshine_campaign_entry";
     }
     
-    const langMapping = flowMapping[language];
-    if (!langMapping) {
-      throw new Error(`Unsupported language: ${language}. Supported: ${Object.keys(flowMapping).join(", ")}`);
-    }
+    // Construct template name with language suffix
+    const metaTemplateName = `sunshine_${stepKey}_${language}`;
     
-    const metaTemplateName = langMapping[stepKey];
-    if (!metaTemplateName) {
-      throw new Error(`Unsupported stepKey: ${stepKey} for flowType: ${flowType}, language: ${language}. Supported: ${Object.keys(langMapping).join(", ")}`);
+    // Verify the template exists in allMetaTemplates
+    const exists = allMetaTemplates.some(t => t.name === metaTemplateName);
+    if (!exists) {
+      throw new Error(`Meta template not found: ${metaTemplateName}. Step key "${stepKey}" may not have a Meta template definition.`);
     }
     
     return metaTemplateName;
