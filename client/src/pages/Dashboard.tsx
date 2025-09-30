@@ -16,7 +16,7 @@ import { apiRequest } from "@/lib/queryClient";
 export default function Dashboard() {
   const [showSendDialog, setShowSendDialog] = useState(false);
   const [sendForm, setSendForm] = useState({
-    customerPhone: "",
+    customerPhone: "9646621979",
     customerName: "",
     flowType: "campaign_lead" as "campaign_lead" | "service_request",
   });
@@ -64,7 +64,7 @@ export default function Dashboard() {
       });
 
       setShowSendDialog(false);
-      setSendForm({ customerPhone: "", customerName: "", flowType: "campaign_lead" });
+      setSendForm({ customerPhone: "9646621979", customerName: "", flowType: "campaign_lead" });
     } catch (error) {
       toast({
         title: "Failed to Send",
