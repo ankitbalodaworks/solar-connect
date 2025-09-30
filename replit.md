@@ -64,10 +64,10 @@ Preferred communication style: Simple, everyday language.
 **Database Schema**:
 - `users`: Admin user authentication (username, password)
 - `customers`: Customer profiles with electricity consumption data, Hindi names, and village information for Rajasthan context
-- `leads`: Solar installation leads with survey scheduling for PM Surya Ghar installations
-- `serviceRequests`: Service/maintenance requests with issueType (Installation/Service-Repair/Other), urgency (Low/Medium/High), assignedTo, customerVillage, and status tracking
+- `leads`: Solar installation leads with survey scheduling for PM Surya Ghar installations. **customerId is optional** to support WhatsApp-generated leads where only phone number is initially known
+- `serviceRequests`: Service/maintenance requests with issueType (Installation/Service-Repair/Other), urgency (Low/Medium/High), assignedTo, customerVillage, and status tracking. **customerId is optional** to support WhatsApp-generated requests where only phone number is initially known
 - `campaigns`: WhatsApp campaign management with targeting thresholds for customer segmentation
-- `messageTemplates`: WhatsApp interactive message templates with support for buttons, lists, and bilingual content (Hindi/English)
+- `messageTemplates`: WhatsApp interactive message templates with support for buttons, lists, and bilingual content (Hindi/English). Contains all 16 templates for campaign_lead and service_request flows in both English and Hindi
 - `conversationStates`: Tracks active WhatsApp conversations and their position in automated flows (campaign lead generation or service requests)
 - `whatsappLogs`: Complete audit trail of all WhatsApp messages sent/received with status tracking
 
@@ -85,12 +85,16 @@ Preferred communication style: Simple, everyday language.
 - **Conversation Flow Engine** (`server/conversationFlow.ts`):
   - State machine tracks customer position in multi-step flows
   - Automatic template resolution based on flowType, language, and stepKey
-  - Context preservation across conversation steps
+  - Context preservation across conversation steps - all user responses are captured
   - Supports button, list, and text-based user responses
+  - **Automatic record creation**: When conversations reach the "complete" step, the engine automatically creates database records:
+    - Campaign leads: Creates lead record with customerPhone, customerName, survey schedule preferences
+    - Service requests: Creates service request record with customerPhone, customerName, issueType, description, urgency
+  - Data extraction from conversation context: Parses user selections (buttons/lists) and text responses to populate record fields
   - Handles flow completion gracefully without errors
   - Full message logging (inbound/outbound) to whatsappLogs table
-  - Campaign flow: language_select → offer → survey_schedule → complete
-  - Service flow: language_select → service_menu → problem_description → urgency_select → complete
+  - Campaign flow: language_select → offer → survey_schedule → complete (creates lead)
+  - Service flow: language_select → service_menu → problem_description → urgency_select → complete (creates service request)
 - **WhatsApp Service** (`server/whatsapp.ts`):
   - Sends text, button, and list interactive messages via WhatsApp Business API
   - Template-based message sending with automatic message type detection
