@@ -62,18 +62,25 @@ Preferred communication style: Simple, everyday language.
 - Uses Neon serverless driver for PostgreSQL connectivity
 
 **Database Schema**:
+- `users`: Admin user authentication (username, password)
 - `customers`: Customer profiles with electricity consumption data, Hindi names, and village information for Rajasthan context
 - `leads`: Solar installation leads with survey scheduling for PM Surya Ghar installations
 - `serviceRequests`: Service/maintenance requests with issueType (Installation/Service-Repair/Other), urgency (Low/Medium/High), assignedTo, customerVillage, and status tracking
 - `campaigns`: WhatsApp campaign management with targeting thresholds for customer segmentation
+- `messageTemplates`: WhatsApp interactive message templates with support for buttons, lists, and bilingual content (Hindi/English)
+- `conversationStates`: Tracks active WhatsApp conversations and their position in automated flows (campaign lead generation or service requests)
+- `whatsappLogs`: Complete audit trail of all WhatsApp messages sent/received with status tracking
 
 **Session Management**: Configured for connect-pg-simple (PostgreSQL session store)
 
 ### External Dependencies
 
-**WhatsApp Integration**: Platform displays connection status but integration implementation is pending
-- Status indicator component supports connected/disconnected/connecting states
-- Designed for bulk message sending to customer segments
+**WhatsApp Integration**: Interactive message system with automated conversation flows
+- WhatsApp Business API integration with button and list message support
+- Two-way conversation tracking with state machine for automated responses
+- Language selection (Hindi/English) at conversation start
+- Auto-status updates when leads/service requests are created or updated
+- Conversation flows: Campaign → Lead generation, Service menu → Request creation
 
 **File Processing**: 
 - XLSX library (SheetJS) for Excel file parsing
