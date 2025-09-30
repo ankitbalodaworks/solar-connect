@@ -75,10 +75,11 @@ Preferred communication style: Simple, everyday language.
 
 ### External Dependencies
 
-**WhatsApp Integration**: Interactive message system with automated conversation flows
+**WhatsApp Integration**: Production-ready interactive message system with automated conversation flows
 - WhatsApp Business API integration with button and list message support
 - Two-way conversation tracking with state machine for automated responses
 - Language selection (Hindi/English) at conversation start via button/list/text interactions
+- Secure webhook handling with HMAC-SHA256 signature verification using app secret
 - Auto-status updates when leads/service requests are created or updated
 - Conversation flows: Campaign → Lead generation, Service menu → Request creation
 - **Conversation Flow Engine** (`server/conversationFlow.ts`):
@@ -90,6 +91,23 @@ Preferred communication style: Simple, everyday language.
   - Full message logging (inbound/outbound) to whatsappLogs table
   - Campaign flow: language_select → offer → survey_schedule → complete
   - Service flow: language_select → service_menu → problem_description → urgency_select → complete
+- **WhatsApp Service** (`server/whatsapp.ts`):
+  - Sends text, button, and list interactive messages via WhatsApp Business API
+  - Template-based message sending with automatic message type detection
+  - Webhook verification for initial setup (GET /api/whatsapp/webhook)
+  - Webhook signature validation using HMAC-SHA256 with app secret
+  - Parses incoming messages (text, button replies, list replies)
+  - Comprehensive error handling and logging
+- **API Endpoints**:
+  - POST /api/whatsapp/send - Manually send WhatsApp message to start conversation
+  - POST /api/whatsapp/webhook - Receive incoming messages from WhatsApp
+  - GET /api/whatsapp/webhook - Webhook verification for Meta
+  - GET /api/whatsapp/status - Check WhatsApp configuration status
+- **Required Environment Variables**:
+  - WHATSAPP_PHONE_NUMBER_ID - WhatsApp Business phone number ID
+  - WHATSAPP_ACCESS_TOKEN - API access token for sending messages
+  - WHATSAPP_VERIFY_TOKEN - Custom token for webhook verification
+  - WHATSAPP_APP_SECRET - Meta app secret for webhook signature validation
 
 **File Processing**: 
 - XLSX library (SheetJS) for Excel file parsing
