@@ -1,4 +1,4 @@
-import { Home, Upload, MessageSquare, Users, FileText, Settings, FileType } from "lucide-react";
+import { Home, Upload, MessageSquare, Users, FileText, Settings, FileType, MessagesSquare } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -38,6 +38,11 @@ const menuItems = [
     title: "Service Requests",
     url: "/service-requests",
     icon: Settings,
+  },
+  {
+    title: "Conversations",
+    url: "/conversations",
+    icon: MessagesSquare,
   },
   {
     title: "Message Templates",
