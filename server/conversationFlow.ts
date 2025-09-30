@@ -57,10 +57,8 @@ export class ConversationFlowEngine {
         };
       }
 
-      // Send the template for the current step (including "complete")
-      // But if we're already at complete and have already sent it, check context
-      if (conversationState.currentStep === "complete") {
-        // Check if we've already sent the complete message
+      // Check if we're at a completion step and already sent the message
+      if (this.isCompletionStep(conversationState.currentStep)) {
         const context = conversationState.context as any || {};
         if (context._completeSent) {
           return {
@@ -103,13 +101,12 @@ export class ConversationFlowEngine {
   }
 
   private async initializeConversation(message: IncomingMessage): Promise<ConversationState | undefined> {
-    const flowType = this.detectFlowType(message.content);
-
+    // Always start with campaign_entry step for new conversations
     const newState = await storage.createConversationState({
       customerPhone: message.customerPhone,
       customerName: message.customerName,
-      flowType,
-      currentStep: "language_select",
+      flowType: "campaign",
+      currentStep: "campaign_entry",
       language: null,
       context: {},
     });
@@ -117,55 +114,73 @@ export class ConversationFlowEngine {
     return newState;
   }
 
-  private detectFlowType(messageContent: string): "campaign_lead" | "service_request" {
-    const lowerContent = messageContent.toLowerCase();
-    const serviceKeywords = ["service", "repair", "problem", "issue", "help", "fix", "समस्या", "मदद", "सेवा"];
-    
-    const hasServiceKeyword = serviceKeywords.some(keyword => lowerContent.includes(keyword));
-    
-    return hasServiceKeyword ? "service_request" : "campaign_lead";
-  }
-
   private async processStateTransition(
     currentState: ConversationState,
     message: IncomingMessage
   ): Promise<ConversationState | undefined> {
+    // Fetch current step template
     const templates = await storage.getMessageTemplates(
-      currentState.flowType,
+      "campaign",
       currentState.language || undefined,
       currentState.currentStep
     );
 
     const currentTemplate = templates[0];
     
+    // Stateless fallback: if no template found or unrecognized input, restart from campaign_entry
     if (!currentTemplate) {
-      return currentState;
+      console.log(`No template found for step ${currentState.currentStep}, restarting flow`);
+      return await this.restartConversation(message.customerPhone);
     }
 
     let nextStep = currentState.currentStep;
     let language = currentState.language;
     const updatedContext = { ...(currentState.context as any || {}) };
 
+    // Handle button responses
     if (currentTemplate.messageType === "button" && message.selectedButtonId) {
       const buttons = currentTemplate.buttons as any[];
       const selectedButton = buttons?.find((btn: any) => btn.id === message.selectedButtonId);
       
-      if (currentState.currentStep === "language_select") {
-        if (message.selectedButtonId === "en" || message.selectedButtonId === "english") {
-          language = "en";
-        } else if (message.selectedButtonId === "hi" || message.selectedButtonId === "hindi") {
+      if (!selectedButton) {
+        // Unrecognized button, restart flow
+        console.log(`Unrecognized button ${message.selectedButtonId}, restarting flow`);
+        return await this.restartConversation(message.customerPhone);
+      }
+
+      // Handle language selection at campaign_entry
+      if (currentState.currentStep === "campaign_entry") {
+        if (message.selectedButtonId === "hindi") {
           language = "hi";
+          nextStep = "main_menu";
+        } else if (message.selectedButtonId === "english") {
+          language = "en";
+          nextStep = "main_menu";
+        } else if (message.selectedButtonId === "visit_website") {
+          // User chose to visit website, end conversation
+          await storage.deleteConversationState(message.customerPhone);
+          return undefined;
+        } else {
+          // Unrecognized button at entry, restart
+          return await this.restartConversation(message.customerPhone);
         }
-        nextStep = this.getNextStepAfterLanguage(currentState.flowType);
-      } else if (selectedButton?.nextStep) {
+      } else if (selectedButton.nextStep) {
+        // Follow the nextStep defined in the button
         nextStep = selectedButton.nextStep;
+      } else {
+        // Button has no nextStep, this is unexpected, restart flow
+        console.log(`Button ${message.selectedButtonId} has no nextStep, restarting flow`);
+        return await this.restartConversation(message.customerPhone);
       }
       
+      // Store button selection in context
       updatedContext[currentState.currentStep] = {
         buttonId: message.selectedButtonId,
-        buttonTitle: selectedButton?.title,
+        buttonTitle: selectedButton.title,
       };
-    } else if (currentTemplate.messageType === "list" && message.selectedListItemId) {
+    } 
+    // Handle list responses
+    else if (currentTemplate.messageType === "list" && message.selectedListItemId) {
       const listSections = currentTemplate.listSections as any[];
       let selectedItem: any = null;
       
@@ -174,43 +189,45 @@ export class ConversationFlowEngine {
         if (selectedItem) break;
       }
       
-      if (currentState.currentStep === "language_select") {
-        if (message.selectedListItemId === "en" || message.selectedListItemId === "english") {
-          language = "en";
-        } else if (message.selectedListItemId === "hi" || message.selectedListItemId === "hindi") {
-          language = "hi";
-        }
-        nextStep = this.getNextStepAfterLanguage(currentState.flowType);
-      } else if (selectedItem?.nextStep) {
-        nextStep = selectedItem.nextStep;
+      if (!selectedItem || !selectedItem.nextStep) {
+        // Unrecognized list item or missing nextStep, restart flow
+        console.log(`Unrecognized list item ${message.selectedListItemId}, restarting flow`);
+        return await this.restartConversation(message.customerPhone);
       }
+
+      nextStep = selectedItem.nextStep;
       
+      // Store list selection in context
       updatedContext[currentState.currentStep] = {
         itemId: message.selectedListItemId,
-        itemTitle: selectedItem?.title,
+        itemTitle: selectedItem.title,
       };
-    } else if (currentTemplate.messageType === "text") {
+    } 
+    // Handle text responses
+    else if (currentTemplate.messageType === "text") {
+      // Store text input in context
       updatedContext[currentState.currentStep] = {
         text: message.content,
       };
       
-      if (currentState.currentStep === "language_select") {
-        const lowerContent = message.content.toLowerCase();
-        if (lowerContent.includes("hindi") || lowerContent.includes("हिंदी")) {
-          language = "hi";
-          nextStep = this.getNextStepAfterLanguage(currentState.flowType);
-        } else if (lowerContent.includes("english") || lowerContent.includes("अंग्रेजी")) {
-          language = "en";
-          nextStep = this.getNextStepAfterLanguage(currentState.flowType);
-        }
-      } else {
-        nextStep = this.getDefaultNextStep(currentState.flowType, currentState.currentStep);
+      // For text inputs, determine next step based on current step
+      nextStep = this.getNextStepForTextInput(currentState.currentStep);
+      
+      if (!nextStep) {
+        // Unknown text step, restart flow
+        console.log(`Unknown text step ${currentState.currentStep}, restarting flow`);
+        return await this.restartConversation(message.customerPhone);
       }
+    } 
+    // Unrecognized message type or missing expected interaction
+    else {
+      console.log(`Unexpected message type or missing interaction for step ${currentState.currentStep}, restarting flow`);
+      return await this.restartConversation(message.customerPhone);
     }
 
     // If conversation is completing, create the appropriate record
-    if (nextStep === "complete") {
-      await this.createRecordFromConversation(currentState, updatedContext);
+    if (this.isCompletionStep(nextStep)) {
+      await this.createRecordFromConversation(currentState, updatedContext, nextStep);
     }
 
     const updatedState = await storage.updateConversationState(currentState.customerPhone, {
@@ -222,113 +239,174 @@ export class ConversationFlowEngine {
     return updatedState;
   }
 
+  private async restartConversation(customerPhone: string): Promise<ConversationState> {
+    // Delete existing state and restart from campaign_entry
+    await storage.deleteConversationState(customerPhone);
+    
+    const newState = await storage.createConversationState({
+      customerPhone,
+      customerName: undefined,
+      flowType: "campaign",
+      currentStep: "campaign_entry",
+      language: null,
+      context: {},
+    });
+
+    return newState;
+  }
+
+  private isCompletionStep(step: string): boolean {
+    return ["survey_complete", "callback_complete", "service_complete", "issue_complete"].includes(step);
+  }
+
+  private getNextStepForTextInput(currentStep: string): string | null {
+    // Map text input steps to their next steps
+    const textStepMapping: Record<string, string> = {
+      // Site Survey Flow
+      "survey_name": "survey_mobile",
+      "survey_mobile": "survey_address",
+      "survey_address": "survey_village",
+      "survey_village": "survey_date",
+      "survey_date": "survey_time",
+      "survey_time": "survey_complete",
+      
+      // Callback Flow
+      "callback_name": "callback_mobile",
+      "callback_mobile": "callback_complete",
+      
+      // Service Flow
+      "service_name": "service_mobile",
+      "service_mobile": "service_address",
+      "service_address": "service_village",
+      "service_village": "service_urgency",
+      // service_urgency is button type, not text
+      "service_date": "service_complete",
+      
+      // Other Issue Flow
+      "issue_name": "issue_mobile",
+      "issue_mobile": "issue_address",
+      "issue_address": "issue_village",
+      "issue_village": "issue_description",
+      "issue_description": "issue_complete",
+    };
+    
+    return textStepMapping[currentStep] || null;
+  }
+
   private async createRecordFromConversation(
     state: ConversationState,
-    context: any
+    context: any,
+    completionStep: string
   ): Promise<void> {
     try {
-      if (state.flowType === "campaign_lead") {
-        // Extract survey time selection
-        const surveySelection = context.survey_schedule?.itemId || context.survey_schedule?.buttonId;
-        let preferredSurveyDate = null;
-        let preferredSurveyTime = null;
-
-        if (surveySelection) {
-          // Parse survey slot (e.g., "morning_9-11" -> "9 AM - 11 AM")
-          const today = new Date();
-          const tomorrow = new Date(today);
-          tomorrow.setDate(tomorrow.getDate() + 1);
-          preferredSurveyDate = tomorrow.toISOString().split('T')[0];
-
-          if (surveySelection.includes('morning_9-11')) {
-            preferredSurveyTime = "9 AM - 11 AM";
-          } else if (surveySelection.includes('morning_11-1')) {
-            preferredSurveyTime = "11 AM - 1 PM";
-          } else if (surveySelection.includes('afternoon_2-4')) {
-            preferredSurveyTime = "2 PM - 4 PM";
-          } else if (surveySelection.includes('afternoon_4-6')) {
-            preferredSurveyTime = "4 PM - 6 PM";
-          }
-        }
+      if (completionStep === "survey_complete") {
+        // Create Lead from site survey flow
+        const customerName = context.survey_name?.text || state.customerName || "Customer";
+        const customerPhone = context.survey_mobile?.text || state.customerPhone;
+        const address = context.survey_address?.text;
+        const village = context.survey_village?.text;
+        const preferredSurveyDate = context.survey_date?.text;
+        const preferredSurveyTime = context.survey_time?.text;
 
         await storage.createLead({
-          customerPhone: state.customerPhone,
-          customerName: state.customerName || "Customer",
+          customerPhone,
+          customerName,
           interestedIn: "Solar Installation",
-          preferredSurveyDate,
-          preferredSurveyTime,
-          notes: `Lead from WhatsApp campaign. Language: ${state.language || 'not specified'}`,
+          preferredSurveyDate: preferredSurveyDate || null,
+          preferredSurveyTime: preferredSurveyTime || null,
+          notes: `Lead from WhatsApp. Language: ${state.language || 'not specified'}. Address: ${address || 'N/A'}. Village: ${village || 'N/A'}`,
         });
 
         console.log(`Created lead for ${state.customerPhone}`);
-      } else if (state.flowType === "service_request") {
-        // Extract service details
-        const serviceType = context.service_menu?.itemId;
-        const problemDescription = context.problem_description?.text || "Not provided";
-        const urgencySelection = context.urgency_select?.buttonId;
+      } 
+      else if (completionStep === "callback_complete") {
+        // Create Callback Request from callback flow
+        const customerName = context.callback_name?.text || state.customerName || "Customer";
+        const customerPhone = context.callback_mobile?.text || state.customerPhone;
 
-        let issueType = "Other";
-        if (serviceType === "installation") {
-          issueType = "Installation";
-        } else if (serviceType === "maintenance" || serviceType === "repair") {
-          issueType = "Service-Repair";
+        // Determine source based on which submenu led to callback
+        let source: "price_estimate" | "help" = "price_estimate";
+        if (context.help_submenu) {
+          source = "help";
         }
 
-        let urgency = "medium";
-        if (urgencySelection === "high") {
-          urgency = "high";
-        } else if (urgencySelection === "low") {
+        await storage.createCallbackRequest({
+          customerPhone,
+          customerName,
+          source,
+          status: "pending",
+          notes: `Callback request from WhatsApp. Language: ${state.language || 'not specified'}`,
+        });
+
+        console.log(`Created callback request for ${state.customerPhone}`);
+      } 
+      else if (completionStep === "service_complete") {
+        // Create Service Request from service flow
+        const customerName = context.service_name?.text || state.customerName || "Customer";
+        const customerPhone = context.service_mobile?.text || state.customerPhone;
+        const address = context.service_address?.text;
+        const customerVillage = context.service_village?.text || null;
+        const urgencySelection = context.service_urgency?.buttonId;
+        const preferredDate = context.service_date?.text;
+
+        let urgency: "low" | "medium" | "high" = "medium";
+        if (urgencySelection === "low") {
           urgency = "low";
+        } else if (urgencySelection === "high") {
+          urgency = "high";
         }
 
         await storage.createServiceRequest({
-          customerPhone: state.customerPhone,
-          customerName: state.customerName || "Customer",
-          issueType,
-          description: problemDescription,
+          customerPhone,
+          customerName,
+          issueType: "Service-Repair",
+          description: `Service request from WhatsApp. Address: ${address || 'N/A'}. Preferred date: ${preferredDate || 'N/A'}`,
           urgency,
           status: "pending",
-          customerVillage: null,
+          customerVillage,
           assignedTo: null,
         });
 
         console.log(`Created service request for ${state.customerPhone}`);
+      } 
+      else if (completionStep === "issue_complete") {
+        // Create Other Issue from issue flow
+        const customerName = context.issue_name?.text || state.customerName || "Customer";
+        const customerPhone = context.issue_mobile?.text || state.customerPhone;
+        const address = context.issue_address?.text;
+        const village = context.issue_village?.text;
+        const description = context.issue_description?.text || "Not provided";
+
+        await storage.createOtherIssue({
+          customerPhone,
+          customerName,
+          issueDescription: description,
+          status: "pending",
+          notes: `Issue from WhatsApp. Language: ${state.language || 'not specified'}. Address: ${address || 'N/A'}. Village: ${village || 'N/A'}`,
+        });
+
+        console.log(`Created other issue for ${state.customerPhone}`);
       }
     } catch (error) {
       console.error("Error creating record from conversation:", error);
     }
   }
 
-  private getNextStepAfterLanguage(flowType: string): string {
-    return flowType === "campaign_lead" ? "offer" : "service_menu";
-  }
-
-  private getDefaultNextStep(flowType: string, currentStep: string): string {
-    if (flowType === "campaign_lead") {
-      const campaignFlow: Record<string, string> = {
-        language_select: "offer",
-        offer: "survey_schedule",
-        survey_schedule: "complete",
-      };
-      return campaignFlow[currentStep] || "complete";
-    } else {
-      const serviceFlow: Record<string, string> = {
-        language_select: "service_menu",
-        service_menu: "problem_description",
-        problem_description: "urgency_select",
-        urgency_select: "complete",
-      };
-      return serviceFlow[currentStep] || "complete";
-    }
-  }
-
   private async resolveNextTemplate(state: ConversationState): Promise<MessageTemplate | undefined> {
-    if (state.currentStep === "complete") {
-      return undefined;
+    // Don't send template for completion steps (they are final messages)
+    if (this.isCompletionStep(state.currentStep)) {
+      // Actually, completion steps DO have templates - they're the thank you messages
+      // So we should fetch them
+      const templates = await storage.getMessageTemplates(
+        "campaign",
+        state.language || undefined,
+        state.currentStep
+      );
+      return templates[0];
     }
 
     const templates = await storage.getMessageTemplates(
-      state.flowType,
+      "campaign",
       state.language || undefined,
       state.currentStep
     );
@@ -338,8 +416,7 @@ export class ConversationFlowEngine {
 
   async startNewConversation(
     customerPhone: string,
-    customerName: string,
-    flowType: "campaign_lead" | "service_request"
+    customerName: string
   ): Promise<OutgoingMessage> {
     const existingState = await storage.getConversationState(customerPhone);
     
@@ -350,8 +427,8 @@ export class ConversationFlowEngine {
     const newState = await storage.createConversationState({
       customerPhone,
       customerName,
-      flowType,
-      currentStep: "language_select",
+      flowType: "campaign",
+      currentStep: "campaign_entry",
       language: null,
       context: {},
     });
@@ -362,7 +439,7 @@ export class ConversationFlowEngine {
       return {
         template: null as any,
         shouldSend: false,
-        error: "No template found for language selection",
+        error: "No template found for campaign entry",
       };
     }
 

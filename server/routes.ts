@@ -246,7 +246,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const startConversationSchema = z.object({
     customerPhone: z.string(),
     customerName: z.string(),
-    flowType: z.enum(["campaign_lead", "service_request"]),
   });
 
   const incomingMessageSchema = z.object({
@@ -263,8 +262,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const data = startConversationSchema.parse(req.body);
       const result = await conversationFlowEngine.startNewConversation(
         data.customerPhone,
-        data.customerName,
-        data.flowType
+        data.customerName
       );
       
       if (!result.shouldSend) {
@@ -457,7 +455,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const sendMessageSchema = z.object({
     customerPhone: z.string(),
     customerName: z.string(),
-    flowType: z.enum(["campaign_lead", "service_request"]),
   });
 
   app.post("/api/whatsapp/send", async (req, res) => {
@@ -470,8 +467,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const conversationResult = await conversationFlowEngine.startNewConversation(
         data.customerPhone,
-        data.customerName,
-        data.flowType
+        data.customerName
       );
 
       if (!conversationResult.shouldSend || !conversationResult.template) {
