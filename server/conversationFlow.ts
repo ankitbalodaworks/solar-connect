@@ -47,13 +47,6 @@ export class ConversationFlowEngine {
         };
       }
 
-      if (conversationState.currentStep === "complete") {
-        return {
-          template: null as any,
-          shouldSend: false,
-        };
-      }
-
       const nextTemplate = await this.resolveNextTemplate(conversationState);
 
       if (!nextTemplate) {
@@ -62,6 +55,23 @@ export class ConversationFlowEngine {
           shouldSend: false,
           error: "No template found for current state",
         };
+      }
+
+      // Send the template for the current step (including "complete")
+      // But if we're already at complete and have already sent it, check context
+      if (conversationState.currentStep === "complete") {
+        // Check if we've already sent the complete message
+        const context = conversationState.context as any || {};
+        if (context._completeSent) {
+          return {
+            template: null as any,
+            shouldSend: false,
+          };
+        }
+        // Mark that we're sending the complete message
+        await storage.updateConversationState(conversationState.customerPhone, {
+          context: { ...context, _completeSent: true },
+        });
       }
 
       await storage.createWhatsappLog({
