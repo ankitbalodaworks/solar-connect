@@ -76,12 +76,14 @@ Preferred communication style: Simple, everyday language.
 ### External Dependencies
 
 **WhatsApp Integration**: Production-ready interactive message system with automated conversation flows
-- WhatsApp Business API integration with button and list message support
+- WhatsApp Business API integration with button and list message support (20-character button text limit enforced)
+- Image header support with media upload functionality (Sunshine Power logo: Media ID 4245254242364293)
 - Two-way conversation tracking with state machine for automated responses
 - Language selection (Hindi/English) at conversation start via button/list/text interactions
 - Secure webhook handling with HMAC-SHA256 signature verification using app secret
 - Auto-status updates when leads/service requests are created or updated
 - Conversation flows: Campaign → Lead generation, Service menu → Request creation
+- Database schema allows nullable customer_id for WhatsApp-generated leads and service requests
 - **Conversation Flow Engine** (`server/conversationFlow.ts`):
   - State machine tracks customer position in multi-step flows
   - Automatic template resolution based on flowType, language, and stepKey
@@ -107,6 +109,7 @@ Preferred communication style: Simple, everyday language.
   - POST /api/whatsapp/webhook - Receive incoming messages from WhatsApp
   - GET /api/whatsapp/webhook - Webhook verification for Meta
   - GET /api/whatsapp/status - Check WhatsApp configuration status
+  - POST /api/whatsapp/upload-media - Upload images to WhatsApp and get media IDs
 - **Required Environment Variables**:
   - WHATSAPP_PHONE_NUMBER_ID - WhatsApp Business phone number ID
   - WHATSAPP_ACCESS_TOKEN - API access token for sending messages
