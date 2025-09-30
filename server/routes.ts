@@ -404,6 +404,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Submit templates to Meta for approval
+  app.post("/api/whatsapp/submit-templates", async (req, res) => {
+    try {
+      const result = await whatsappService.submitTemplates();
+      res.json(result);
+    } catch (error) {
+      console.error("Error submitting templates:", error);
+      res.status(500).json({ error: "Failed to submit templates" });
+    }
+  });
+
   // Leads API with auto-notifications
   app.get("/api/leads", async (req, res) => {
     try {

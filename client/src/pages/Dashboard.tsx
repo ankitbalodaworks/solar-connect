@@ -1,4 +1,4 @@
-import { Users, MessageSquare, FileText, Wrench, Phone, Send, Trash2 } from "lucide-react";
+import { Users, MessageSquare, FileText, Wrench, Phone, Send, Trash2, Upload } from "lucide-react";
 import { StatCard } from "@/components/StatCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -111,6 +111,38 @@ export default function Dashboard() {
     }
   };
 
+  const handleSubmitTemplates = async () => {
+    try {
+      toast({
+        title: "Submitting Templates",
+        description: "Submitting 18 templates to Meta for approval...",
+      });
+
+      const result: any = await apiRequest("POST", "/api/whatsapp/submit-templates", {});
+      
+      if (result.success) {
+        toast({
+          title: "Templates Submitted Successfully",
+          description: `All ${result.summary.successful} templates submitted to Meta. Check your email for approval notifications.`,
+        });
+      } else {
+        toast({
+          title: "Some Templates Failed",
+          description: `${result.summary.successful} succeeded, ${result.summary.failed} failed. Check console for details.`,
+          variant: "destructive",
+        });
+      }
+
+      console.log("Template submission results:", result);
+    } catch (error: any) {
+      toast({
+        title: "Submission Failed",
+        description: error?.message || "Could not submit templates to Meta",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -197,6 +229,15 @@ export default function Dashboard() {
                 Manage Service Requests
               </Button>
             </Link>
+            <Button 
+              className="w-full justify-start" 
+              variant="default" 
+              onClick={handleSubmitTemplates}
+              data-testid="button-submit-templates"
+            >
+              <Upload className="h-4 w-4 mr-2" />
+              Submit Templates to Meta
+            </Button>
           </CardContent>
         </Card>
 

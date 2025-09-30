@@ -4,6 +4,7 @@ import FormData from "form-data";
 import fs from "fs";
 import path from "path";
 import { type MessageTemplate } from "@shared/schema";
+import { allMetaTemplates, type MetaTemplate } from "./metaTemplates";
 
 interface WhatsAppConfig {
   phoneNumberId: string;
@@ -407,6 +408,98 @@ export class WhatsAppService {
       console.error("Error parsing WhatsApp status update:", error);
       return null;
     }
+  }
+
+  async submitTemplates(): Promise<{
+    success: boolean;
+    results: Array<{
+      name: string;
+      status: "success" | "error";
+      id?: string;
+      error?: string;
+    }>;
+    summary: {
+      total: number;
+      successful: number;
+      failed: number;
+    };
+  }> {
+    const wabaId = process.env.WHATSAPP_WABA_ID;
+    
+    if (!wabaId) {
+      throw new Error("WHATSAPP_WABA_ID is not configured. Please add it to your environment secrets.");
+    }
+
+    if (!this.config.accessToken) {
+      throw new Error("WHATSAPP_ACCESS_TOKEN is not configured. Please add it to your environment secrets.");
+    }
+
+    const results: Array<{
+      name: string;
+      status: "success" | "error";
+      id?: string;
+      error?: string;
+    }> = [];
+
+    console.log(`Starting template submission to Meta (WABA ID: ${wabaId})...`);
+    console.log(`Total templates to submit: ${allMetaTemplates.length}`);
+
+    for (const template of allMetaTemplates) {
+      try {
+        console.log(`Submitting template: ${template.name} (${template.category} - ${template.language})`);
+        
+        const response = await axios.post(
+          `https://graph.facebook.com/v21.0/${wabaId}/message_templates`,
+          template,
+          {
+            headers: {
+              Authorization: `Bearer ${this.config.accessToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        results.push({
+          name: template.name,
+          status: "success",
+          id: response.data.id,
+        });
+
+        console.log(`✅ Successfully submitted: ${template.name} (ID: ${response.data.id})`);
+      } catch (error: any) {
+        const errorMessage = error.response?.data?.error?.message || error.message;
+        const errorCode = error.response?.data?.error?.code;
+        
+        results.push({
+          name: template.name,
+          status: "error",
+          error: `${errorCode ? `[${errorCode}] ` : ""}${errorMessage}`,
+        });
+
+        console.error(`❌ Failed to submit ${template.name}: ${errorMessage}`);
+      }
+
+      // Add a small delay between submissions to avoid rate limiting
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    const successful = results.filter(r => r.status === "success").length;
+    const failed = results.filter(r => r.status === "error").length;
+
+    console.log(`\nTemplate submission complete:`);
+    console.log(`  Total: ${allMetaTemplates.length}`);
+    console.log(`  Successful: ${successful}`);
+    console.log(`  Failed: ${failed}`);
+
+    return {
+      success: failed === 0,
+      results,
+      summary: {
+        total: allMetaTemplates.length,
+        successful,
+        failed,
+      },
+    };
   }
 }
 
