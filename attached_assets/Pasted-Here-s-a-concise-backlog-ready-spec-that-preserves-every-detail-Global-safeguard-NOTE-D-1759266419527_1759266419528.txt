@@ -1,0 +1,87 @@
+Here’s a concise, backlog-ready spec that preserves every detail.
+
+# Global safeguard
+
+* **NOTE:** Do not break anything while building. Read the entire project thoroughly before touching anything.
+
+# Goal
+
+Launch a simple, deterministic WhatsApp campaign: entry message with website + 3 buttons → language choice → main menu → forms/sub-menus. Keep templates minimal (no extra images like calendars). Fix naming/spelling, missing steps, and ensure the flow never skips templates or branches.
+
+# Entry message (Campaign)
+
+* **Body:** Include link `https://sunshinepower.net.in/`.
+* **Buttons (3):**
+
+  1. **Hindi**
+  2. **English**
+  3. **Visit Website** (URL CTA → `https://sunshinepower.net.in/`)
+
+# After language selection → Main Menu (shown in chosen language)
+
+Options (exact labels):
+
+1. **To book a site survey**
+2. **Price/Expenditure Estimate**
+3. **Any other help**
+
+# Branches & forms
+
+## A) To book a site survey → **Site-Survey Form**
+
+Fields (required):
+
+* Full name (as per electricity bill)
+* Mobile number
+* Address
+* Village
+* Preferred date
+* Preferred time
+
+## B) Price/Expenditure Estimate → **Price Sub-menu**
+
+Buttons (3):
+
+1. **To book site survey** → Site-Survey Form (above)
+2. **Request a callback** → **Callback Form** (Full name, Mobile)
+3. **Any other help** → Help Sub-menu (below)
+
+## C) Any other help → **Help Sub-menu**
+
+Buttons (3):
+
+1. **Maintenance/service request** → **Service Request Form**
+
+   * Full name, Mobile number, Address, Village, **Issue urgency**, Preferred date of visit
+2. **Request for callback** → **Callback Form** (Full name, Mobile)
+3. **Register any other issue** → **Other Issue Form**
+
+   * Full name, Mobile, Address, Village, **Issue description (free text)**
+
+# Message templates (create both **EN** and **HI** variants)
+
+* **TEMPLATE_CAMPAIGN_ENTRY_[EN|HI]**: Body + 3 buttons (Hindi / English / Visit Website with URL).
+* **TEMPLATE_MAIN_MENU_[EN|HI]**: 3 buttons (Site survey / Price–Estimate / Any other help).
+* **TEMPLATE_PRICE_SUBMENU_[EN|HI]**: 3 buttons (Book survey / Request callback / Any other help).
+* **TEMPLATE_HELP_SUBMENU_[EN|HI]**: 3 buttons (Maintenance–Service / Request callback / Register other issue).
+* **(Optional)** **TEMPLATE_FORM_PROMPT_[EN|HI]**: “Please fill the form to proceed.”
+
+> **Standards:** Use consistent names, correct spellings, minimal media (no calendar images), and the same order across EN/HI.
+
+# Flow rules (must)
+
+* **Deterministic & simple:** Always follow the same sequence; **do not** skip templates based on prior history.
+* **Stateless fallback:** If the user types **anything else** (any text/letter/word), **re-send the first entry message** to restart.
+* **Per-step validation:** Validate required fields; on error, re-prompt without leaving the branch.
+* **Record inputs:** Store **all** user inputs; if a field is resubmitted, **update to the latest value**.
+
+# Acceptance criteria
+
+* Entry message shows **exactly 3 buttons** and opens the website CTA correctly.
+* Language selection reliably displays the **Main Menu** in that language.
+* Each menu option routes to the specified sub-menu or form with **exact field sets**.
+* All templates exist in **EN & HI**, with consistent names, spellings, and order; **no missing steps**.
+* No extra images (e.g., calendars) are used in templates.
+* Unrecognized input always triggers the **entry message** (hard restart).
+* All user inputs are persisted and **latest values overwrite prior ones**.
+* No regressions to existing messaging/template flows.

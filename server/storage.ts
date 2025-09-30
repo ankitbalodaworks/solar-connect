@@ -1,7 +1,7 @@
-import { type User, type InsertUser, type MessageTemplate, type InsertMessageTemplate, type ConversationState, type InsertConversationState, type WhatsappLog, type InsertWhatsappLog, type Lead, type InsertLead, type ServiceRequest, type InsertServiceRequest } from "@shared/schema";
+import { type User, type InsertUser, type MessageTemplate, type InsertMessageTemplate, type ConversationState, type InsertConversationState, type WhatsappLog, type InsertWhatsappLog, type Lead, type InsertLead, type ServiceRequest, type InsertServiceRequest, type CallbackRequest, type InsertCallbackRequest, type OtherIssue, type InsertOtherIssue } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
-import { messageTemplates, conversationStates, whatsappLogs, leads, serviceRequests, customers, campaigns } from "@shared/schema";
+import { messageTemplates, conversationStates, whatsappLogs, leads, serviceRequests, customers, campaigns, callbackRequests, otherIssues } from "@shared/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 
 // modify the interface with any CRUD methods
@@ -43,6 +43,20 @@ export interface IStorage {
   createServiceRequest(request: InsertServiceRequest): Promise<ServiceRequest>;
   updateServiceRequest(id: string, request: Partial<InsertServiceRequest>): Promise<ServiceRequest | undefined>;
   deleteServiceRequest(id: string): Promise<boolean>;
+  
+  // Callback Requests
+  getCallbackRequests(): Promise<CallbackRequest[]>;
+  getCallbackRequest(id: string): Promise<CallbackRequest | undefined>;
+  createCallbackRequest(request: InsertCallbackRequest): Promise<CallbackRequest>;
+  updateCallbackRequest(id: string, request: Partial<InsertCallbackRequest>): Promise<CallbackRequest | undefined>;
+  deleteCallbackRequest(id: string): Promise<boolean>;
+  
+  // Other Issues
+  getOtherIssues(): Promise<OtherIssue[]>;
+  getOtherIssue(id: string): Promise<OtherIssue | undefined>;
+  createOtherIssue(issue: InsertOtherIssue): Promise<OtherIssue>;
+  updateOtherIssue(id: string, issue: Partial<InsertOtherIssue>): Promise<OtherIssue | undefined>;
+  deleteOtherIssue(id: string): Promise<boolean>;
   
   // Statistics
   getStatistics(): Promise<{
@@ -227,6 +241,62 @@ export class MemStorage implements IStorage {
 
   async deleteServiceRequest(id: string): Promise<boolean> {
     const result = await db.delete(serviceRequests).where(eq(serviceRequests.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Callback Requests - Database-backed
+  async getCallbackRequests(): Promise<CallbackRequest[]> {
+    return await db.select().from(callbackRequests).orderBy(desc(callbackRequests.createdAt));
+  }
+
+  async getCallbackRequest(id: string): Promise<CallbackRequest | undefined> {
+    const result = await db.select().from(callbackRequests).where(eq(callbackRequests.id, id));
+    return result[0];
+  }
+
+  async createCallbackRequest(request: InsertCallbackRequest): Promise<CallbackRequest> {
+    const result = await db.insert(callbackRequests).values(request).returning();
+    return result[0];
+  }
+
+  async updateCallbackRequest(id: string, request: Partial<InsertCallbackRequest>): Promise<CallbackRequest | undefined> {
+    const result = await db.update(callbackRequests)
+      .set(request)
+      .where(eq(callbackRequests.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteCallbackRequest(id: string): Promise<boolean> {
+    const result = await db.delete(callbackRequests).where(eq(callbackRequests.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Other Issues - Database-backed
+  async getOtherIssues(): Promise<OtherIssue[]> {
+    return await db.select().from(otherIssues).orderBy(desc(otherIssues.createdAt));
+  }
+
+  async getOtherIssue(id: string): Promise<OtherIssue | undefined> {
+    const result = await db.select().from(otherIssues).where(eq(otherIssues.id, id));
+    return result[0];
+  }
+
+  async createOtherIssue(issue: InsertOtherIssue): Promise<OtherIssue> {
+    const result = await db.insert(otherIssues).values(issue).returning();
+    return result[0];
+  }
+
+  async updateOtherIssue(id: string, issue: Partial<InsertOtherIssue>): Promise<OtherIssue | undefined> {
+    const result = await db.update(otherIssues)
+      .set(issue)
+      .where(eq(otherIssues.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteOtherIssue(id: string): Promise<boolean> {
+    const result = await db.delete(otherIssues).where(eq(otherIssues.id, id)).returning();
     return result.length > 0;
   }
 

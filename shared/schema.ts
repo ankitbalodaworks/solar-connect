@@ -98,6 +98,26 @@ export const whatsappLogs = pgTable("whatsapp_logs", {
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
 });
 
+export const callbackRequests = pgTable("callback_requests", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerName: text("customer_name").notNull(),
+  customerPhone: text("customer_phone").notNull(),
+  source: text("source").notNull(), // 'price_inquiry' or 'help_request'
+  status: text("status").notNull().default("pending"),
+  createdAt: timestamp("created_at").notNull().default(sql`now()`),
+});
+
+export const otherIssues = pgTable("other_issues", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerName: text("customer_name").notNull(),
+  customerPhone: text("customer_phone").notNull(),
+  customerAddress: text("customer_address"),
+  customerVillage: text("customer_village"),
+  issueDescription: text("issue_description").notNull(),
+  status: text("status").notNull().default("pending"),
+  createdAt: timestamp("created_at").notNull().default(sql`now()`),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({ id: true });
 export const insertCustomerSchema = createInsertSchema(customers).omit({ id: true });
 export const insertLeadSchema = createInsertSchema(leads).omit({ id: true, createdAt: true });
@@ -106,6 +126,8 @@ export const insertCampaignSchema = createInsertSchema(campaigns).omit({ id: tru
 export const insertMessageTemplateSchema = createInsertSchema(messageTemplates).omit({ id: true, createdAt: true });
 export const insertConversationStateSchema = createInsertSchema(conversationStates).omit({ id: true, createdAt: true, lastMessageAt: true });
 export const insertWhatsappLogSchema = createInsertSchema(whatsappLogs).omit({ id: true, createdAt: true });
+export const insertCallbackRequestSchema = createInsertSchema(callbackRequests).omit({ id: true, createdAt: true });
+export const insertOtherIssueSchema = createInsertSchema(otherIssues).omit({ id: true, createdAt: true });
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -123,3 +145,7 @@ export type ConversationState = typeof conversationStates.$inferSelect;
 export type InsertConversationState = z.infer<typeof insertConversationStateSchema>;
 export type WhatsappLog = typeof whatsappLogs.$inferSelect;
 export type InsertWhatsappLog = z.infer<typeof insertWhatsappLogSchema>;
+export type CallbackRequest = typeof callbackRequests.$inferSelect;
+export type InsertCallbackRequest = z.infer<typeof insertCallbackRequestSchema>;
+export type OtherIssue = typeof otherIssues.$inferSelect;
+export type InsertOtherIssue = z.infer<typeof insertOtherIssueSchema>;

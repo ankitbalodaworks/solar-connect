@@ -1,0 +1,100 @@
+Here’s a crisp, backlog-ready spec that keeps every detail intact.
+
+# Global safeguard
+
+* **NOTE:** Do not break anything while building. Do a thorough read of the project before touching anything.
+
+# Goal
+
+Launch a WhatsApp campaign with language selection + website CTA, then a menu → forms/next steps as specified. Create message templates accordingly.
+
+# Flow (high level)
+
+1. **Campaign Message (Broadcast/Entry)**
+
+   * Body includes link to **[https://sunshinepower.net.in/](https://sunshinepower.net.in/)**
+   * **Buttons (3):**
+
+     1. **Hindi**
+     2. **English**
+     3. **Visit Website** (opens `https://sunshinepower.net.in/`)
+2. **Language chosen → Main Menu (in selected language)**
+
+   * Options (3):
+
+     1. **To book a site survey**
+     2. **Price/Expenditure Estimate** *(also referred as “Price Less Expenditure Estimate” in notes)*
+     3. **Any other help**
+3. **If “To book a site survey” → Open Site-Survey Form**
+
+   * Fields:
+
+     * Full name as per electricity bill
+     * Mobile number
+     * Address
+     * Village
+     * Preferred date
+     * Preferred time
+4. **If “Price/Expenditure Estimate” → Sub-menu (3)**
+
+   * *(User note had a typo “Two-book site survey”; intent: “To book a site survey”)*
+
+   1. To book site survey → (same Site-Survey Form as above)
+   2. Request a callback → simple callback capture (name, mobile)
+   3. Any other help → go to Help sub-menu (below)
+5. **If “Any other help” → Help sub-menu (3)**
+
+   1. **Maintenance less service request** → Service Form:
+
+      * Full name
+      * Mobile number
+      * Address
+      * Village
+      * Issue urgency
+      * Preferred date of visit
+   2. **Request for callback** → capture name & mobile
+   3. **Register any other issue** → Free-text Issue Form (name, mobile, address, village, issue description)
+
+# Message templates to create
+
+> Create in **both English & Hindi** where applicable. Keep labels exactly as above; include the website in the first template’s body and a CTA button.
+
+1. **TEMPLATE_CAMPAIGN_ENTRY** (Marketing)
+
+   * Body: brief intro + `https://sunshinepower.net.in/`
+   * Buttons:
+
+     * Quick reply: “Hindi”
+     * Quick reply: “English”
+     * URL CTA: “Visit Website” → `https://sunshinepower.net.in/`
+2. **TEMPLATE_MENU_EN / TEMPLATE_MENU_HI** (Utility/Marketing—match use)
+
+   * Body: “Choose an option” + list of 3 options
+   * Buttons (3): “To book a site survey”, “Price/Expenditure Estimate”, “Any other help”
+3. **TEMPLATE_PRICE_SUBMENU_EN / _HI**
+
+   * Body: “Choose an option”
+   * Buttons (3): “To book site survey”, “Request a callback”, “Any other help”
+4. **TEMPLATE_HELP_SUBMENU_EN / _HI**
+
+   * Body: “Choose an option”
+   * Buttons (3): “Maintenance less service request”, “Request for callback”, “Register any other issue”
+5. **TEMPLATE_ACK_FORM_START_EN / _HI** (optional)
+
+   * Body: “Please fill the form to proceed” (used just before opening forms, if needed)
+
+# Forms (data capture)
+
+* **Site-Survey Form:** full_name_bill, mobile, address, village, preferred_date, preferred_time *(all required)*
+* **Service Request Form:** full_name, mobile, address, village, issue_urgency, preferred_visit_date *(all required)*
+* **Callback Form:** full_name, mobile *(required)*
+* **Other Issue Form:** full_name, mobile, address, village, issue_description *(required)*
+
+# Acceptance criteria
+
+* Campaign entry shows **three buttons** exactly: Hindi / English / Visit Website (CTA opens site correctly).
+* Post language choice, the **Main Menu** displays the **three options** exactly as listed.
+* Each menu option routes to the correct **sub-menu** or **form**.
+* All forms collect the **exact fields** specified (names preserved), validate required fields, and store data.
+* Message templates are created for **both languages** and wired to the flow.
+* No regressions to existing messaging or template flows.
