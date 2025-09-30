@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Download, RefreshCw, Search, Eye, Edit, FileText, Clock, Settings, CheckCircle2 } from "lucide-react";
+import { Download, RefreshCw, Search, Eye, Edit, FileText, Clock, Settings, CheckCircle2, X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -17,6 +17,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -27,6 +33,7 @@ const mockServiceRequests = [
     customerPhone: "+919876543212",
     customerVillage: "गांव: बाड़ी नया",
     issueType: "Other",
+    description: "सोलर पैनल की सफाई और रखरखाव की जरूरत है। पैनल पर धूल जमा हो गई है।",
     urgency: "Low",
     assignedTo: "",
     status: "In Progress",
@@ -38,6 +45,7 @@ const mockServiceRequests = [
     customerPhone: "+919876543211",
     customerVillage: "गांव: मालवीय",
     issueType: "Service/Repair",
+    description: "इन्वर्टर में खराबी आ रही है, बिजली उत्पादन कम हो गया है।",
     urgency: "Medium",
     assignedTo: "",
     status: "Pending",
@@ -49,6 +57,7 @@ const mockServiceRequests = [
     customerPhone: "+919876543210",
     customerVillage: "गांव: वैशाली",
     issueType: "Installation",
+    description: "PM Surya Ghar योजना के तहत 3kW सोलर सिस्टम इंस्टॉलेशन के लिए साइट सर्वे की आवश्यकता है।",
     urgency: "High",
     assignedTo: "अमित पंडित",
     status: "Pending",
@@ -62,6 +71,7 @@ export default function ServiceRequests() {
   const [issueTypeFilter, setIssueTypeFilter] = useState("all");
   const [urgencyFilter, setUrgencyFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedRequest, setSelectedRequest] = useState<any>(null);
 
   const filteredRequests = mockServiceRequests.filter(request => {
     const matchesSearch = 
@@ -246,7 +256,12 @@ export default function ServiceRequests() {
                   </TableRow>
                 ) : (
                   filteredRequests.map((request) => (
-                    <TableRow key={request.id} data-testid={`row-service-${request.id}`}>
+                    <TableRow 
+                      key={request.id} 
+                      data-testid={`row-service-${request.id}`}
+                      className="cursor-pointer hover-elevate"
+                      onClick={() => setSelectedRequest(request)}
+                    >
                       <TableCell className="font-mono text-sm">{request.id}...</TableCell>
                       <TableCell>
                         <div>
@@ -274,10 +289,23 @@ export default function ServiceRequests() {
                       <TableCell>{getStatusBadge(request.status)}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Button variant="ghost" size="icon" data-testid={`button-view-${request.id}`}>
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            data-testid={`button-view-${request.id}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedRequest(request);
+                            }}
+                          >
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" data-testid={`button-edit-${request.id}`}>
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            data-testid={`button-edit-${request.id}`}
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
                         </div>
@@ -323,6 +351,76 @@ export default function ServiceRequests() {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={!!selectedRequest} onOpenChange={() => setSelectedRequest(null)}>
+        <DialogContent className="max-w-2xl" data-testid="dialog-service-details">
+          <DialogHeader>
+            <DialogTitle>Service Request Details</DialogTitle>
+          </DialogHeader>
+          {selectedRequest && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Request ID</p>
+                  <p className="font-mono text-sm">{selectedRequest.id}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Created Date</p>
+                  <p>{selectedRequest.createdAt.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                </div>
+              </div>
+
+              <div className="border-t pt-4">
+                <h3 className="font-semibold mb-3">Customer Information</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Name</p>
+                    <p className="font-medium">{selectedRequest.customerName}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Phone</p>
+                    <p>{selectedRequest.customerPhone}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-sm text-muted-foreground mb-1">Village/Location</p>
+                    <p>{selectedRequest.customerVillage}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t pt-4">
+                <h3 className="font-semibold mb-3">Request Details</h3>
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Issue Type</p>
+                    <p className={selectedRequest.issueType === "Installation" ? "text-blue-600 dark:text-blue-400 font-medium" : "font-medium"}>
+                      {selectedRequest.issueType}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Description</p>
+                    <p className="text-sm leading-relaxed">{selectedRequest.description}</p>
+                  </div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Urgency</p>
+                      {getUrgencyBadge(selectedRequest.urgency)}
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Status</p>
+                      {getStatusBadge(selectedRequest.status)}
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Assigned To</p>
+                      <p className="text-sm">{selectedRequest.assignedTo || "Unassigned"}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

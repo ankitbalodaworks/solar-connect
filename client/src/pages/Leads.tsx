@@ -10,6 +10,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -54,6 +60,7 @@ const mockLeads = [
 
 export default function Leads() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedLead, setSelectedLead] = useState<any>(null);
 
   const filteredLeads = mockLeads.filter(lead => 
     lead.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -97,7 +104,6 @@ export default function Leads() {
                 <TableRow>
                   <TableHead>Customer Info</TableHead>
                   <TableHead>System Capacity</TableHead>
-                  <TableHead>Roof Type</TableHead>
                   <TableHead>Survey Schedule</TableHead>
                   <TableHead>Notes</TableHead>
                   <TableHead>Status</TableHead>
@@ -107,13 +113,18 @@ export default function Leads() {
               <TableBody>
                 {filteredLeads.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
                       No leads found. Start a campaign to generate leads.
                     </TableCell>
                   </TableRow>
                 ) : (
                   filteredLeads.map((lead) => (
-                    <TableRow key={lead.id} data-testid={`row-lead-${lead.id}`}>
+                    <TableRow 
+                      key={lead.id} 
+                      data-testid={`row-lead-${lead.id}`}
+                      className="cursor-pointer hover-elevate"
+                      onClick={() => setSelectedLead(lead)}
+                    >
                       <TableCell>
                         <div>
                           <div className="font-medium">{lead.customerName}</div>
@@ -126,7 +137,6 @@ export default function Leads() {
                           {lead.systemCapacity}
                         </Badge>
                       </TableCell>
-                      <TableCell>{lead.roofType}</TableCell>
                       <TableCell>
                         <div className="text-sm">
                           <div>{lead.preferredSurveyDate}</div>
@@ -145,10 +155,23 @@ export default function Leads() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Button variant="ghost" size="icon" data-testid={`button-view-${lead.id}`}>
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            data-testid={`button-view-${lead.id}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedLead(lead);
+                            }}
+                          >
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" data-testid={`button-edit-${lead.id}`}>
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            data-testid={`button-edit-${lead.id}`}
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
                         </div>
@@ -178,6 +201,83 @@ export default function Leads() {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={!!selectedLead} onOpenChange={() => setSelectedLead(null)}>
+        <DialogContent className="max-w-2xl" data-testid="dialog-lead-details">
+          <DialogHeader>
+            <DialogTitle>Lead Details - PM Surya Ghar Installation</DialogTitle>
+          </DialogHeader>
+          {selectedLead && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Lead ID</p>
+                  <p className="font-mono text-sm">{selectedLead.id}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Created Date</p>
+                  <p>{selectedLead.createdAt.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                </div>
+              </div>
+
+              <div className="border-t pt-4">
+                <h3 className="font-semibold mb-3">Customer Information</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Name</p>
+                    <p className="font-medium">{selectedLead.customerName}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Phone</p>
+                    <p>{selectedLead.customerPhone}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-sm text-muted-foreground mb-1">Village/Location</p>
+                    <p>{selectedLead.customerVillage}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t pt-4">
+                <h3 className="font-semibold mb-3">Installation Details</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">System Capacity</p>
+                    <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-400">
+                      {selectedLead.systemCapacity}
+                    </Badge>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Roof Type</p>
+                    <p>{selectedLead.roofType}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t pt-4">
+                <h3 className="font-semibold mb-3">Survey Schedule</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Preferred Date</p>
+                    <p>{selectedLead.preferredSurveyDate}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Preferred Time</p>
+                    <p>{selectedLead.preferredSurveyTime}</p>
+                  </div>
+                </div>
+              </div>
+
+              {selectedLead.notes && (
+                <div className="border-t pt-4">
+                  <h3 className="font-semibold mb-3">Additional Notes</h3>
+                  <p className="text-sm leading-relaxed bg-muted p-3 rounded-md">{selectedLead.notes}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

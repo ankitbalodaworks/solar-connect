@@ -18,6 +18,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -33,6 +39,7 @@ export default function Customers() {
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
 
   const handleUpload = (data: any[]) => {
     const formattedCustomers = data.map((row: any, index) => ({
@@ -169,8 +176,17 @@ export default function Customers() {
                     </TableRow>
                   ) : (
                     filteredCustomers.map((customer) => (
-                      <TableRow key={customer.id} data-testid={`row-customer-${customer.id}`}>
-                        <TableCell>
+                      <TableRow 
+                        key={customer.id} 
+                        data-testid={`row-customer-${customer.id}`}
+                        className="cursor-pointer hover-elevate"
+                        onClick={(e) => {
+                          if (!(e.target as HTMLElement).closest('button, input')) {
+                            setSelectedCustomer(customer);
+                          }
+                        }}
+                      >
+                        <TableCell onClick={(e) => e.stopPropagation()}>
                           <Checkbox
                             checked={selectedIds.has(customer.id)}
                             onCheckedChange={() => toggleSelection(customer.id)}
@@ -181,7 +197,7 @@ export default function Customers() {
                         <TableCell>{customer.phone}</TableCell>
                         <TableCell className="max-w-xs truncate">{customer.address}</TableCell>
                         <TableCell>{getConsumptionBadge(customer.electricityConsumption)}</TableCell>
-                        <TableCell>
+                        <TableCell onClick={(e) => e.stopPropagation()}>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button variant="ghost" size="icon" data-testid={`button-menu-${customer.id}`}>
@@ -189,7 +205,10 @@ export default function Customers() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem data-testid={`button-view-${customer.id}`}>
+                              <DropdownMenuItem 
+                                onClick={() => setSelectedCustomer(customer)}
+                                data-testid={`button-view-${customer.id}`}
+                              >
                                 <Eye className="h-4 w-4 mr-2" />
                                 View Details
                               </DropdownMenuItem>
@@ -230,6 +249,68 @@ export default function Customers() {
           </CardContent>
         </Card>
       )}
+
+      <Dialog open={!!selectedCustomer} onOpenChange={() => setSelectedCustomer(null)}>
+        <DialogContent className="max-w-2xl" data-testid="dialog-customer-details">
+          <DialogHeader>
+            <DialogTitle>Customer Details</DialogTitle>
+          </DialogHeader>
+          {selectedCustomer && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Customer ID</p>
+                  <p className="font-mono text-sm">{selectedCustomer.id}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Electricity Consumption</p>
+                  {getConsumptionBadge(selectedCustomer.electricityConsumption)}
+                </div>
+              </div>
+
+              <div className="border-t pt-4">
+                <h3 className="font-semibold mb-3">Contact Information</h3>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Full Name</p>
+                    <p className="font-medium">{selectedCustomer.name}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Phone Number</p>
+                    <p>{selectedCustomer.phone}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Address</p>
+                    <p>{selectedCustomer.address}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t pt-4">
+                <h3 className="font-semibold mb-3">Campaign Eligibility</h3>
+                <div className="space-y-2">
+                  <p className="text-sm">
+                    This customer consumes <strong>{selectedCustomer.electricityConsumption} units</strong> of electricity monthly.
+                  </p>
+                  {selectedCustomer.electricityConsumption >= 300 ? (
+                    <p className="text-sm text-green-600 dark:text-green-400">
+                      ✓ Eligible for all PM Surya Ghar solar installation campaigns
+                    </p>
+                  ) : selectedCustomer.electricityConsumption >= 200 ? (
+                    <p className="text-sm text-orange-600 dark:text-orange-400">
+                      ✓ Eligible for campaigns targeting ≥200 unit consumers
+                    </p>
+                  ) : (
+                    <p className="text-sm text-blue-600 dark:text-blue-400">
+                      ✓ Eligible for campaigns targeting ≥150 unit consumers
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
