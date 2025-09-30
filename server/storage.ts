@@ -1,8 +1,8 @@
-import { type User, type InsertUser, type MessageTemplate, type InsertMessageTemplate } from "@shared/schema";
+import { type User, type InsertUser, type MessageTemplate, type InsertMessageTemplate, type ConversationState, type InsertConversationState, type WhatsappLog, type InsertWhatsappLog } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
-import { messageTemplates } from "@shared/schema";
-import { eq, and } from "drizzle-orm";
+import { messageTemplates, conversationStates, whatsappLogs } from "@shared/schema";
+import { eq, and, desc } from "drizzle-orm";
 
 // modify the interface with any CRUD methods
 // you might need
@@ -18,6 +18,16 @@ export interface IStorage {
   createMessageTemplate(template: InsertMessageTemplate): Promise<MessageTemplate>;
   updateMessageTemplate(id: string, template: Partial<InsertMessageTemplate>): Promise<MessageTemplate | undefined>;
   deleteMessageTemplate(id: string): Promise<boolean>;
+  
+  // Conversation States
+  getConversationState(customerPhone: string): Promise<ConversationState | undefined>;
+  createConversationState(state: InsertConversationState): Promise<ConversationState>;
+  updateConversationState(customerPhone: string, state: Partial<InsertConversationState>): Promise<ConversationState | undefined>;
+  deleteConversationState(customerPhone: string): Promise<boolean>;
+  
+  // WhatsApp Logs
+  createWhatsappLog(log: InsertWhatsappLog): Promise<WhatsappLog>;
+  getWhatsappLogs(customerPhone?: string, limit?: number): Promise<WhatsappLog[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -83,6 +93,48 @@ export class MemStorage implements IStorage {
   async deleteMessageTemplate(id: string): Promise<boolean> {
     const result = await db.delete(messageTemplates).where(eq(messageTemplates.id, id)).returning();
     return result.length > 0;
+  }
+
+  // Conversation States - Database-backed
+  async getConversationState(customerPhone: string): Promise<ConversationState | undefined> {
+    const result = await db.select().from(conversationStates).where(eq(conversationStates.customerPhone, customerPhone));
+    return result[0];
+  }
+
+  async createConversationState(state: InsertConversationState): Promise<ConversationState> {
+    const result = await db.insert(conversationStates).values(state).returning();
+    return result[0];
+  }
+
+  async updateConversationState(customerPhone: string, state: Partial<InsertConversationState>): Promise<ConversationState | undefined> {
+    const result = await db.update(conversationStates)
+      .set({ ...state, lastMessageAt: new Date() })
+      .where(eq(conversationStates.customerPhone, customerPhone))
+      .returning();
+    return result[0];
+  }
+
+  async deleteConversationState(customerPhone: string): Promise<boolean> {
+    const result = await db.delete(conversationStates).where(eq(conversationStates.customerPhone, customerPhone)).returning();
+    return result.length > 0;
+  }
+
+  // WhatsApp Logs - Database-backed
+  async createWhatsappLog(log: InsertWhatsappLog): Promise<WhatsappLog> {
+    const result = await db.insert(whatsappLogs).values(log).returning();
+    return result[0];
+  }
+
+  async getWhatsappLogs(customerPhone?: string, limit: number = 50): Promise<WhatsappLog[]> {
+    if (customerPhone) {
+      return await db.select().from(whatsappLogs)
+        .where(eq(whatsappLogs.customerPhone, customerPhone))
+        .orderBy(desc(whatsappLogs.createdAt))
+        .limit(limit);
+    }
+    return await db.select().from(whatsappLogs)
+      .orderBy(desc(whatsappLogs.createdAt))
+      .limit(limit);
   }
 }
 
