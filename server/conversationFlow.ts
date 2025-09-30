@@ -118,6 +118,16 @@ export class ConversationFlowEngine {
     currentState: ConversationState,
     message: IncomingMessage
   ): Promise<ConversationState | undefined> {
+    // Check if we're at a completion step and have already sent the completion message
+    if (this.isCompletionStep(currentState.currentStep)) {
+      const context = currentState.context as any || {};
+      if (context._completeSent) {
+        // Conversation is complete, delete the state and restart for any new message
+        console.log(`Conversation already completed at ${currentState.currentStep}, restarting flow`);
+        return await this.restartConversation(message.customerPhone);
+      }
+    }
+
     // Fetch current step template
     const templates = await storage.getMessageTemplates(
       "campaign",
