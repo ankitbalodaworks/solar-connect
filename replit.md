@@ -166,3 +166,12 @@ Preferred communication style: Simple, everyday language.
 - **Template Name Validation**: WhatsApp service verifies exact template name matches (case-sensitive) when syncing from Meta
 - **Stale State Prevention**: Unknown Meta statuses preserve existing status and record warnings without overwriting approved/pending states
 - **Mutation State Management**: Frontend properly disables buttons and shows loading indicators during API calls
+
+### Meta API Integration Fix (September 30, 2025)
+- **Root Cause**: Meta WhatsApp Business API was rejecting template submissions with "[100] Invalid parameter" error due to incorrect enum value casing
+- **Solution**: Updated all Meta template component definitions in `server/metaTemplates.ts` to use lowercase enum values:
+  - Component `type`: Changed from "HEADER"/"BODY"/"FOOTER"/"BUTTONS" to "header"/"body"/"footer"/"buttons"
+  - Component `format`: Changed from "TEXT"/"IMAGE"/"VIDEO"/"DOCUMENT" to "text"/"image"/"video"/"document"
+- **Impact**: Templates now conform to Meta's official API specifications and submit successfully
+- **Enhanced Logging**: Added detailed request/response logging in `submitSingleTemplate` to facilitate debugging of Meta API interactions
+- **Verification**: Confirmed via end-to-end testing that "Invalid parameter" errors are resolved; templates now encounter only legitimate business logic errors (e.g., "Content already exists" for duplicate submissions)
