@@ -228,10 +228,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const incomingMessage = whatsappService.parseIncomingMessage(webhookData);
       
       if (!incomingMessage) {
+        console.log("Webhook: No incoming message parsed");
         return res.status(200).send("OK");
       }
 
+      console.log("Webhook: Incoming message from", incomingMessage.customerPhone, "type:", incomingMessage.messageType);
+
       const result = await conversationFlowEngine.handleIncomingMessage(incomingMessage);
+
+      console.log("Webhook: Conversation result - shouldSend:", result.shouldSend, "hasTemplate:", !!result.template, "error:", result.error);
 
       if (result.error) {
         console.error("Conversation flow error:", result.error);
@@ -239,6 +244,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       if (result.shouldSend && result.template) {
+        console.log("Webhook: Sending reply to", incomingMessage.customerPhone, "template:", result.template.name);
         const sendResult = await whatsappService.sendTemplateMessage(
           incomingMessage.customerPhone,
           result.template
