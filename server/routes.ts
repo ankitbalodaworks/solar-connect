@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertMessageTemplateSchema } from "@shared/schema";
 import { conversationFlowEngine } from "./conversationFlow";
+import { whatsappService } from "./whatsapp";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -169,6 +170,140 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error fetching WhatsApp logs:", error);
       res.status(500).json({ error: "Failed to fetch WhatsApp logs" });
     }
+  });
+
+  // WhatsApp Webhook Routes
+  app.get("/api/whatsapp/webhook", (req, res) => {
+    const mode = req.query["hub.mode"] as string;
+    const token = req.query["hub.verify_token"] as string;
+    const challenge = req.query["hub.challenge"] as string;
+
+    const verifiedChallenge = whatsappService.verifyWebhook(mode, token, challenge);
+    
+    if (verifiedChallenge) {
+      res.status(200).send(verifiedChallenge);
+    } else {
+      res.status(403).send("Forbidden");
+    }
+  });
+
+  app.post("/api/whatsapp/webhook", async (req, res) => {
+    try {
+      const incomingMessage = whatsappService.parseIncomingMessage(req.body);
+      
+      if (!incomingMessage) {
+        return res.status(200).send("OK");
+      }
+
+      const result = await conversationFlowEngine.handleIncomingMessage(incomingMessage);
+
+      if (result.shouldSend && result.template) {
+        const sendResult = await whatsappService.sendTemplateMessage(
+          incomingMessage.customerPhone,
+          result.template
+        );
+
+        if (sendResult.success) {
+          await storage.createWhatsappLog({
+            customerPhone: incomingMessage.customerPhone,
+            direction: "outbound",
+            messageType: result.template.messageType,
+            content: {
+              bodyText: result.template.bodyText,
+              headerText: result.template.headerText,
+              footerText: result.template.footerText,
+              buttons: result.template.buttons,
+              listSections: result.template.listSections,
+            },
+            status: "sent",
+          });
+        } else {
+          await storage.createWhatsappLog({
+            customerPhone: incomingMessage.customerPhone,
+            direction: "outbound",
+            messageType: result.template.messageType,
+            content: {
+              bodyText: result.template.bodyText,
+              error: sendResult.error,
+            },
+            status: "failed",
+          });
+        }
+      }
+
+      res.status(200).send("OK");
+    } catch (error) {
+      console.error("Error processing WhatsApp webhook:", error);
+      res.status(500).send("Error");
+    }
+  });
+
+  const sendMessageSchema = z.object({
+    customerPhone: z.string(),
+    customerName: z.string(),
+    flowType: z.enum(["campaign_lead", "service_request"]),
+  });
+
+  app.post("/api/whatsapp/send", async (req, res) => {
+    try {
+      if (!whatsappService.isConfigured()) {
+        return res.status(400).json({ error: "WhatsApp is not configured. Please add WHATSAPP_PHONE_NUMBER_ID and WHATSAPP_ACCESS_TOKEN to your environment." });
+      }
+
+      const data = sendMessageSchema.parse(req.body);
+      
+      const conversationResult = await conversationFlowEngine.startNewConversation(
+        data.customerPhone,
+        data.customerName,
+        data.flowType
+      );
+
+      if (!conversationResult.shouldSend || !conversationResult.template) {
+        return res.status(400).json({ error: conversationResult.error || "Failed to start conversation" });
+      }
+
+      const sendResult = await whatsappService.sendTemplateMessage(
+        data.customerPhone,
+        conversationResult.template
+      );
+
+      if (!sendResult.success) {
+        return res.status(500).json({ error: sendResult.error || "Failed to send WhatsApp message" });
+      }
+
+      await storage.createWhatsappLog({
+        customerPhone: data.customerPhone,
+        direction: "outbound",
+        messageType: conversationResult.template.messageType,
+        content: {
+          bodyText: conversationResult.template.bodyText,
+          headerText: conversationResult.template.headerText,
+          footerText: conversationResult.template.footerText,
+          buttons: conversationResult.template.buttons,
+          listSections: conversationResult.template.listSections,
+        },
+        status: "sent",
+      });
+
+      res.json({ 
+        success: true, 
+        messageId: sendResult.messageId,
+        template: conversationResult.template 
+      });
+    } catch (error) {
+      console.error("Error sending WhatsApp message:", error);
+      res.status(500).json({ error: "Failed to send WhatsApp message" });
+    }
+  });
+
+  app.get("/api/whatsapp/status", (req, res) => {
+    const configured = whatsappService.isConfigured();
+    res.json({ 
+      configured,
+      message: configured 
+        ? "WhatsApp is configured and ready" 
+        : "WhatsApp is not configured. Add WHATSAPP_PHONE_NUMBER_ID and WHATSAPP_ACCESS_TOKEN to environment."
+    });
   });
 
   const httpServer = createServer(app);
