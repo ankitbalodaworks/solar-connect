@@ -78,9 +78,18 @@ Preferred communication style: Simple, everyday language.
 **WhatsApp Integration**: Interactive message system with automated conversation flows
 - WhatsApp Business API integration with button and list message support
 - Two-way conversation tracking with state machine for automated responses
-- Language selection (Hindi/English) at conversation start
+- Language selection (Hindi/English) at conversation start via button/list/text interactions
 - Auto-status updates when leads/service requests are created or updated
 - Conversation flows: Campaign → Lead generation, Service menu → Request creation
+- **Conversation Flow Engine** (`server/conversationFlow.ts`):
+  - State machine tracks customer position in multi-step flows
+  - Automatic template resolution based on flowType, language, and stepKey
+  - Context preservation across conversation steps
+  - Supports button, list, and text-based user responses
+  - Handles flow completion gracefully without errors
+  - Full message logging (inbound/outbound) to whatsappLogs table
+  - Campaign flow: language_select → offer → survey_schedule → complete
+  - Service flow: language_select → service_menu → problem_description → urgency_select → complete
 
 **File Processing**: 
 - XLSX library (SheetJS) for Excel file parsing
