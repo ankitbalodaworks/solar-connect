@@ -63,6 +63,7 @@ export const messageTemplates = pgTable("message_templates", {
   language: text("language").notNull(), // 'en' or 'hi'
   bodyText: text("body_text").notNull(),
   headerText: text("header_text"),
+  headerMediaId: text("header_media_id"), // WhatsApp media ID for image headers
   footerText: text("footer_text"),
   buttons: jsonb("buttons"), // Array of button objects {id, title, nextStep}
   listSections: jsonb("list_sections"), // Array of list section objects

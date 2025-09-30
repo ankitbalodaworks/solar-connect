@@ -1,5 +1,8 @@
 import axios from "axios";
 import crypto from "crypto";
+import FormData from "form-data";
+import fs from "fs";
+import path from "path";
 import { type MessageTemplate } from "@shared/schema";
 
 interface WhatsAppConfig {
@@ -12,6 +15,12 @@ interface WhatsAppConfig {
 interface SendMessageResponse {
   success: boolean;
   messageId?: string;
+  error?: string;
+}
+
+interface UploadMediaResponse {
+  success: boolean;
+  mediaId?: string;
   error?: string;
 }
 
@@ -30,6 +39,43 @@ export class WhatsAppService {
 
   isConfigured(): boolean {
     return !!(this.config.phoneNumberId && this.config.accessToken);
+  }
+
+  async uploadMedia(filePath: string, mimeType: string): Promise<UploadMediaResponse> {
+    try {
+      if (!this.isConfigured()) {
+        return { success: false, error: "WhatsApp not configured" };
+      }
+
+      const formData = new FormData();
+      formData.append("messaging_product", "whatsapp");
+      formData.append("file", fs.createReadStream(filePath), {
+        contentType: mimeType,
+        filename: path.basename(filePath),
+      });
+
+      const response = await axios.post(
+        `${this.baseUrl}/${this.config.phoneNumberId}/media`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${this.config.accessToken}`,
+            ...formData.getHeaders(),
+          },
+        }
+      );
+
+      return {
+        success: true,
+        mediaId: response.data.id,
+      };
+    } catch (error: any) {
+      console.error("Error uploading media to WhatsApp:", error.response?.data || error.message);
+      return {
+        success: false,
+        error: error.response?.data?.error?.message || error.message,
+      };
+    }
   }
 
   async sendTextMessage(to: string, text: string): Promise<SendMessageResponse> {
@@ -72,7 +118,8 @@ export class WhatsAppService {
     bodyText: string,
     buttons: Array<{ id: string; title: string }>,
     headerText?: string,
-    footerText?: string
+    footerText?: string,
+    headerImageMediaId?: string
   ): Promise<SendMessageResponse> {
     try {
       if (!this.isConfigured()) {
@@ -95,7 +142,9 @@ export class WhatsAppService {
         },
       };
 
-      if (headerText) {
+      if (headerImageMediaId) {
+        interactive.header = { type: "image", image: { id: headerImageMediaId } };
+      } else if (headerText) {
         interactive.header = { type: "text", text: headerText };
       }
 
@@ -141,7 +190,8 @@ export class WhatsAppService {
       rows: Array<{ id: string; title: string; description?: string; nextStep?: string }>;
     }>,
     headerText?: string,
-    footerText?: string
+    footerText?: string,
+    headerImageMediaId?: string
   ): Promise<SendMessageResponse> {
     try {
       if (!this.isConfigured()) {
@@ -164,7 +214,9 @@ export class WhatsAppService {
         },
       };
 
-      if (headerText) {
+      if (headerImageMediaId) {
+        interactive.header = { type: "image", image: { id: headerImageMediaId } };
+      } else if (headerText) {
         interactive.header = { type: "text", text: headerText };
       }
 
@@ -209,7 +261,8 @@ export class WhatsAppService {
         template.bodyText,
         buttons,
         template.headerText || undefined,
-        template.footerText || undefined
+        template.footerText || undefined,
+        template.headerMediaId || undefined
       );
     } else if (template.messageType === "list" && template.listSections) {
       const sections = template.listSections as Array<{
@@ -223,7 +276,8 @@ export class WhatsAppService {
         buttonText,
         sections,
         template.headerText || undefined,
-        undefined
+        undefined,
+        template.headerMediaId || undefined
       );
     } else {
       return this.sendTextMessage(to, template.bodyText);

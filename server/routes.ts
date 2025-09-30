@@ -349,6 +349,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  app.post("/api/whatsapp/upload-media", async (req, res) => {
+    try {
+      const { filePath, mimeType } = req.body;
+      
+      if (!filePath || !mimeType) {
+        return res.status(400).json({ error: "filePath and mimeType are required" });
+      }
+
+      const result = await whatsappService.uploadMedia(filePath, mimeType);
+      
+      if (!result.success) {
+        return res.status(500).json({ error: result.error });
+      }
+
+      res.json({ mediaId: result.mediaId });
+    } catch (error) {
+      console.error("Error uploading media:", error);
+      res.status(500).json({ error: "Failed to upload media" });
+    }
+  });
+
   // Leads API with auto-notifications
   app.get("/api/leads", async (req, res) => {
     try {
