@@ -1,4 +1,4 @@
-import { Users, MessageSquare, FileText, Wrench, Phone, Send } from "lucide-react";
+import { Users, MessageSquare, FileText, Wrench, Phone, Send, Trash2 } from "lucide-react";
 import { StatCard } from "@/components/StatCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,16 +11,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 export default function Dashboard() {
   const [showSendDialog, setShowSendDialog] = useState(false);
   const [sendForm, setSendForm] = useState({
-    customerPhone: "9646621979",
+    customerPhone: "",
     customerName: "",
     flowType: "campaign_lead" as "campaign_lead" | "service_request",
   });
   const { toast } = useToast();
+
+  const { data: statistics, isLoading: loadingStats } = useQuery<{
+    totalCustomers: number;
+    totalCampaigns: number;
+    totalLeads: number;
+    totalServiceRequests: number;
+    activeConversations: number;
+  }>({
+    queryKey: ["/api/statistics"],
+  });
 
   const { data: activeConversations = [], isLoading: loadingConversations } = useQuery<Array<{
     customerPhone: string;
@@ -60,15 +71,41 @@ export default function Dashboard() {
 
       toast({
         title: "Message Sent",
-        description: `WhatsApp conversation started with ${sendForm.customerName}`,
+        description: `WhatsApp conversation started with ${sendForm.customerName} at ${sendForm.customerPhone}`,
       });
 
       setShowSendDialog(false);
-      setSendForm({ customerPhone: "9646621979", customerName: "", flowType: "campaign_lead" });
-    } catch (error) {
+      setSendForm({ customerPhone: "", customerName: "", flowType: "campaign_lead" });
+    } catch (error: any) {
+      const errorMessage = error?.message || "Could not send WhatsApp message";
       toast({
         title: "Failed to Send",
-        description: "Could not send WhatsApp message. Please try again.",
+        description: errorMessage.includes("Messaging restricted")
+          ? `Cannot send to ${sendForm.customerPhone}. This number may not be verified in your WhatsApp Business account. In test mode, you can only message verified numbers.`
+          : errorMessage,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleClearData = async () => {
+    try {
+      await apiRequest("POST", "/api/clear-data", {});
+      
+      queryClient.invalidateQueries({ queryKey: ["/api/statistics"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/conversation-states"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/whatsapp-logs"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/service-requests"] });
+
+      toast({
+        title: "Data Cleared",
+        description: "All test data has been successfully cleared",
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to Clear Data",
+        description: "Could not clear test data. Please try again.",
         variant: "destructive",
       });
     }
@@ -76,34 +113,56 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold mb-1">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">
-          PM Surya Ghar Rooftop Solar Installation Management
-        </p>
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-semibold mb-1">Dashboard</h1>
+          <p className="text-sm text-muted-foreground">
+            PM Surya Ghar Rooftop Solar Installation Management
+          </p>
+        </div>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" size="sm" data-testid="button-clear-data">
+              <Trash2 className="h-4 w-4 mr-2" />
+              Clear All Data
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent data-testid="dialog-clear-data">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Clear All Test Data?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently delete all conversations, leads, service requests, and WhatsApp logs. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel data-testid="button-cancel-clear">Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleClearData} data-testid="button-confirm-clear">
+                Clear Data
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="Total Customers"
-          value={1234}
+          value={loadingStats ? "..." : statistics?.totalCustomers || 0}
           icon={Users}
-          trend={{ value: 12, isPositive: true }}
         />
         <StatCard
           title="Active Campaigns"
-          value={5}
+          value={loadingStats ? "..." : statistics?.totalCampaigns || 0}
           icon={MessageSquare}
         />
         <StatCard
           title="Solar Leads"
-          value={89}
+          value={loadingStats ? "..." : statistics?.totalLeads || 0}
           icon={FileText}
-          trend={{ value: 24, isPositive: true }}
         />
         <StatCard
           title="Service Requests"
-          value={23}
+          value={loadingStats ? "..." : statistics?.totalServiceRequests || 0}
           icon={Wrench}
         />
       </div>

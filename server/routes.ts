@@ -349,6 +349,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Statistics endpoint
+  app.get("/api/statistics", async (req, res) => {
+    try {
+      const stats = await storage.getStatistics();
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching statistics:", error);
+      res.status(500).json({ error: "Failed to fetch statistics" });
+    }
+  });
+
+  // Clear all data endpoint
+  app.post("/api/clear-data", async (req, res) => {
+    try {
+      await storage.clearAllData();
+      res.json({ success: true, message: "All test data cleared" });
+    } catch (error) {
+      console.error("Error clearing data:", error);
+      res.status(500).json({ error: "Failed to clear data" });
+    }
+  });
+
   app.post("/api/whatsapp/upload-media", async (req, res) => {
     try {
       const { filePath, mimeType } = req.body;

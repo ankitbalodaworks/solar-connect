@@ -1,8 +1,8 @@
 import { type User, type InsertUser, type MessageTemplate, type InsertMessageTemplate, type ConversationState, type InsertConversationState, type WhatsappLog, type InsertWhatsappLog, type Lead, type InsertLead, type ServiceRequest, type InsertServiceRequest } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
-import { messageTemplates, conversationStates, whatsappLogs, leads, serviceRequests } from "@shared/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { messageTemplates, conversationStates, whatsappLogs, leads, serviceRequests, customers, campaigns } from "@shared/schema";
+import { eq, and, desc, sql } from "drizzle-orm";
 
 // modify the interface with any CRUD methods
 // you might need
@@ -43,6 +43,18 @@ export interface IStorage {
   createServiceRequest(request: InsertServiceRequest): Promise<ServiceRequest>;
   updateServiceRequest(id: string, request: Partial<InsertServiceRequest>): Promise<ServiceRequest | undefined>;
   deleteServiceRequest(id: string): Promise<boolean>;
+  
+  // Statistics
+  getStatistics(): Promise<{
+    totalCustomers: number;
+    totalCampaigns: number;
+    totalLeads: number;
+    totalServiceRequests: number;
+    activeConversations: number;
+  }>;
+  
+  // Clear all test data
+  clearAllData(): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -216,6 +228,37 @@ export class MemStorage implements IStorage {
   async deleteServiceRequest(id: string): Promise<boolean> {
     const result = await db.delete(serviceRequests).where(eq(serviceRequests.id, id)).returning();
     return result.length > 0;
+  }
+
+  // Statistics
+  async getStatistics(): Promise<{
+    totalCustomers: number;
+    totalCampaigns: number;
+    totalLeads: number;
+    totalServiceRequests: number;
+    activeConversations: number;
+  }> {
+    const customersData = await db.select().from(customers);
+    const campaignsData = await db.select().from(campaigns);
+    const leadsData = await db.select().from(leads);
+    const serviceRequestsData = await db.select().from(serviceRequests);
+    const conversationsData = await db.select().from(conversationStates);
+
+    return {
+      totalCustomers: customersData.length,
+      totalCampaigns: campaignsData.length,
+      totalLeads: leadsData.length,
+      totalServiceRequests: serviceRequestsData.length,
+      activeConversations: conversationsData.length,
+    };
+  }
+
+  // Clear all test data
+  async clearAllData(): Promise<void> {
+    await db.delete(whatsappLogs);
+    await db.delete(conversationStates);
+    await db.delete(serviceRequests);
+    await db.delete(leads);
   }
 }
 
