@@ -1,11 +1,15 @@
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
 
-interface WhatsAppStatusProps {
-  status: "connected" | "disconnected" | "connecting";
-}
+export function WhatsAppStatus() {
+  const { data, isLoading } = useQuery<{ configured: boolean; message: string }>({
+    queryKey: ["/api/whatsapp/status"],
+    refetchInterval: 30000,
+  });
 
-export function WhatsAppStatus({ status }: WhatsAppStatusProps) {
+  const status = isLoading ? "connecting" : data?.configured ? "connected" : "disconnected";
+
   const statusConfig = {
     connected: {
       icon: CheckCircle2,

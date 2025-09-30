@@ -47,7 +47,7 @@ export default function App() {
                 <header className="flex items-center justify-between p-4 border-b gap-4">
                   <SidebarTrigger data-testid="button-sidebar-toggle" />
                   <div className="flex items-center gap-4">
-                    <WhatsAppStatus status="connected" />
+                    <WhatsAppStatus />
                     <ThemeToggle />
                   </div>
                 </header>
