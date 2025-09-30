@@ -198,6 +198,11 @@ export class ConversationFlowEngine {
       }
     }
 
+    // If conversation is completing, create the appropriate record
+    if (nextStep === "complete") {
+      await this.createRecordFromConversation(currentState, updatedContext);
+    }
+
     const updatedState = await storage.updateConversationState(currentState.customerPhone, {
       currentStep: nextStep,
       language,
@@ -205,6 +210,83 @@ export class ConversationFlowEngine {
     });
 
     return updatedState;
+  }
+
+  private async createRecordFromConversation(
+    state: ConversationState,
+    context: any
+  ): Promise<void> {
+    try {
+      if (state.flowType === "campaign_lead") {
+        // Extract survey time selection
+        const surveySelection = context.survey_schedule?.itemId || context.survey_schedule?.buttonId;
+        let preferredSurveyDate = null;
+        let preferredSurveyTime = null;
+
+        if (surveySelection) {
+          // Parse survey slot (e.g., "morning_9-11" -> "9 AM - 11 AM")
+          const today = new Date();
+          const tomorrow = new Date(today);
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          preferredSurveyDate = tomorrow.toISOString().split('T')[0];
+
+          if (surveySelection.includes('morning_9-11')) {
+            preferredSurveyTime = "9 AM - 11 AM";
+          } else if (surveySelection.includes('morning_11-1')) {
+            preferredSurveyTime = "11 AM - 1 PM";
+          } else if (surveySelection.includes('afternoon_2-4')) {
+            preferredSurveyTime = "2 PM - 4 PM";
+          } else if (surveySelection.includes('afternoon_4-6')) {
+            preferredSurveyTime = "4 PM - 6 PM";
+          }
+        }
+
+        await storage.createLead({
+          customerPhone: state.customerPhone,
+          customerName: state.customerName || "Customer",
+          interestedIn: "Solar Installation",
+          preferredSurveyDate,
+          preferredSurveyTime,
+          notes: `Lead from WhatsApp campaign. Language: ${state.language || 'not specified'}`,
+        });
+
+        console.log(`Created lead for ${state.customerPhone}`);
+      } else if (state.flowType === "service_request") {
+        // Extract service details
+        const serviceType = context.service_menu?.itemId;
+        const problemDescription = context.problem_description?.text || "Not provided";
+        const urgencySelection = context.urgency_select?.buttonId;
+
+        let issueType = "Other";
+        if (serviceType === "installation") {
+          issueType = "Installation";
+        } else if (serviceType === "maintenance" || serviceType === "repair") {
+          issueType = "Service-Repair";
+        }
+
+        let urgency = "medium";
+        if (urgencySelection === "high") {
+          urgency = "high";
+        } else if (urgencySelection === "low") {
+          urgency = "low";
+        }
+
+        await storage.createServiceRequest({
+          customerPhone: state.customerPhone,
+          customerName: state.customerName || "Customer",
+          issueType,
+          description: problemDescription,
+          urgency,
+          status: "pending",
+          customerVillage: null,
+          assignedTo: null,
+        });
+
+        console.log(`Created service request for ${state.customerPhone}`);
+      }
+    } catch (error) {
+      console.error("Error creating record from conversation:", error);
+    }
   }
 
   private getNextStepAfterLanguage(flowType: string): string {

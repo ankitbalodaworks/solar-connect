@@ -19,7 +19,7 @@ export const customers = pgTable("customers", {
 
 export const leads = pgTable("leads", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  customerId: varchar("customer_id").notNull(),
+  customerId: varchar("customer_id"),
   customerName: text("customer_name").notNull(),
   customerPhone: text("customer_phone").notNull(),
   interestedIn: text("interested_in").notNull(),
@@ -31,7 +31,7 @@ export const leads = pgTable("leads", {
 
 export const serviceRequests = pgTable("service_requests", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  customerId: varchar("customer_id").notNull(),
+  customerId: varchar("customer_id"),
   customerName: text("customer_name").notNull(),
   customerPhone: text("customer_phone").notNull(),
   customerVillage: text("customer_village"),
