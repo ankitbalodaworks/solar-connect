@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search, Trash2, Filter } from "lucide-react";
+import { Plus, Search, Trash2, Filter, Upload, RefreshCw } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -148,6 +148,48 @@ export default function MessageTemplates() {
     },
   });
 
+  const submitMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return await apiRequest("POST", `/api/message-templates/${id}/submit`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/message-templates"] });
+      toast({
+        title: "Template submitted",
+        description: "Template has been submitted to Meta for approval.",
+      });
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.message || error?.error || String(error) || "Failed to submit template to Meta.";
+      toast({
+        title: "Submission failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const syncStatusMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return await apiRequest("POST", `/api/message-templates/${id}/sync-status`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/message-templates"] });
+      toast({
+        title: "Status synced",
+        description: "Template status has been updated from Meta.",
+      });
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.message || error?.error || String(error) || "Failed to sync template status.";
+      toast({
+        title: "Sync failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleOpenDialog = (template?: MessageTemplate) => {
     if (template) {
       setEditingTemplate(template);
@@ -262,6 +304,17 @@ export default function MessageTemplates() {
     return <Badge className={type.color}>{type.label}</Badge>;
   };
 
+  const getStatusBadge = (status: string) => {
+    const statuses: Record<string, { label: string; color: string }> = {
+      draft: { label: "Draft", color: "bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-400 border-gray-200 dark:border-gray-800" },
+      pending: { label: "Pending", color: "bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800" },
+      approved: { label: "Approved", color: "bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800" },
+      rejected: { label: "Rejected", color: "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800" },
+    };
+    const statusInfo = statuses[status] || statuses.draft;
+    return <Badge className={statusInfo.color}>{statusInfo.label}</Badge>;
+  };
+
   const messageType = form.watch("messageType");
 
   return (
@@ -330,19 +383,20 @@ export default function MessageTemplates() {
                   <TableHead>Step Key</TableHead>
                   <TableHead>Language</TableHead>
                   <TableHead>Message Type</TableHead>
-                  <TableHead className="w-24">Actions</TableHead>
+                  <TableHead>Meta Status</TableHead>
+                  <TableHead className="w-48">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                       Loading templates...
                     </TableCell>
                   </TableRow>
                 ) : filteredTemplates.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                       {templates.length === 0
                         ? "No templates yet. Create your first template to get started."
                         : "No templates found with the selected filters."}
@@ -353,8 +407,6 @@ export default function MessageTemplates() {
                     <TableRow
                       key={template.id}
                       data-testid={`row-template-${template.id}`}
-                      className="cursor-pointer hover-elevate"
-                      onClick={() => handleOpenDialog(template)}
                     >
                       <TableCell className="font-medium">{template.name}</TableCell>
                       <TableCell>{getFlowTypeBadge(template.flowType)}</TableCell>
@@ -365,15 +417,44 @@ export default function MessageTemplates() {
                         <Badge variant="outline">{template.language.toUpperCase()}</Badge>
                       </TableCell>
                       <TableCell>{getMessageTypeBadge(template.messageType)}</TableCell>
-                      <TableCell onClick={(e) => e.stopPropagation()}>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setDeleteTemplate(template)}
-                          data-testid={`button-delete-${template.id}`}
-                        >
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
+                      <TableCell>{getStatusBadge(template.metaStatus || "draft")}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => submitMutation.mutate(template.id)}
+                            disabled={
+                              submitMutation.isPending ||
+                              syncStatusMutation.isPending ||
+                              template.metaStatus === "approved" ||
+                              template.metaStatus === "pending"
+                            }
+                            data-testid={`button-submit-${template.id}`}
+                          >
+                            <Upload className={`h-3 w-3 mr-1 ${submitMutation.isPending ? 'animate-pulse' : ''}`} />
+                            {submitMutation.isPending ? "Submitting..." : "Submit"}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => syncStatusMutation.mutate(template.id)}
+                            disabled={submitMutation.isPending || syncStatusMutation.isPending}
+                            data-testid={`button-sync-${template.id}`}
+                          >
+                            <RefreshCw className={`h-3 w-3 mr-1 ${syncStatusMutation.isPending ? 'animate-spin' : ''}`} />
+                            {syncStatusMutation.isPending ? "Syncing..." : "Sync"}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setDeleteTemplate(template)}
+                            disabled={submitMutation.isPending || syncStatusMutation.isPending}
+                            data-testid={`button-delete-${template.id}`}
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))

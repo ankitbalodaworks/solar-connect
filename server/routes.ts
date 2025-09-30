@@ -5,6 +5,7 @@ import { insertMessageTemplateSchema, insertLeadSchema, insertServiceRequestSche
 import { conversationFlowEngine } from "./conversationFlow";
 import { whatsappService } from "./whatsapp";
 import { notificationService } from "./notifications";
+import { allMetaTemplates } from "./metaTemplates";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -78,6 +79,121 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting message template:", error);
       res.status(500).json({ error: "Failed to delete message template" });
+    }
+  });
+
+  // Submit a single template to Meta for approval
+  app.post("/api/message-templates/:id/submit", async (req, res) => {
+    try {
+      const template = await storage.getMessageTemplate(req.params.id);
+      if (!template) {
+        return res.status(404).json({ error: "Template not found" });
+      }
+
+      // Normalize status for comparison (case-insensitive)
+      const normalizedStatus = (template.metaStatus || "draft").toLowerCase();
+      
+      // Check if template is already approved or pending
+      if (normalizedStatus === "approved") {
+        return res.status(400).json({ error: "Template is already approved" });
+      }
+      if (normalizedStatus === "pending") {
+        return res.status(400).json({ error: "Template submission is already pending" });
+      }
+
+      // Find the matching Meta template definition
+      const metaTemplate = allMetaTemplates.find((t) => t.name === template.name);
+      if (!metaTemplate) {
+        return res.status(404).json({ error: "Meta template definition not found" });
+      }
+
+      // Submit to Meta
+      const result = await whatsappService.submitSingleTemplate(metaTemplate);
+      
+      if (result.success) {
+        // Update template status in database
+        const updated = await storage.updateMessageTemplate(req.params.id, {
+          metaTemplateId: result.id,
+          metaStatus: "pending",
+          metaStatusUpdatedAt: new Date(),
+          submissionError: null,
+        });
+        res.json({ success: true, template: updated });
+      } else {
+        // Update template with error but NOT the status timestamp
+        await storage.updateMessageTemplate(req.params.id, {
+          submissionError: result.error,
+        });
+        res.status(500).json({ success: false, error: result.error });
+      }
+    } catch (error) {
+      console.error("Error submitting template:", error);
+      res.status(500).json({ error: "Failed to submit template" });
+    }
+  });
+
+  // Sync template status from Meta
+  app.post("/api/message-templates/:id/sync-status", async (req, res) => {
+    try {
+      const template = await storage.getMessageTemplate(req.params.id);
+      if (!template) {
+        return res.status(404).json({ error: "Template not found" });
+      }
+
+      if (!template.name) {
+        return res.status(400).json({ error: "Template name is required" });
+      }
+
+      // Fetch status from Meta
+      const result = await whatsappService.syncTemplateStatus(template.name);
+      
+      if (result.success && result.status) {
+        // Map Meta status to our database status (normalize to lowercase)
+        let dbStatus: "draft" | "pending" | "approved" | "rejected" = "draft";
+        const metaStatus = result.status.toUpperCase();
+        
+        if (metaStatus === "APPROVED") {
+          dbStatus = "approved";
+        } else if (metaStatus === "PENDING" || metaStatus === "IN_APPEAL") {
+          dbStatus = "pending";
+        } else if (metaStatus === "REJECTED" || metaStatus === "DISABLED") {
+          dbStatus = "rejected";
+        } else if (metaStatus === "PAUSED") {
+          // Keep existing status for paused templates
+          dbStatus = (template.metaStatus || "draft") as any;
+        } else {
+          // Unknown status - preserve existing status and record error
+          console.warn(`Unknown Meta template status: ${result.status}`);
+          const updated = await storage.updateMessageTemplate(req.params.id, {
+            submissionError: `Unknown Meta status: ${result.status}`,
+          });
+          return res.status(200).json({ 
+            success: true, 
+            template: updated,
+            warning: `Unknown Meta status: ${result.status}` 
+          });
+        }
+
+        // Update template status in database
+        const updated = await storage.updateMessageTemplate(req.params.id, {
+          metaTemplateId: result.id,
+          metaStatus: dbStatus,
+          metaStatusUpdatedAt: new Date(),
+          submissionError: null,
+        });
+        res.json({ success: true, template: updated });
+      } else {
+        // Handle error based on status code
+        const statusCode = result.statusCode || 500;
+        if (statusCode === 404) {
+          return res.status(404).json({ success: false, error: result.error || "Template not found on Meta" });
+        } else {
+          return res.status(statusCode).json({ success: false, error: result.error || "Failed to sync template status" });
+        }
+      }
+    } catch (error) {
+      console.error("Error syncing template status:", error);
+      res.status(500).json({ error: "Failed to sync template status" });
     }
   });
 

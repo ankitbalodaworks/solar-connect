@@ -501,6 +501,133 @@ export class WhatsAppService {
       },
     };
   }
+
+  async submitSingleTemplate(template: MetaTemplate): Promise<{
+    success: boolean;
+    id?: string;
+    error?: string;
+  }> {
+    const wabaId = process.env.WHATSAPP_WABA_ID;
+    
+    if (!wabaId) {
+      return {
+        success: false,
+        error: "WHATSAPP_WABA_ID is not configured. Please add it to your environment secrets.",
+      };
+    }
+
+    if (!this.config.accessToken) {
+      return {
+        success: false,
+        error: "WHATSAPP_ACCESS_TOKEN is not configured. Please add it to your environment secrets.",
+      };
+    }
+
+    try {
+      console.log(`Submitting template: ${template.name} (${template.category} - ${template.language})`);
+      
+      const response = await axios.post(
+        `https://graph.facebook.com/v21.0/${wabaId}/message_templates`,
+        template,
+        {
+          headers: {
+            Authorization: `Bearer ${this.config.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(`✅ Successfully submitted: ${template.name} (ID: ${response.data.id})`);
+      return {
+        success: true,
+        id: response.data.id,
+      };
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error?.message || error.message;
+      const errorCode = error.response?.data?.error?.code;
+      
+      console.error(`❌ Failed to submit ${template.name}: ${errorMessage}`);
+      return {
+        success: false,
+        error: `${errorCode ? `[${errorCode}] ` : ""}${errorMessage}`,
+      };
+    }
+  }
+
+  async syncTemplateStatus(templateName: string): Promise<{
+    success: boolean;
+    status?: string;
+    id?: string;
+    error?: string;
+    statusCode?: number;
+  }> {
+    const wabaId = process.env.WHATSAPP_WABA_ID;
+    
+    if (!wabaId) {
+      return {
+        success: false,
+        error: "WHATSAPP_WABA_ID is not configured",
+      };
+    }
+
+    if (!this.config.accessToken) {
+      return {
+        success: false,
+        error: "WHATSAPP_ACCESS_TOKEN is not configured",
+      };
+    }
+
+    try {
+      // Fetch template status from Meta
+      const response = await axios.get(
+        `https://graph.facebook.com/v21.0/${wabaId}/message_templates`,
+        {
+          params: {
+            name: templateName,
+          },
+          headers: {
+            Authorization: `Bearer ${this.config.accessToken}`,
+          },
+        }
+      );
+
+      const templates = response.data.data;
+      if (templates && templates.length > 0) {
+        // Find exact match (case-sensitive) - Meta API may return multiple locales
+        const exactMatch = templates.find((t: any) => t.name === templateName);
+        
+        if (exactMatch) {
+          return {
+            success: true,
+            status: exactMatch.status,
+            id: exactMatch.id,
+          };
+        } else {
+          // Name doesn't match exactly - this shouldn't happen but handle it
+          console.warn(`Template name mismatch: requested "${templateName}", got "${templates[0].name}"`);
+          return {
+            success: false,
+            error: "Template not found on Meta",
+          };
+        }
+      } else {
+        return {
+          success: false,
+          error: "Template not found on Meta",
+          statusCode: 404,
+        };
+      }
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error?.message || error.message;
+      const statusCode = error.response?.status || 500;
+      console.error(`Error syncing template status for ${templateName}: ${errorMessage} (Status: ${statusCode})`);
+      return {
+        success: false,
+        error: errorMessage,
+        statusCode,
+      };
+    }
+  }
 }
 
 export const whatsappService = new WhatsAppService();
