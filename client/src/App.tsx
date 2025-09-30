@@ -14,6 +14,7 @@ import Customers from "@/pages/Customers";
 import Campaigns from "@/pages/Campaigns";
 import Leads from "@/pages/Leads";
 import ServiceRequests from "@/pages/ServiceRequests";
+import MessageTemplates from "@/pages/MessageTemplates";
 
 function Router() {
   return (
@@ -23,6 +24,7 @@ function Router() {
       <Route path="/campaigns" component={Campaigns} />
       <Route path="/leads" component={Leads} />
       <Route path="/service-requests" component={ServiceRequests} />
+      <Route path="/message-templates" component={MessageTemplates} />
       <Route component={NotFound} />
     </Switch>
   );
