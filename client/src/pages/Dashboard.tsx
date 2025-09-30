@@ -26,7 +26,7 @@ export default function Dashboard() {
     customerPhone: string;
     customerName: string;
     flowType: string;
-    currentStepKey: string;
+    currentStep: string;
     language: string;
     createdAt: string;
   }>>({
@@ -247,7 +247,7 @@ export default function Dashboard() {
                             {conv.flowType === "campaign_lead" ? "Campaign" : "Service"}
                           </Badge>
                           <Badge variant="secondary" className="text-xs" data-testid={`badge-conversation-step-${conv.customerPhone}`}>
-                            {conv.currentStepKey.replace(/_/g, " ")}
+                            {conv.currentStep.replace(/_/g, " ")}
                           </Badge>
                           <span className="text-xs text-muted-foreground" data-testid={`text-conversation-language-${conv.customerPhone}`}>{conv.language}</span>
                         </div>
