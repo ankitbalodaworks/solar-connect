@@ -58,7 +58,7 @@ export default function ConversationDetails() {
   const { data: messages = [], isLoading: loadingMessages } = useQuery<WhatsappLog[]>({
     queryKey: ["/api/whatsapp-logs", { phone }],
     queryFn: async () => {
-      const res = await fetch(`/api/whatsapp-logs?phone=${phone}`);
+      const res = await fetch(`/api/whatsapp-logs?customerPhone=${encodeURIComponent(phone)}`);
       if (!res.ok) throw new Error("Failed to fetch messages");
       return res.json();
     },

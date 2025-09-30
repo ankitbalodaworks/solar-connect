@@ -67,6 +67,10 @@ export const messageTemplates = pgTable("message_templates", {
   footerText: text("footer_text"),
   buttons: jsonb("buttons"), // Array of button objects {id, title, nextStep}
   listSections: jsonb("list_sections"), // Array of list section objects
+  metaTemplateId: text("meta_template_id"), // ID returned by Meta after submission
+  metaStatus: text("meta_status").notNull().default("draft"), // 'draft', 'pending', 'approved', 'rejected'
+  metaStatusUpdatedAt: timestamp("meta_status_updated_at"),
+  submissionError: text("submission_error"), // Error message if submission/approval failed
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
 }, (table) => ({
   uniqueTemplate: unique().on(table.flowType, table.language, table.stepKey),
