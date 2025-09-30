@@ -67,9 +67,9 @@ Preferred communication style: Simple, everyday language.
 - `leads`: Solar installation leads with survey scheduling for PM Surya Ghar installations. **customerId is optional** to support WhatsApp-generated leads where only phone number is initially known
 - `serviceRequests`: Service/maintenance requests with issueType (Installation/Service-Repair/Other), urgency (Low/Medium/High), assignedTo, customerVillage, and status tracking. **customerId is optional** to support WhatsApp-generated requests where only phone number is initially known
 - `campaigns`: WhatsApp campaign management with targeting thresholds for customer segmentation
-- `messageTemplates`: WhatsApp interactive message templates with support for buttons, lists, and bilingual content (Hindi/English). Contains all 16 templates for campaign_lead and service_request flows in both English and Hindi
+- `messageTemplates`: WhatsApp interactive message templates with support for buttons, lists, and bilingual content (Hindi/English). Contains all 16 templates for campaign_lead and service_request flows in both English and Hindi. **Template Status Tracking**: Each template includes metaStatus (draft/pending/approved/rejected), metaTemplateId, metaStatusUpdatedAt, and submissionError fields for Meta approval workflow tracking
 - `conversationStates`: Tracks active WhatsApp conversations and their position in automated flows (campaign lead generation or service requests)
-- `whatsappLogs`: Complete audit trail of all WhatsApp messages sent/received with status tracking
+- `whatsappLogs`: Complete audit trail of all WhatsApp messages sent/received with status tracking. Supports filtering by customerPhone query parameter for conversation history views
 
 **Session Management**: Configured for connect-pg-simple (PostgreSQL session store)
 
@@ -111,6 +111,9 @@ Preferred communication style: Simple, everyday language.
   - GET /api/whatsapp/webhook - Webhook verification for Meta
   - GET /api/whatsapp/status - Check WhatsApp configuration status
   - POST /api/whatsapp/upload-media - Upload images to WhatsApp and get media IDs
+  - POST /api/message-templates/:id/submit - Submit individual template to Meta for approval
+  - POST /api/message-templates/:id/sync-status - Sync template status from Meta (APPROVED/PENDING/REJECTED/IN_APPEAL/DISABLED/PAUSED)
+  - GET /api/whatsapp-logs?customerPhone=:phone - Fetch message history filtered by customer phone number
 - **Required Environment Variables**:
   - WHATSAPP_PHONE_NUMBER_ID - WhatsApp Business phone number ID
   - WHATSAPP_ACCESS_TOKEN - API access token for sending messages
@@ -142,3 +145,24 @@ Preferred communication style: Simple, everyday language.
 - Toast notifications
 - Badges for status indicators
 - Responsive sidebar navigation
+
+## Recent Changes (September 30, 2025)
+
+### Message Template Management Enhancements
+- **Per-Template Meta Submission**: Individual templates can now be submitted to Meta for approval via dedicated Submit button
+- **Real-time Status Tracking**: Template status syncs from Meta API (APPROVED, PENDING, REJECTED, IN_APPEAL, DISABLED, PAUSED)
+- **Status Badge System**: Color-coded status badges (green=approved, yellow=pending, red=rejected, gray=draft) with automatic updates
+- **Error Handling**: Comprehensive error recording with submissionError field and numeric HTTP status code propagation
+- **UI Improvements**: Loading states with animate-pulse/animate-spin indicators, disabled states prevent duplicate submissions
+- **Status Normalization**: All status values normalized to lowercase for consistent comparison
+
+### Message History Improvements
+- **Customer Phone Filtering**: WhatsApp logs now filter by customerPhone query parameter for conversation history views
+- **ConversationDetails Page**: Fixed to correctly use customerPhone parameter instead of generic phone parameter
+
+### Technical Improvements
+- **Case-Insensitive Status Comparison**: All metaStatus comparisons normalized to prevent mixed-case bugs
+- **Numeric Error Codes**: Error handling uses HTTP status codes (404, 400, 500) instead of locale-dependent string matching
+- **Template Name Validation**: WhatsApp service verifies exact template name matches (case-sensitive) when syncing from Meta
+- **Stale State Prevention**: Unknown Meta statuses preserve existing status and record warnings without overwriting approved/pending states
+- **Mutation State Management**: Frontend properly disables buttons and shows loading indicators during API calls
