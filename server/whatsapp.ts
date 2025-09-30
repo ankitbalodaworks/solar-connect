@@ -152,7 +152,7 @@ export class WhatsAppService {
         type: "list",
         body: { text: bodyText },
         action: {
-          button: buttonText,
+          button: buttonText.substring(0, 20),
           sections: sections.map((section) => ({
             title: section.title,
             rows: section.rows.map((row) => ({
