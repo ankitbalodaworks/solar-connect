@@ -425,31 +425,37 @@ export default function MessageTemplates() {
                             size="sm"
                             onClick={() => submitMutation.mutate(template.id)}
                             disabled={
-                              submitMutation.isPending ||
-                              syncStatusMutation.isPending ||
+                              (submitMutation.isPending && submitMutation.variables === template.id) ||
+                              (syncStatusMutation.isPending && syncStatusMutation.variables === template.id) ||
                               template.metaStatus === "approved" ||
                               template.metaStatus === "pending"
                             }
                             data-testid={`button-submit-${template.id}`}
                           >
-                            <Upload className={`h-3 w-3 mr-1 ${submitMutation.isPending ? 'animate-pulse' : ''}`} />
-                            {submitMutation.isPending ? "Submitting..." : "Submit"}
+                            <Upload className={`h-3 w-3 mr-1 ${(submitMutation.isPending && submitMutation.variables === template.id) ? 'animate-pulse' : ''}`} />
+                            {(submitMutation.isPending && submitMutation.variables === template.id) ? "Submitting..." : "Submit"}
                           </Button>
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => syncStatusMutation.mutate(template.id)}
-                            disabled={submitMutation.isPending || syncStatusMutation.isPending}
+                            disabled={
+                              (submitMutation.isPending && submitMutation.variables === template.id) ||
+                              (syncStatusMutation.isPending && syncStatusMutation.variables === template.id)
+                            }
                             data-testid={`button-sync-${template.id}`}
                           >
-                            <RefreshCw className={`h-3 w-3 mr-1 ${syncStatusMutation.isPending ? 'animate-spin' : ''}`} />
-                            {syncStatusMutation.isPending ? "Syncing..." : "Sync"}
+                            <RefreshCw className={`h-3 w-3 mr-1 ${(syncStatusMutation.isPending && syncStatusMutation.variables === template.id) ? 'animate-spin' : ''}`} />
+                            {(syncStatusMutation.isPending && syncStatusMutation.variables === template.id) ? "Syncing..." : "Sync"}
                           </Button>
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => setDeleteTemplate(template)}
-                            disabled={submitMutation.isPending || syncStatusMutation.isPending}
+                            disabled={
+                              (submitMutation.isPending && submitMutation.variables === template.id) ||
+                              (syncStatusMutation.isPending && syncStatusMutation.variables === template.id)
+                            }
                             data-testid={`button-delete-${template.id}`}
                           >
                             <Trash2 className="h-4 w-4 text-destructive" />

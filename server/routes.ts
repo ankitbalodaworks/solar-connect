@@ -5,7 +5,7 @@ import { insertMessageTemplateSchema, insertLeadSchema, insertServiceRequestSche
 import { conversationFlowEngine } from "./conversationFlow";
 import { whatsappService } from "./whatsapp";
 import { notificationService } from "./notifications";
-import { allMetaTemplates } from "./metaTemplates";
+import { allMetaTemplates, templateMapping } from "./metaTemplates";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -82,12 +82,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Helper function to map database template to Meta template name using the templateMapping
+  const getMetaTemplateName = (flowType: string, stepKey: string, language: string): string => {
+    // Use the templateMapping from metaTemplates.ts
+    const flowMapping = (templateMapping as any)[flowType];
+    if (!flowMapping) {
+      throw new Error(`Unsupported flowType: ${flowType}. Supported: ${Object.keys(templateMapping).join(", ")}`);
+    }
+    
+    const langMapping = flowMapping[language];
+    if (!langMapping) {
+      throw new Error(`Unsupported language: ${language}. Supported: ${Object.keys(flowMapping).join(", ")}`);
+    }
+    
+    const metaTemplateName = langMapping[stepKey];
+    if (!metaTemplateName) {
+      throw new Error(`Unsupported stepKey: ${stepKey} for flowType: ${flowType}, language: ${language}. Supported: ${Object.keys(langMapping).join(", ")}`);
+    }
+    
+    return metaTemplateName;
+  };
+
   // Submit a single template to Meta for approval
   app.post("/api/message-templates/:id/submit", async (req, res) => {
     try {
       const template = await storage.getMessageTemplate(req.params.id);
       if (!template) {
         return res.status(404).json({ error: "Template not found" });
+      }
+
+      if (!template.flowType || !template.stepKey || !template.language) {
+        return res.status(400).json({ error: "Template flowType, stepKey, and language are required" });
       }
 
       // Normalize status for comparison (case-insensitive)
@@ -101,11 +126,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Template submission is already pending" });
       }
 
-      // Find the matching Meta template definition
-      const metaTemplate = allMetaTemplates.find((t) => t.name === template.name);
-      if (!metaTemplate) {
-        return res.status(404).json({ error: "Meta template definition not found" });
+      // Find the matching Meta template definition using flowType, stepKey, and language
+      let metaTemplateName: string;
+      try {
+        metaTemplateName = getMetaTemplateName(template.flowType, template.stepKey, template.language);
+      } catch (mappingError: any) {
+        console.error(`Failed to map template "${template.id}" (${template.name}): ${mappingError.message}`);
+        return res.status(400).json({ 
+          error: `Template mapping failed: ${mappingError.message}` 
+        });
       }
+
+      const metaTemplate = allMetaTemplates.find((t) => t.name === metaTemplateName);
+      
+      if (!metaTemplate) {
+        console.error(`Meta template not found for: ${template.id} (${template.name})`);
+        console.error(`  Looking for: ${metaTemplateName}`);
+        console.error(`  flowType: ${template.flowType}, stepKey: ${template.stepKey}, language: ${template.language}`);
+        console.error(`  Available Meta templates: ${allMetaTemplates.map(t => t.name).join(", ")}`);
+        return res.status(404).json({ 
+          error: "Meta template definition not found. Please check template configuration." 
+        });
+      }
+
+      console.log(`✓ Matched DB template "${template.id}" (${template.name}) to Meta template "${metaTemplateName}"`);
+
 
       // Submit to Meta
       const result = await whatsappService.submitSingleTemplate(metaTemplate);
