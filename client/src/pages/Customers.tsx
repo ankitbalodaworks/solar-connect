@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { CustomerUpload } from "@/components/CustomerUpload";
-import { CustomerTable } from "@/components/CustomerTable";
 import { Button } from "@/components/ui/button";
-import { Download, Filter } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Download, Filter, Search, MoreVertical, Trash2, Eye } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -10,10 +10,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Customers() {
   const [customers, setCustomers] = useState<any[]>([]);
   const [filter, setFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const handleUpload = (data: any[]) => {
     const formattedCustomers = data.map((row: any, index) => ({
@@ -32,17 +51,51 @@ export default function Customers() {
     console.log('Customer deleted:', id);
   };
 
+  const toggleSelection = (id: string) => {
+    const newSet = new Set(selectedIds);
+    if (newSet.has(id)) {
+      newSet.delete(id);
+    } else {
+      newSet.add(id);
+    }
+    setSelectedIds(newSet);
+  };
+
+  const toggleAll = () => {
+    if (selectedIds.size === filteredCustomers.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredCustomers.map(c => c.id)));
+    }
+  };
+
   const filteredCustomers = customers.filter(c => {
+    const matchesSearch = 
+      c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      c.phone.includes(searchQuery) ||
+      c.address.toLowerCase().includes(searchQuery.toLowerCase());
+    if (!matchesSearch) return false;
+    
     if (filter === "all") return true;
     const threshold = parseInt(filter);
     return c.electricityConsumption >= threshold;
   });
 
+  const getConsumptionBadge = (consumption: number) => {
+    if (consumption >= 300) {
+      return <Badge className="bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800">≥300 units</Badge>;
+    } else if (consumption >= 200) {
+      return <Badge className="bg-orange-100 dark:bg-orange-950 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-800">≥200 units</Badge>;
+    } else {
+      return <Badge variant="secondary">≥150 units</Badge>;
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-semibold mb-2">Customer Management</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl font-semibold mb-1">Customer Management</h1>
+        <p className="text-sm text-muted-foreground">
           Upload and manage your customer database
         </p>
       </div>
@@ -50,35 +103,132 @@ export default function Customers() {
       <CustomerUpload onUpload={handleUpload} />
 
       {customers.length > 0 && (
-        <>
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-muted-foreground" />
-                <Select value={filter} onValueChange={setFilter}>
-                  <SelectTrigger className="w-48" data-testid="select-filter-consumption">
-                    <SelectValue placeholder="Filter by consumption" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All customers</SelectItem>
-                    <SelectItem value="150">≥150 units</SelectItem>
-                    <SelectItem value="200">≥200 units</SelectItem>
-                    <SelectItem value="300">≥300 units</SelectItem>
-                  </SelectContent>
-                </Select>
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between gap-4 flex-wrap mb-6">
+              <div className="flex items-center gap-4">
+                <div className="relative flex-1 min-w-[250px]">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search by name, phone, or address..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10"
+                    data-testid="input-search"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Filter className="h-4 w-4 text-muted-foreground" />
+                  <Select value={filter} onValueChange={setFilter}>
+                    <SelectTrigger className="w-48" data-testid="select-filter-consumption">
+                      <SelectValue placeholder="Filter by consumption" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All customers</SelectItem>
+                      <SelectItem value="150">≥150 units</SelectItem>
+                      <SelectItem value="200">≥200 units</SelectItem>
+                      <SelectItem value="300">≥300 units</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <p className="text-sm text-muted-foreground">
-                Showing {filteredCustomers.length} of {customers.length} customers
-              </p>
+              <Button variant="outline" size="sm" data-testid="button-export-customers">
+                <Download className="h-4 w-4 mr-2" />
+                Export
+              </Button>
             </div>
-            <Button variant="outline" data-testid="button-export-customers">
-              <Download className="h-4 w-4 mr-2" />
-              Export to Excel
-            </Button>
-          </div>
 
-          <CustomerTable customers={filteredCustomers} onDelete={handleDelete} />
-        </>
+            <p className="text-sm text-muted-foreground mb-4">
+              Showing {filteredCustomers.length} of {customers.length} customers
+            </p>
+
+            <div className="border rounded-md">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-12">
+                      <Checkbox
+                        checked={selectedIds.size === filteredCustomers.length && filteredCustomers.length > 0}
+                        onCheckedChange={toggleAll}
+                        data-testid="checkbox-select-all"
+                      />
+                    </TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Phone</TableHead>
+                    <TableHead>Address</TableHead>
+                    <TableHead>Consumption</TableHead>
+                    <TableHead className="w-12"></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredCustomers.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                        No customers found with the selected filters.
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    filteredCustomers.map((customer) => (
+                      <TableRow key={customer.id} data-testid={`row-customer-${customer.id}`}>
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedIds.has(customer.id)}
+                            onCheckedChange={() => toggleSelection(customer.id)}
+                            data-testid={`checkbox-customer-${customer.id}`}
+                          />
+                        </TableCell>
+                        <TableCell className="font-medium">{customer.name}</TableCell>
+                        <TableCell>{customer.phone}</TableCell>
+                        <TableCell className="max-w-xs truncate">{customer.address}</TableCell>
+                        <TableCell>{getConsumptionBadge(customer.electricityConsumption)}</TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" data-testid={`button-menu-${customer.id}`}>
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem data-testid={`button-view-${customer.id}`}>
+                                <Eye className="h-4 w-4 mr-2" />
+                                View Details
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="text-destructive"
+                                onClick={() => handleDelete(customer.id)}
+                                data-testid={`button-delete-${customer.id}`}
+                              >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+
+            <div className="flex items-center justify-between mt-4">
+              <p className="text-sm text-muted-foreground">
+                Showing 1-{filteredCustomers.length} of {filteredCustomers.length} results
+              </p>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" disabled data-testid="button-previous">
+                  Previous
+                </Button>
+                <Button variant="default" size="sm" data-testid="button-page-1">
+                  1
+                </Button>
+                <Button variant="outline" size="sm" disabled data-testid="button-next">
+                  Next
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );
