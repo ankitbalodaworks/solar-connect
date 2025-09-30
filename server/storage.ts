@@ -1,7 +1,7 @@
-import { type User, type InsertUser, type MessageTemplate, type InsertMessageTemplate, type ConversationState, type InsertConversationState, type WhatsappLog, type InsertWhatsappLog } from "@shared/schema";
+import { type User, type InsertUser, type MessageTemplate, type InsertMessageTemplate, type ConversationState, type InsertConversationState, type WhatsappLog, type InsertWhatsappLog, type Lead, type InsertLead, type ServiceRequest, type InsertServiceRequest } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
-import { messageTemplates, conversationStates, whatsappLogs } from "@shared/schema";
+import { messageTemplates, conversationStates, whatsappLogs, leads, serviceRequests } from "@shared/schema";
 import { eq, and, desc } from "drizzle-orm";
 
 // modify the interface with any CRUD methods
@@ -28,6 +28,20 @@ export interface IStorage {
   // WhatsApp Logs
   createWhatsappLog(log: InsertWhatsappLog): Promise<WhatsappLog>;
   getWhatsappLogs(customerPhone?: string, limit?: number): Promise<WhatsappLog[]>;
+  
+  // Leads
+  getLeads(): Promise<Lead[]>;
+  getLead(id: string): Promise<Lead | undefined>;
+  createLead(lead: InsertLead): Promise<Lead>;
+  updateLead(id: string, lead: Partial<InsertLead>): Promise<Lead | undefined>;
+  deleteLead(id: string): Promise<boolean>;
+  
+  // Service Requests
+  getServiceRequests(): Promise<ServiceRequest[]>;
+  getServiceRequest(id: string): Promise<ServiceRequest | undefined>;
+  createServiceRequest(request: InsertServiceRequest): Promise<ServiceRequest>;
+  updateServiceRequest(id: string, request: Partial<InsertServiceRequest>): Promise<ServiceRequest | undefined>;
+  deleteServiceRequest(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -135,6 +149,62 @@ export class MemStorage implements IStorage {
     return await db.select().from(whatsappLogs)
       .orderBy(desc(whatsappLogs.createdAt))
       .limit(limit);
+  }
+
+  // Leads - Database-backed
+  async getLeads(): Promise<Lead[]> {
+    return await db.select().from(leads).orderBy(desc(leads.createdAt));
+  }
+
+  async getLead(id: string): Promise<Lead | undefined> {
+    const result = await db.select().from(leads).where(eq(leads.id, id));
+    return result[0];
+  }
+
+  async createLead(lead: InsertLead): Promise<Lead> {
+    const result = await db.insert(leads).values(lead).returning();
+    return result[0];
+  }
+
+  async updateLead(id: string, lead: Partial<InsertLead>): Promise<Lead | undefined> {
+    const result = await db.update(leads)
+      .set(lead)
+      .where(eq(leads.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteLead(id: string): Promise<boolean> {
+    const result = await db.delete(leads).where(eq(leads.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Service Requests - Database-backed
+  async getServiceRequests(): Promise<ServiceRequest[]> {
+    return await db.select().from(serviceRequests).orderBy(desc(serviceRequests.createdAt));
+  }
+
+  async getServiceRequest(id: string): Promise<ServiceRequest | undefined> {
+    const result = await db.select().from(serviceRequests).where(eq(serviceRequests.id, id));
+    return result[0];
+  }
+
+  async createServiceRequest(request: InsertServiceRequest): Promise<ServiceRequest> {
+    const result = await db.insert(serviceRequests).values(request).returning();
+    return result[0];
+  }
+
+  async updateServiceRequest(id: string, request: Partial<InsertServiceRequest>): Promise<ServiceRequest | undefined> {
+    const result = await db.update(serviceRequests)
+      .set(request)
+      .where(eq(serviceRequests.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteServiceRequest(id: string): Promise<boolean> {
+    const result = await db.delete(serviceRequests).where(eq(serviceRequests.id, id)).returning();
+    return result.length > 0;
   }
 }
 

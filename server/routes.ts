@@ -1,9 +1,10 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertMessageTemplateSchema } from "@shared/schema";
+import { insertMessageTemplateSchema, insertLeadSchema, insertServiceRequestSchema } from "@shared/schema";
 import { conversationFlowEngine } from "./conversationFlow";
 import { whatsappService } from "./whatsapp";
+import { notificationService } from "./notifications";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -326,6 +327,146 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ? "WhatsApp is configured and ready" 
         : "WhatsApp is not configured. Add WHATSAPP_PHONE_NUMBER_ID and WHATSAPP_ACCESS_TOKEN to environment."
     });
+  });
+
+  // Leads API with auto-notifications
+  app.get("/api/leads", async (req, res) => {
+    try {
+      const leads = await storage.getLeads();
+      res.json(leads);
+    } catch (error) {
+      console.error("Error fetching leads:", error);
+      res.status(500).json({ error: "Failed to fetch leads" });
+    }
+  });
+
+  app.get("/api/leads/:id", async (req, res) => {
+    try {
+      const lead = await storage.getLead(req.params.id);
+      if (!lead) {
+        return res.status(404).json({ error: "Lead not found" });
+      }
+      res.json(lead);
+    } catch (error) {
+      console.error("Error fetching lead:", error);
+      res.status(500).json({ error: "Failed to fetch lead" });
+    }
+  });
+
+  app.post("/api/leads", async (req, res) => {
+    try {
+      const validatedData = insertLeadSchema.parse(req.body);
+      const lead = await storage.createLead(validatedData);
+      
+      // Send WhatsApp notification
+      await notificationService.sendLeadNotification(lead, "created");
+      
+      res.status(201).json(lead);
+    } catch (error) {
+      console.error("Error creating lead:", error);
+      res.status(400).json({ error: "Failed to create lead" });
+    }
+  });
+
+  app.put("/api/leads/:id", async (req, res) => {
+    try {
+      const validatedData = insertLeadSchema.partial().parse(req.body);
+      const lead = await storage.updateLead(req.params.id, validatedData);
+      if (!lead) {
+        return res.status(404).json({ error: "Lead not found" });
+      }
+      
+      // Send WhatsApp notification
+      await notificationService.sendLeadNotification(lead, "updated");
+      
+      res.json(lead);
+    } catch (error) {
+      console.error("Error updating lead:", error);
+      res.status(400).json({ error: "Failed to update lead" });
+    }
+  });
+
+  app.delete("/api/leads/:id", async (req, res) => {
+    try {
+      const success = await storage.deleteLead(req.params.id);
+      if (!success) {
+        return res.status(404).json({ error: "Lead not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting lead:", error);
+      res.status(500).json({ error: "Failed to delete lead" });
+    }
+  });
+
+  // Service Requests API with auto-notifications
+  app.get("/api/service-requests", async (req, res) => {
+    try {
+      const requests = await storage.getServiceRequests();
+      res.json(requests);
+    } catch (error) {
+      console.error("Error fetching service requests:", error);
+      res.status(500).json({ error: "Failed to fetch service requests" });
+    }
+  });
+
+  app.get("/api/service-requests/:id", async (req, res) => {
+    try {
+      const request = await storage.getServiceRequest(req.params.id);
+      if (!request) {
+        return res.status(404).json({ error: "Service request not found" });
+      }
+      res.json(request);
+    } catch (error) {
+      console.error("Error fetching service request:", error);
+      res.status(500).json({ error: "Failed to fetch service request" });
+    }
+  });
+
+  app.post("/api/service-requests", async (req, res) => {
+    try {
+      const validatedData = insertServiceRequestSchema.parse(req.body);
+      const request = await storage.createServiceRequest(validatedData);
+      
+      // Send WhatsApp notification
+      await notificationService.sendServiceRequestNotification(request, "created");
+      
+      res.status(201).json(request);
+    } catch (error) {
+      console.error("Error creating service request:", error);
+      res.status(400).json({ error: "Failed to create service request" });
+    }
+  });
+
+  app.put("/api/service-requests/:id", async (req, res) => {
+    try {
+      const validatedData = insertServiceRequestSchema.partial().parse(req.body);
+      const request = await storage.updateServiceRequest(req.params.id, validatedData);
+      if (!request) {
+        return res.status(404).json({ error: "Service request not found" });
+      }
+      
+      // Send WhatsApp notification
+      await notificationService.sendServiceRequestNotification(request, "updated");
+      
+      res.json(request);
+    } catch (error) {
+      console.error("Error updating service request:", error);
+      res.status(400).json({ error: "Failed to update service request" });
+    }
+  });
+
+  app.delete("/api/service-requests/:id", async (req, res) => {
+    try {
+      const success = await storage.deleteServiceRequest(req.params.id);
+      if (!success) {
+        return res.status(404).json({ error: "Service request not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting service request:", error);
+      res.status(500).json({ error: "Failed to delete service request" });
+    }
   });
 
   const httpServer = createServer(app);
