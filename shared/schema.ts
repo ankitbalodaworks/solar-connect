@@ -28,9 +28,11 @@ export const serviceRequests = pgTable("service_requests", {
   customerId: varchar("customer_id").notNull(),
   customerName: text("customer_name").notNull(),
   customerPhone: text("customer_phone").notNull(),
-  requestType: text("request_type").notNull(),
+  customerVillage: text("customer_village"),
+  issueType: text("issue_type").notNull(),
   description: text("description"),
-  priority: text("priority").notNull().default("medium"),
+  urgency: text("urgency").notNull().default("medium"),
+  assignedTo: text("assigned_to"),
   status: text("status").notNull().default("pending"),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
 });
