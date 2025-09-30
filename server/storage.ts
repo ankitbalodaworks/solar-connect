@@ -20,6 +20,7 @@ export interface IStorage {
   deleteMessageTemplate(id: string): Promise<boolean>;
   
   // Conversation States
+  getConversationStates(customerPhone?: string): Promise<ConversationState[]>;
   getConversationState(customerPhone: string): Promise<ConversationState | undefined>;
   createConversationState(state: InsertConversationState): Promise<ConversationState>;
   updateConversationState(customerPhone: string, state: Partial<InsertConversationState>): Promise<ConversationState | undefined>;
@@ -110,6 +111,16 @@ export class MemStorage implements IStorage {
   }
 
   // Conversation States - Database-backed
+  async getConversationStates(customerPhone?: string): Promise<ConversationState[]> {
+    if (customerPhone) {
+      return await db.select().from(conversationStates)
+        .where(eq(conversationStates.customerPhone, customerPhone))
+        .orderBy(desc(conversationStates.lastMessageAt));
+    }
+    return await db.select().from(conversationStates)
+      .orderBy(desc(conversationStates.lastMessageAt));
+  }
+
   async getConversationState(customerPhone: string): Promise<ConversationState | undefined> {
     const result = await db.select().from(conversationStates).where(eq(conversationStates.customerPhone, customerPhone));
     return result[0];

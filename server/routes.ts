@@ -133,6 +133,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/conversation-states", async (req, res) => {
+    try {
+      const { phone } = req.query;
+      const states = await storage.getConversationStates(phone as string | undefined);
+      
+      if (phone && states.length === 0) {
+        return res.status(404).json({ error: "Conversation not found" });
+      }
+      
+      if (phone && states.length === 1) {
+        return res.json(states[0]);
+      }
+      
+      res.json(states);
+    } catch (error) {
+      console.error("Error fetching conversation states:", error);
+      res.status(500).json({ error: "Failed to fetch conversation states" });
+    }
+  });
+
   app.get("/api/conversations/:phone", async (req, res) => {
     try {
       const state = await storage.getConversationState(req.params.phone);

@@ -15,6 +15,7 @@ import Campaigns from "@/pages/Campaigns";
 import Leads from "@/pages/Leads";
 import ServiceRequests from "@/pages/ServiceRequests";
 import MessageTemplates from "@/pages/MessageTemplates";
+import ConversationDetails from "@/pages/ConversationDetails";
 
 function Router() {
   return (
@@ -25,6 +26,7 @@ function Router() {
       <Route path="/leads" component={Leads} />
       <Route path="/service-requests" component={ServiceRequests} />
       <Route path="/message-templates" component={MessageTemplates} />
+      <Route path="/conversations/:phone" component={ConversationDetails} />
       <Route component={NotFound} />
     </Switch>
   );

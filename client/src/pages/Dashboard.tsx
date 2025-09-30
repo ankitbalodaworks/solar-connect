@@ -234,24 +234,26 @@ export default function Dashboard() {
             ) : (
               <div className="space-y-3">
                 {activeConversations.slice(0, 5).map((conv) => (
-                  <div key={conv.customerPhone} className="flex items-start gap-3 pb-3 border-b last:border-0" data-testid={`conversation-${conv.customerPhone}`}>
-                    <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-950 flex items-center justify-center flex-shrink-0">
-                      <Phone className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium" data-testid={`text-conversation-name-${conv.customerPhone}`}>{conv.customerName}</p>
-                      <p className="text-xs text-muted-foreground" data-testid={`text-conversation-phone-${conv.customerPhone}`}>{conv.customerPhone}</p>
-                      <div className="flex items-center gap-2 mt-1 flex-wrap">
-                        <Badge variant="outline" className="text-xs" data-testid={`badge-conversation-type-${conv.customerPhone}`}>
-                          {conv.flowType === "campaign_lead" ? "Campaign" : "Service"}
-                        </Badge>
-                        <Badge variant="secondary" className="text-xs" data-testid={`badge-conversation-step-${conv.customerPhone}`}>
-                          {conv.currentStepKey.replace(/_/g, " ")}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground" data-testid={`text-conversation-language-${conv.customerPhone}`}>{conv.language}</span>
+                  <Link key={conv.customerPhone} href={`/conversations/${conv.customerPhone}`}>
+                    <div className="flex items-start gap-3 pb-3 border-b last:border-0 hover-elevate cursor-pointer rounded-md p-2 -m-2" data-testid={`conversation-${conv.customerPhone}`}>
+                      <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-950 flex items-center justify-center flex-shrink-0">
+                        <Phone className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium" data-testid={`text-conversation-name-${conv.customerPhone}`}>{conv.customerName}</p>
+                        <p className="text-xs text-muted-foreground" data-testid={`text-conversation-phone-${conv.customerPhone}`}>{conv.customerPhone}</p>
+                        <div className="flex items-center gap-2 mt-1 flex-wrap">
+                          <Badge variant="outline" className="text-xs" data-testid={`badge-conversation-type-${conv.customerPhone}`}>
+                            {conv.flowType === "campaign_lead" ? "Campaign" : "Service"}
+                          </Badge>
+                          <Badge variant="secondary" className="text-xs" data-testid={`badge-conversation-step-${conv.customerPhone}`}>
+                            {conv.currentStepKey.replace(/_/g, " ")}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground" data-testid={`text-conversation-language-${conv.customerPhone}`}>{conv.language}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}
