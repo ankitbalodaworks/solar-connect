@@ -225,6 +225,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const webhookData = JSON.parse(rawBody);
+      
+      // Check for status updates (delivered, read, failed)
+      const statusUpdate = whatsappService.parseStatusUpdate(webhookData);
+      if (statusUpdate) {
+        console.log(`WhatsApp status update: ${statusUpdate.status} for ${statusUpdate.recipientPhone}`);
+        if (statusUpdate.status === "failed") {
+          console.error(`Message delivery failed to ${statusUpdate.recipientPhone}: ${statusUpdate.errorMessage} (Code: ${statusUpdate.errorCode})`);
+        }
+        return res.status(200).send("OK");
+      }
+      
+      // Check for incoming messages
       const incomingMessage = whatsappService.parseIncomingMessage(webhookData);
       
       if (!incomingMessage) {

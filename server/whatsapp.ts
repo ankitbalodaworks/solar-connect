@@ -362,6 +362,52 @@ export class WhatsAppService {
       return null;
     }
   }
+
+  parseStatusUpdate(webhookData: any): {
+    messageId: string;
+    recipientPhone: string;
+    status: "delivered" | "read" | "failed";
+    timestamp: number;
+    errorCode?: string;
+    errorMessage?: string;
+  } | null {
+    try {
+      const entry = webhookData.entry?.[0];
+      const change = entry?.changes?.[0];
+      const value = change?.value;
+      const status = value?.statuses?.[0];
+
+      if (!status) return null;
+
+      const result: any = {
+        messageId: status.id,
+        recipientPhone: status.recipient_id,
+        status: status.status,
+        timestamp: status.timestamp,
+      };
+
+      // If message failed, capture error details
+      if (status.status === "failed" && status.errors?.[0]) {
+        const error = status.errors[0];
+        result.errorCode = error.code;
+        result.errorMessage = error.title || error.message;
+        
+        // Log detailed error for debugging
+        console.error(`WhatsApp message delivery failed:`, {
+          messageId: status.id,
+          recipient: status.recipient_id,
+          errorCode: error.code,
+          errorMessage: error.title || error.message,
+          errorDetails: error.error_data
+        });
+      }
+
+      return result;
+    } catch (error) {
+      console.error("Error parsing WhatsApp status update:", error);
+      return null;
+    }
+  }
 }
 
 export const whatsappService = new WhatsAppService();
