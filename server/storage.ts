@@ -1,7 +1,7 @@
-import { type User, type InsertUser, type MessageTemplate, type InsertMessageTemplate, type ConversationState, type InsertConversationState, type WhatsappLog, type InsertWhatsappLog, type Lead, type InsertLead, type ServiceRequest, type InsertServiceRequest, type CallbackRequest, type InsertCallbackRequest, type OtherIssue, type InsertOtherIssue } from "@shared/schema";
+import { type User, type InsertUser, type MessageTemplate, type InsertMessageTemplate, type ConversationState, type InsertConversationState, type WhatsappLog, type InsertWhatsappLog, type Lead, type InsertLead, type ServiceRequest, type InsertServiceRequest, type CallbackRequest, type InsertCallbackRequest, type OtherIssue, type InsertOtherIssue, type Event, type InsertEvent, type Form, type InsertForm } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
-import { messageTemplates, conversationStates, whatsappLogs, leads, serviceRequests, customers, campaigns, callbackRequests, otherIssues } from "@shared/schema";
+import { messageTemplates, conversationStates, whatsappLogs, leads, serviceRequests, customers, campaigns, callbackRequests, otherIssues, events, forms } from "@shared/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 
 // modify the interface with any CRUD methods
@@ -57,6 +57,16 @@ export interface IStorage {
   createOtherIssue(issue: InsertOtherIssue): Promise<OtherIssue>;
   updateOtherIssue(id: string, issue: Partial<InsertOtherIssue>): Promise<OtherIssue | undefined>;
   deleteOtherIssue(id: string): Promise<boolean>;
+  
+  // Events (for status tracking)
+  createEvent(event: InsertEvent): Promise<Event>;
+  getEvents(customerPhone?: string, limit?: number): Promise<Event[]>;
+  getLatestEventByPhone(customerPhone: string): Promise<Event | undefined>;
+  
+  // Forms (submitted form data)
+  createForm(form: InsertForm): Promise<Form>;
+  getForms(customerPhone?: string): Promise<Form[]>;
+  getForm(id: string): Promise<Form | undefined>;
   
   // Statistics
   getStatistics(): Promise<{
@@ -298,6 +308,56 @@ export class MemStorage implements IStorage {
   async deleteOtherIssue(id: string): Promise<boolean> {
     const result = await db.delete(otherIssues).where(eq(otherIssues.id, id)).returning();
     return result.length > 0;
+  }
+
+  // Events (for status tracking)
+  async createEvent(event: InsertEvent): Promise<Event> {
+    const result = await db.insert(events).values(event).returning();
+    return result[0];
+  }
+
+  async getEvents(customerPhone?: string, limit?: number): Promise<Event[]> {
+    let query = db.select().from(events).orderBy(desc(events.createdAt));
+    
+    if (customerPhone) {
+      query = query.where(eq(events.customerPhone, customerPhone)) as any;
+    }
+    
+    if (limit) {
+      query = query.limit(limit) as any;
+    }
+    
+    return await query;
+  }
+
+  async getLatestEventByPhone(customerPhone: string): Promise<Event | undefined> {
+    const result = await db.select()
+      .from(events)
+      .where(eq(events.customerPhone, customerPhone))
+      .orderBy(desc(events.createdAt))
+      .limit(1);
+    return result[0];
+  }
+
+  // Forms (submitted form data)
+  async createForm(form: InsertForm): Promise<Form> {
+    const result = await db.insert(forms).values(form).returning();
+    return result[0];
+  }
+
+  async getForms(customerPhone?: string): Promise<Form[]> {
+    if (customerPhone) {
+      return await db.select()
+        .from(forms)
+        .where(eq(forms.customerPhone, customerPhone))
+        .orderBy(desc(forms.submittedAt));
+    }
+    return await db.select().from(forms).orderBy(desc(forms.submittedAt));
+  }
+
+  async getForm(id: string): Promise<Form | undefined> {
+    const result = await db.select().from(forms).where(eq(forms.id, id));
+    return result[0];
   }
 
   // Statistics
