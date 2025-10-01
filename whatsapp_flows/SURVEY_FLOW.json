@@ -1,0 +1,124 @@
+{
+  "version": "7.2",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "SURVEY_FORM": ["SURVEY_SUCCESS"],
+    "SURVEY_SUCCESS": []
+  },
+  "screens": [
+    {
+      "id": "SURVEY_FORM",
+      "title": "Book Site Survey",
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "form",
+            "children": [
+              {
+                "type": "TextInput",
+                "name": "full_name",
+                "label": "Full Name",
+                "required": true,
+                "input-type": "text",
+                "max-length": 120,
+                "error-message": "Please enter your name"
+              },
+              {
+                "type": "PhoneNumber",
+                "name": "mobile",
+                "label": "Mobile",
+                "required": true,
+                "error-message": "Enter a valid mobile number"
+              },
+              {
+                "type": "TextArea",
+                "name": "address",
+                "label": "Address",
+                "required": true,
+                "max-length": 400
+              },
+              {
+                "type": "TextInput",
+                "name": "village",
+                "label": "Village/Town",
+                "required": true,
+                "input-type": "text"
+              },
+              {
+                "type": "NumberInput",
+                "name": "avg_bill",
+                "label": "Avg Monthly Bill (₹)",
+                "required": true
+              },
+              {
+                "type": "SingleSelect",
+                "name": "phase",
+                "label": "Phase",
+                "required": true,
+                "data-source": {
+                  "type": "STATIC",
+                  "data": [
+                    { "id": "1p", "title": "1φ" },
+                    { "id": "3p", "title": "3φ" }
+                  ]
+                }
+              },
+              {
+                "type": "SingleSelect",
+                "name": "roof_type",
+                "label": "Roof Type",
+                "required": true,
+                "data-source": {
+                  "type": "STATIC",
+                  "data": [
+                    { "id": "rcc", "title": "RCC" },
+                    { "id": "tin", "title": "Tin/Sheet" },
+                    { "id": "other", "title": "Other" }
+                  ]
+                }
+              },
+              {
+                "type": "DatePicker",
+                "name": "preferred_date",
+                "label": "Preferred Date",
+                "required": true
+              },
+              {
+                "type": "TimePicker",
+                "name": "preferred_time",
+                "label": "Preferred Time",
+                "required": true
+              }
+            ],
+            "actions": {
+              "submit": {
+                "label": "Submit",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "op": "submit_survey_form"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "SURVEY_SUCCESS",
+      "title": "Thank you!",
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Description",
+            "text": "Your survey request has been recorded. Our team will contact you shortly."
+          }
+        ]
+      }
+    }
+  ]
+}

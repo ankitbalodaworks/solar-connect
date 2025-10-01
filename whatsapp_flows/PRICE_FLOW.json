@@ -1,0 +1,118 @@
+{
+  "version": "7.2",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "PRICE_FORM": ["PRICE_SUCCESS"],
+    "PRICE_SUCCESS": []
+  },
+  "screens": [
+    {
+      "id": "PRICE_FORM",
+      "title": "Price Estimate",
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "form",
+            "children": [
+              {
+                "type": "TextInput",
+                "name": "full_name",
+                "label": "Full Name",
+                "required": true,
+                "input-type": "text",
+                "max-length": 120,
+                "error-message": "Please enter your name"
+              },
+              {
+                "type": "PhoneNumber",
+                "name": "mobile",
+                "label": "Mobile",
+                "required": true,
+                "error-message": "Enter a valid mobile number"
+              },
+              {
+                "type": "TextArea",
+                "name": "address",
+                "label": "Address",
+                "required": true,
+                "max-length": 400
+              },
+              {
+                "type": "TextInput",
+                "name": "village",
+                "label": "Village/Town",
+                "required": true,
+                "input-type": "text"
+              },
+              {
+                "type": "NumberInput",
+                "name": "avg_bill",
+                "label": "Avg Monthly Bill (₹)",
+                "required": true
+              },
+              {
+                "type": "NumberInput",
+                "name": "monthly_units",
+                "label": "Avg Monthly Units (kWh)",
+                "required": true
+              },
+              {
+                "type": "SingleSelect",
+                "name": "phase",
+                "label": "Phase",
+                "required": true,
+                "data-source": {
+                  "type": "STATIC",
+                  "data": [
+                    { "id": "1p", "title": "1φ" },
+                    { "id": "3p", "title": "3φ" }
+                  ]
+                }
+              },
+              {
+                "type": "SingleSelect",
+                "name": "roof_type",
+                "label": "Roof Type",
+                "required": true,
+                "data-source": {
+                  "type": "STATIC",
+                  "data": [
+                    { "id": "rcc", "title": "RCC" },
+                    { "id": "tin", "title": "Tin/Sheet" },
+                    { "id": "other", "title": "Other" }
+                  ]
+                }
+              }
+            ],
+            "actions": {
+              "submit": {
+                "label": "Submit",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "op": "submit_price_form"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "PRICE_SUCCESS",
+      "title": "Thank you!",
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Description",
+            "text": "Your details are saved. We'll send an estimate soon."
+          }
+        ]
+      }
+    }
+  ]
+}

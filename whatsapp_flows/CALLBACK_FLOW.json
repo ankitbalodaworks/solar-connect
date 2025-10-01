@@ -1,0 +1,101 @@
+{
+  "version": "7.2",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "CALLBACK_FORM": ["CALLBACK_SUCCESS"],
+    "CALLBACK_SUCCESS": []
+  },
+  "screens": [
+    {
+      "id": "CALLBACK_FORM",
+      "title": "Request Callback",
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "form",
+            "children": [
+              {
+                "type": "TextInput",
+                "name": "full_name",
+                "label": "Full Name",
+                "required": true,
+                "input-type": "text",
+                "max-length": 120,
+                "error-message": "Please enter your name"
+              },
+              {
+                "type": "PhoneNumber",
+                "name": "mobile",
+                "label": "Mobile",
+                "required": true,
+                "error-message": "Enter a valid mobile number"
+              },
+              {
+                "type": "SingleSelect",
+                "name": "best_time",
+                "label": "Best Time to Call",
+                "required": true,
+                "data-source": {
+                  "type": "STATIC",
+                  "data": [
+                    { "id": "morning", "title": "Morning" },
+                    { "id": "afternoon", "title": "Afternoon" },
+                    { "id": "evening", "title": "Evening" }
+                  ]
+                }
+              },
+              {
+                "type": "SingleSelect",
+                "name": "topic",
+                "label": "Topic",
+                "required": true,
+                "data-source": {
+                  "type": "STATIC",
+                  "data": [
+                    { "id": "site_survey", "title": "Site Survey" },
+                    { "id": "price_estimate", "title": "Price Estimate" },
+                    { "id": "maintenance", "title": "Maintenance/Service" },
+                    { "id": "other", "title": "Other" }
+                  ]
+                }
+              },
+              {
+                "type": "TextArea",
+                "name": "notes",
+                "label": "Notes (Optional)",
+                "required": false,
+                "max-length": 400
+              }
+            ],
+            "actions": {
+              "submit": {
+                "label": "Submit",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "op": "submit_callback_form"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "CALLBACK_SUCCESS",
+      "title": "Thank you!",
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Description",
+            "text": "We'll call you at your preferred time."
+          }
+        ]
+      }
+    }
+  ]
+}
