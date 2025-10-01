@@ -59,8 +59,7 @@
                 "type": "TextArea",
                 "name": "notes",
                 "label": "Notes (Optional)",
-                "required": false,
-                "max-chars": 400
+                "required": false
               },
               {
                 "type": "Footer",

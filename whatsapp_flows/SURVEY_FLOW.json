@@ -36,8 +36,7 @@
                 "type": "TextArea",
                 "name": "address",
                 "label": "Address",
-                "required": true,
-                "max-chars": 400
+                "required": true
               },
               {
                 "type": "TextInput",
