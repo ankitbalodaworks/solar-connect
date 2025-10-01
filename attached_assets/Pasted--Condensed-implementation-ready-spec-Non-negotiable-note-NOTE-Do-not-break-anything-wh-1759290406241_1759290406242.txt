@@ -1,0 +1,284 @@
+# Condensed, implementation-ready spec
+
+## Non-negotiable note
+
+* **NOTE:** Do not break anything while building. Do a thorough read of the project before touching anything.
+
+## Webhook URL
+
+* **Base app URL:** `https://solar-connect.replit.app`
+* **Recommended webhook endpoint (incoming messages & delivery/status callbacks):**
+  `POST https://solar-connect.replit.app/webhooks/whatsapp`
+
+  * Use this in Meta → WhatsApp → Configuration as your **Callback URL**.
+  * If you already coded a different path, the generic rule is: **Webhook URL = `https://solar-connect.replit.app/<your-server-endpoint>`**.
+
+---
+
+## Status Page
+
+**Purpose:** Monitor every contact you’ve messaged and where they are in the automation.
+
+### Table columns (left → right)
+
+1. **S. No.** (auto index)
+2. **Name**
+3. **Phone**
+4. **Address**
+5. **Stage** (with a filter dropdown above the table)
+6. **Submitted Forms** (badge with count; click to view each submission)
+
+### Required UI/UX
+
+* **Stage filter** above the table (single-select).
+  Suggested options:
+
+  * `campaign_sent`
+  * `delivered`
+  * `read`
+  * `replied`
+  * `language_selected_hi` / `language_selected_en`
+  * `menu_site_survey`
+  * `menu_price_estimate`
+  * `menu_other_help`
+  * `form_opened`
+  * `form_submitted`
+  * `callback_requested`
+  * `unsubscribed`
+  * `failed` (message send error/bounce)
+* **Search box** (name/phone/address).
+* **Sortable columns** (Name, Phone, Stage, Submitted Forms count).
+* **Forms cell**: shows a **count badge**. On click, open a **drawer/modal** listing submissions with:
+
+  * timestamp
+  * form type (e.g., *Site Survey*, *Service Request*, *Price Estimate*)
+  * captured fields (key → value)
+  * a “View raw JSON” toggle
+* **Pagination** (server-side), CSV export of current view.
+* **Row click** (optional): open a right-side panel with full timeline (events & messages).
+
+---
+
+## Data model (minimal, relational)
+
+**customers**
+
+* `id` (PK)
+* `name` (TEXT)
+* `phone_e164` (TEXT, unique; e.g., `+917725920701`)
+* `address` (TEXT)
+* `created_at` (DATETIME)
+
+**events** (append-only)
+
+* `id` (PK)
+* `customer_id` (FK → customers.id)
+* `type` (TEXT; see stage options above)
+* `meta` (JSON; store payload fragments like message_id, button id, flow screen, language, etc.)
+* `created_at` (DATETIME)
+
+**forms**
+
+* `id` (PK)
+* `customer_id` (FK)
+* `form_type` (TEXT; e.g., `site_survey`, `price_estimate`, `service_request`)
+* `data` (JSON; full submission)
+* `submitted_at` (DATETIME)
+
+> **Computed “Stage”:** latest relevant `events.type` for that customer (by `created_at`). Keep it denormalized in a view or compute server-side for the dashboard query.
+
+---
+
+## API contract
+
+### Inbound (Webhook)
+
+`POST /webhooks/whatsapp`
+
+* Verifies Meta signature (if used) & challenge (GET verify).
+* Normalizes sender to `phone_e164`.
+* Upserts **customer** record (name if available).
+* Emits **events**:
+
+  * Outbound `messages` status → `campaign_sent` / `delivered` / `read` / `failed`
+  * Inbound text → `replied`
+  * Interactive replies:
+
+    * Language buttons → `language_selected_hi|en`
+    * Menu selections → `menu_site_survey` | `menu_price_estimate` | `menu_other_help`
+  * Flow lifecycle:
+
+    * Form opened → `form_opened` (with `meta.screen`)
+    * Form submitted → create **forms** row; add event `form_submitted`
+
+**Success:** `{ ok: true }`
+
+### Dashboard data
+
+* `GET /api/customers?stage=<stage>&q=<query>&page=<n>&pageSize=<n>`
+  Returns table rows including:
+
+  * `serial` (computed), `name`, `phone_e164`, `address`, `stage`, `forms_count`
+* `GET /api/customers/:id/forms`
+  Returns array of form submissions: `{ id, form_type, submitted_at, data }`
+* `GET /api/customers/:id/timeline` (optional)
+  Returns chronological events for the right-panel timeline.
+* `GET /api/export.csv?stage=<stage>&q=<query>`
+  Exports the filtered view.
+
+---
+
+## Event → Stage mapping (examples)
+
+| Webhook signal                      | Create event                     | Notes                                 |
+| ----------------------------------- | -------------------------------- | ------------------------------------- |
+| Outbound message accepted           | `campaign_sent`                  | Store `message_id` in `meta`.         |
+| Delivery receipt                    | `delivered`                      | —                                     |
+| Read receipt                        | `read`                           | —                                     |
+| Inbound text                        | `replied`                        | Store snippet in `meta.text`.         |
+| Button “हिंदी / English”            | `language_selected_hi/en`        | `meta.lang` = `hi`/`en`.              |
+| Menu “Book Site Survey”             | `menu_site_survey`               | —                                     |
+| Menu “Price / Expenditure Estimate” | `menu_price_estimate`            | —                                     |
+| Menu “Any other help”               | `menu_other_help`                | —                                     |
+| Flow screen opened                  | `form_opened`                    | `meta.screen` = e.g., `BOOK_SERVICE`. |
+| Flow submitted                      | `form_submitted` + **forms** row | `forms.form_type` + full `data`.      |
+| Opt-out                             | `unsubscribed`                   | —                                     |
+| Send failure                        | `failed`                         | Capture error in `meta`.              |
+
+---
+
+## Security & integrity
+
+* Verify **GET** webhook challenge & **POST** signatures (X-Hub-Signature-256) if applicable.
+* Rate-limit webhook endpoint; idempotency (dedupe by `message_id`).
+* Validate phone numbers to E.164; dedupe customers by `phone_e164`.
+* Log every inbound/outbound payload (redact PII in logs if needed).
+
+---
+
+## Quick examples
+
+### Example: `GET /api/customers` response (table rows)
+
+```json
+{
+  "rows": [
+    {
+      "serial": 1,
+      "id": "c_01",
+      "name": "Ramesh Kumar",
+      "phone_e164": "+919876543210",
+      "address": "Village A, Jaipur",
+      "stage": "form_submitted",
+      "forms_count": 2
+    },
+    {
+      "serial": 2,
+      "id": "c_02",
+      "name": "Sita Devi",
+      "phone_e164": "+919111111111",
+      "address": "Paota, Jaipur",
+      "stage": "menu_site_survey",
+      "forms_count": 0
+    }
+  ],
+  "page": 1,
+  "pageSize": 25,
+  "total": 238
+}
+```
+
+### Example: `GET /api/customers/:id/forms`
+
+```json
+[
+  {
+    "id": "f_101",
+    "form_type": "site_survey",
+    "submitted_at": "2025-09-30T14:05:12Z",
+    "data": {
+      "full_name": "Ramesh Kumar",
+      "mobile": "9876543210",
+      "address": "Village A",
+      "village": "Village A",
+      "preferred_date": "2025-10-03",
+      "preferred_time": "10:00-12:00"
+    }
+  }
+]
+```
+
+---
+
+## Minimal build checklist
+
+* [ ] Set **Webhook URL** to `https://solar-connect.replit.app/webhooks/whatsapp` in Meta and verify token.
+* [ ] Implement webhook handler to upsert **customers**, append **events**, and store **forms** on submissions.
+* [ ] Build `/dashboard` with table, **Stage filter**, search, sort, pagination, CSV export.
+* [ ] Implement `GET /api/customers`, `GET /api/customers/:id/forms` (and optional timeline).
+* [ ] Protect dashboard (basic auth/JWT) and enable CORS only as needed.
+
+If you want me to turn this into ready-to-run code (Express + SQLite + simple React/Vite dashboard), say the word and I’ll generate it all in one go.
+
+Also the following messages are not working properly, the workflow should be like this: 'Entry message (Campaign)
+
+Header: Include link https://sunshinepower.net.in/.
+
+Buttons (3):
+
+Hindi
+
+English
+
+Visit Website (URL CTA → https://sunshinepower.net.in/)
+
+After language selection → Main Menu (shown in chosen language)
+
+Options (exact labels):
+
+To book a site survey
+
+Price/Expenditure Estimate
+
+Any other help
+
+Branches & forms
+A) To book a site survey → Site-Survey Form
+
+Fields (required):
+
+Full name (as per electricity bill)
+
+Mobile number
+
+Address
+
+Village
+
+Preferred date
+
+Preferred time
+
+B) Price/Expenditure Estimate → Price Sub-menu
+
+Buttons (3):
+
+To book site survey → Site-Survey Form (above)
+
+Request a callback → Callback Form (Full name, Mobile)
+
+Any other help → Help Sub-menu (below)
+
+C) Any other help → Help Sub-menu
+
+Buttons (3):
+
+Maintenance/service request → Service Request Form
+
+Full name, Mobile number, Address, Village, Issue urgency, Preferred date of visit
+
+Request for callback → Callback Form (Full name, Mobile)
+
+Register any other issue → Other Issue Form
+
+Full name, Mobile, Address, Village, Issue description (free text)'

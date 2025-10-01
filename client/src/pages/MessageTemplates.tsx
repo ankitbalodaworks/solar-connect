@@ -70,7 +70,7 @@ export default function MessageTemplates() {
     resolver: zodResolver(insertMessageTemplateSchema),
     defaultValues: {
       name: "",
-      flowType: "campaign_lead",
+      flowType: "campaign",
       stepKey: "",
       messageType: "text",
       language: "en",
@@ -209,7 +209,7 @@ export default function MessageTemplates() {
       setEditingTemplate(null);
       form.reset({
         name: "",
-        flowType: "campaign_lead",
+        flowType: "campaign",
         stepKey: "",
         messageType: "text",
         language: "en",
@@ -283,13 +283,9 @@ export default function MessageTemplates() {
   });
 
   const getFlowTypeBadge = (flowType: string) => {
-    return flowType === "campaign_lead" ? (
+    return (
       <Badge variant="default" className="bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800">
-        Campaign Lead
-      </Badge>
-    ) : (
-      <Badge variant="default" className="bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-800">
-        Service Request
+        Campaign
       </Badge>
     );
   };
@@ -353,8 +349,7 @@ export default function MessageTemplates() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All flow types</SelectItem>
-                  <SelectItem value="campaign_lead">Campaign Lead</SelectItem>
-                  <SelectItem value="service_request">Service Request</SelectItem>
+                  <SelectItem value="campaign">Campaign</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={filterLanguage} onValueChange={setFilterLanguage}>
@@ -508,8 +503,7 @@ export default function MessageTemplates() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="campaign_lead">Campaign Lead</SelectItem>
-                          <SelectItem value="service_request">Service Request</SelectItem>
+                          <SelectItem value="campaign">Campaign</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
