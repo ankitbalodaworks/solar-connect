@@ -390,6 +390,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const statusUpdate = whatsappService.parseStatusUpdate(webhookData);
       if (statusUpdate) {
         console.log(`WhatsApp status update: ${statusUpdate.status} for ${statusUpdate.recipientPhone}`);
+        
+        // Create event for status tracking
+        await storage.createEvent({
+          customerPhone: statusUpdate.recipientPhone,
+          type: statusUpdate.status,
+          meta: {
+            messageId: statusUpdate.messageId,
+            timestamp: statusUpdate.timestamp,
+            ...(statusUpdate.status === "failed" && {
+              errorMessage: statusUpdate.errorMessage,
+              errorCode: statusUpdate.errorCode,
+            }),
+          },
+        });
+        
         if (statusUpdate.status === "failed") {
           console.error(`Message delivery failed to ${statusUpdate.recipientPhone}: ${statusUpdate.errorMessage} (Code: ${statusUpdate.errorCode})`);
         }
@@ -403,11 +418,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(200).send("OK");
       }
 
+      // Create event for incoming message (replied)
+      await storage.createEvent({
+        customerPhone: incomingMessage.customerPhone,
+        type: "replied",
+        meta: {
+          messageType: incomingMessage.messageType,
+          content: incomingMessage.content,
+          buttonId: incomingMessage.selectedButtonId,
+          listId: incomingMessage.selectedListItemId,
+        },
+      });
+
       const result = await conversationFlowEngine.handleIncomingMessage(incomingMessage);
 
       if (result.error) {
         console.error("Conversation flow error:", result.error);
         return res.status(200).send("OK");
+      }
+
+      // Create specific events based on conversation flow navigation
+      if (incomingMessage.messageType === "button" || incomingMessage.messageType === "list") {
+        const buttonOrListId = incomingMessage.selectedButtonId || incomingMessage.selectedListItemId;
+        
+        // Language selection events
+        if (buttonOrListId === "hindi") {
+          await storage.createEvent({
+            customerPhone: incomingMessage.customerPhone,
+            type: "language_selected_hi",
+            meta: { language: "hi" },
+          });
+        } else if (buttonOrListId === "english") {
+          await storage.createEvent({
+            customerPhone: incomingMessage.customerPhone,
+            type: "language_selected_en",
+            meta: { language: "en" },
+          });
+        }
+        
+        // Menu selection events
+        else if (buttonOrListId === "site_survey") {
+          await storage.createEvent({
+            customerPhone: incomingMessage.customerPhone,
+            type: "menu_site_survey",
+            meta: { menuChoice: "site_survey" },
+          });
+        } else if (buttonOrListId === "price_estimate") {
+          await storage.createEvent({
+            customerPhone: incomingMessage.customerPhone,
+            type: "menu_price_estimate",
+            meta: { menuChoice: "price_estimate" },
+          });
+        } else if (buttonOrListId === "help") {
+          await storage.createEvent({
+            customerPhone: incomingMessage.customerPhone,
+            type: "menu_other_help",
+            meta: { menuChoice: "help" },
+          });
+        }
       }
 
       if (result.shouldSend && result.template) {

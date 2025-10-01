@@ -221,13 +221,15 @@ export class ConversationFlowEngine {
       };
       
       // For text inputs, determine next step based on current step
-      nextStep = this.getNextStepForTextInput(currentState.currentStep);
+      const textNextStep = this.getNextStepForTextInput(currentState.currentStep);
       
-      if (!nextStep) {
+      if (!textNextStep) {
         // Unknown text step, restart flow
         console.log(`Unknown text step ${currentState.currentStep}, restarting flow`);
         return await this.restartConversation(message.customerPhone);
       }
+      
+      nextStep = textNextStep;
     } 
     // Unrecognized message type or missing expected interaction
     else {
@@ -327,6 +329,26 @@ export class ConversationFlowEngine {
           notes: `Lead from WhatsApp. Language: ${state.language || 'not specified'}. Address: ${address || 'N/A'}. Village: ${village || 'N/A'}`,
         });
 
+        // Create form_submitted event and form record
+        await storage.createEvent({
+          customerPhone: state.customerPhone,
+          type: "form_submitted",
+          meta: { formType: "site_survey" },
+        });
+
+        await storage.createForm({
+          customerPhone: state.customerPhone,
+          formType: "site_survey",
+          data: {
+            customerName,
+            mobile: customerPhone,
+            address,
+            village,
+            preferredDate: preferredSurveyDate,
+            preferredTime: preferredSurveyTime,
+          },
+        });
+
         console.log(`Created lead for ${state.customerPhone}`);
       } 
       else if (completionStep === "callback_complete") {
@@ -345,7 +367,23 @@ export class ConversationFlowEngine {
           customerName,
           source,
           status: "pending",
-          notes: `Callback request from WhatsApp. Language: ${state.language || 'not specified'}`,
+        });
+
+        // Create form_submitted event and form record
+        await storage.createEvent({
+          customerPhone: state.customerPhone,
+          type: "form_submitted",
+          meta: { formType: "callback" },
+        });
+
+        await storage.createForm({
+          customerPhone: state.customerPhone,
+          formType: "callback",
+          data: {
+            customerName,
+            mobile: customerPhone,
+            source,
+          },
         });
 
         console.log(`Created callback request for ${state.customerPhone}`);
@@ -377,6 +415,26 @@ export class ConversationFlowEngine {
           assignedTo: null,
         });
 
+        // Create form_submitted event and form record
+        await storage.createEvent({
+          customerPhone: state.customerPhone,
+          type: "form_submitted",
+          meta: { formType: "service_request" },
+        });
+
+        await storage.createForm({
+          customerPhone: state.customerPhone,
+          formType: "service_request",
+          data: {
+            customerName,
+            mobile: customerPhone,
+            address,
+            village: customerVillage,
+            urgency,
+            preferredDate,
+          },
+        });
+
         console.log(`Created service request for ${state.customerPhone}`);
       } 
       else if (completionStep === "issue_complete") {
@@ -392,7 +450,27 @@ export class ConversationFlowEngine {
           customerName,
           issueDescription: description,
           status: "pending",
-          notes: `Issue from WhatsApp. Language: ${state.language || 'not specified'}. Address: ${address || 'N/A'}. Village: ${village || 'N/A'}`,
+          customerAddress: address,
+          customerVillage: village,
+        });
+
+        // Create form_submitted event and form record
+        await storage.createEvent({
+          customerPhone: state.customerPhone,
+          type: "form_submitted",
+          meta: { formType: "other_issue" },
+        });
+
+        await storage.createForm({
+          customerPhone: state.customerPhone,
+          formType: "other_issue",
+          data: {
+            customerName,
+            mobile: customerPhone,
+            address,
+            village,
+            description,
+          },
         });
 
         console.log(`Created other issue for ${state.customerPhone}`);
