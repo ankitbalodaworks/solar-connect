@@ -1,0 +1,184 @@
+Here’s a tight, implementation-ready spec that captures everything you asked—cleanly organized and without losing any technical detail.
+
+# 1) First Campaign Message (v2)
+
+* **Header image:** Use the image you provided (WhatsApp template header = `IMAGE`).
+* **Greeting line:** `Welcome to Sunshine Power.`
+
+  * **Remove** the sun emoji after this line.
+* **Remove this body line:** `Visit our website https://sunshinepower.net`
+* **Remove this heading:** `Sunshine Power Solar Solutions.`
+* **Footer (exact):** `PM Surya Ghar Registered Solar Vendor.`
+* **Buttons (order matters):**
+
+  1. **English** (quick reply)
+  2. **Hindi** (quick reply)
+  3. **Visit Website** (URL button → `https://sunshinepower.net.in`)
+
+> Template note: ensure your Meta template uses a header `IMAGE` component, body (edited as above), footer (exact string above), and 3 buttons (two Quick Replies + one URL with the link shown).
+
+---
+
+# 2) Main Menu (after language selection)
+
+Rename buttons exactly as:
+
+1. **Book Site Survey**
+2. **Price Estimate**
+3. **Maintenance / Service Request**
+4. **Request Callback**
+
+> Tapping any of these must **open a single WhatsApp Flow form** (no step-by-step chat prompts). The form collects *all* inputs in one go and submits.
+
+---
+
+# 3) Forms → WhatsApp Flows (single-screen forms)
+
+**Global conventions (very important):**
+
+* Flow JSON `version: "7.2"`, `data_api_version: "3.0"`.
+* Use **hyphenated** keys: `input-type`, `data-source`, `max-length`, `error-message`, etc.
+* **On re-entry:** always show the form again, collect inputs again, and **update** the user’s record (do **not** skip because they filled it before).
+* After submit, route to a success screen and upsert data in your store.
+
+### 3.1 Book Site Survey → `SURVEY_FLOW`
+
+**Fields (one form):**
+
+* `full_name` (TextInput, required)
+* `mobile` (PhoneNumber, required)
+* `address` (TextArea, required)
+* `village` (TextInput, required)
+* `avg_bill` (NumberInput, label “Avg Monthly Bill (₹)”, required)
+* `phase` (SingleSelect: `1φ`, `3φ`, required)
+* `roof_type` (SingleSelect: `RCC`, `Tin/Sheet`, `Other`, required)
+* `preferred_date` (DatePicker, required)
+* `preferred_time` (TimePicker, required)
+
+### 3.2 Price Estimate → `PRICE_FLOW`
+
+**Fields (one form):**
+
+* `full_name` (TextInput, required)
+* `mobile` (PhoneNumber, required)
+* `address` (TextArea, required)
+* `village` (TextInput, required)
+* `avg_bill` (NumberInput, required)
+* `monthly_units` (NumberInput, label “Avg Monthly Units (kWh)”, required)
+* `phase` (SingleSelect: `1φ`, `3φ`, required)
+* `roof_type` (SingleSelect: `RCC`, `Tin/Sheet`, `Other`, required)
+
+### 3.3 Maintenance / Service Request → `SERVICE_FLOW`
+
+**Fields (one form):**
+
+* `full_name` (TextInput, required)
+* `mobile` (PhoneNumber, required)
+* `address` (TextArea, required)
+* `village` (TextInput, required)
+* `issue_type` (SingleSelect: `Inverter`, `Panels`, `Wiring`, `Meter/Net-Meter`, `Other`, required)
+* `urgency` (SingleSelect: `Low`, `Normal`, `High`, required)
+* `preferred_date` (DatePicker, required)
+* `preferred_time` (TimePicker, required)
+
+### 3.4 Request Callback → `CALLBACK_FLOW`
+
+**Fields (one form):**
+
+* `full_name` (TextInput, required)
+* `mobile` (PhoneNumber, required)
+* `best_time` (SingleSelect: `Morning`, `Afternoon`, `Evening`, required)
+* `topic` (SingleSelect: `Site Survey`, `Price Estimate`, `Maintenance/Service`, `Other`, required)
+* `notes` (TextArea, optional)
+
+---
+
+# 4) Minimal Flow JSON Skeleton (correct key styles)
+
+```json
+{
+  "version": "7.2",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "SURVEY_FORM": ["SURVEY_SUCCESS"],
+    "SURVEY_SUCCESS": [],
+    "PRICE_FORM": ["PRICE_SUCCESS"],
+    "PRICE_SUCCESS": [],
+    "SERVICE_FORM": ["SERVICE_SUCCESS"],
+    "SERVICE_SUCCESS": [],
+    "CALLBACK_FORM": ["CALLBACK_SUCCESS"],
+    "CALLBACK_SUCCESS": []
+  },
+  "screens": [
+    {
+      "id": "SURVEY_FORM",
+      "title": "Book Site Survey",
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "form",
+            "children": [
+              { "type": "TextInput", "name": "full_name", "label": "Full Name", "required": true, "input-type": "text", "max-length": 120, "error-message": "Please enter your name" },
+              { "type": "PhoneNumber", "name": "mobile", "label": "Mobile", "required": true, "error-message": "Enter a valid mobile number" },
+              { "type": "TextArea", "name": "address", "label": "Address", "required": true, "max-length": 400 },
+              { "type": "TextInput", "name": "village", "label": "Village/Town", "required": true, "input-type": "text" },
+              { "type": "NumberInput", "name": "avg_bill", "label": "Avg Monthly Bill (₹)", "required": true },
+              { "type": "SingleSelect", "name": "phase", "label": "Phase", "required": true,
+                "data-source": { "type": "STATIC", "data": [ {"id":"1p","title":"1φ"}, {"id":"3p","title":"3φ"} ] }
+              },
+              { "type": "SingleSelect", "name": "roof_type", "label": "Roof Type", "required": true,
+                "data-source": { "type": "STATIC", "data": [ {"id":"rcc","title":"RCC"}, {"id":"tin","title":"Tin/Sheet"}, {"id":"other","title":"Other"} ] }
+              },
+              { "type": "DatePicker", "name": "preferred_date", "label": "Preferred Date", "required": true },
+              { "type": "TimePicker", "name": "preferred_time", "label": "Preferred Time", "required": true }
+            ],
+            "actions": {
+              "submit": {
+                "label": "Submit",
+                "on-click-action": { "name": "data_exchange", "payload": { "op": "submit_survey_form" } }
+              }
+            }
+          }
+        ]
+      }
+    },
+    { "id": "SURVEY_SUCCESS", "title": "Thank you!", "layout": { "type": "SingleColumnLayout", "children": [ { "type": "Description", "text": "Your survey request has been recorded. Our team will contact you shortly." } ] } },
+
+    { "id": "PRICE_FORM", "title": "Price Estimate", "layout": { "type": "SingleColumnLayout", "children": [ /* fields as per 3.2 */ ] } },
+    { "id": "PRICE_SUCCESS", "title": "Thank you!", "layout": { "type": "SingleColumnLayout", "children": [ { "type": "Description", "text": "Your details are saved. We’ll send an estimate soon." } ] } },
+
+    { "id": "SERVICE_FORM", "title": "Maintenance / Service", "layout": { "type": "SingleColumnLayout", "children": [ /* fields as per 3.3 */ ] } },
+    { "id": "SERVICE_SUCCESS", "title": "Thank you!", "layout": { "type": "SingleColumnLayout", "children": [ { "type": "Description", "text": "Your service request has been logged. We’ll reach out." } ] } },
+
+    { "id": "CALLBACK_FORM", "title": "Request Callback", "layout": { "type": "SingleColumnLayout", "children": [ /* fields as per 3.4 */ ] } },
+    { "id": "CALLBACK_SUCCESS", "title": "Thank you!", "layout": { "type": "SingleColumnLayout", "children": [ { "type": "Description", "text": "We’ll call you at your preferred time." } ] } }
+  ]
+}
+```
+
+---
+
+# 5) Re-entry / Repeat Click Behavior (must-do)
+
+* **Always** display the corresponding form again (do not skip).
+* Treat each submission as **latest truth**: upsert the record for that phone number; keep a timestamped history if needed.
+* After submit, show the `*_SUCCESS` screen every time.
+
+---
+
+# 6) Quick Implementation Checklist
+
+* [ ] Update WhatsApp **template**: header image, remove heading & website line, set footer text, set button order and link.
+* [ ] Rename main menu buttons exactly as specified.
+* [ ] Attach each menu button to its **WhatsApp Flow** (no conversational field collection).
+* [ ] Ensure Flow JSON uses **hyphenated keys** and `version: "7.2"` / `data_api_version: "3.0"`.
+* [ ] In your backend `data_exchange` handlers:
+
+  * Parse submitted fields,
+  * **Upsert** user record (do not bypass on re-entry),
+  * Return `{"version":"3.0","screen":"<*_SUCCESS>","data":{"ok":true}}`.
+* [ ] Test each path by clicking the same button **twice** to confirm re-collection and update.
+
+If you want, I can adapt the JSON skeleton above into full, ready-to-paste Flow JSONs for all four forms and a minimal handler stub to upsert records.

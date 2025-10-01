@@ -22,7 +22,12 @@ export const leads = pgTable("leads", {
   customerId: varchar("customer_id"),
   customerName: text("customer_name").notNull(),
   customerPhone: text("customer_phone").notNull(),
+  address: text("address"),
+  village: text("village"),
   interestedIn: text("interested_in").notNull(),
+  avgBill: integer("avg_bill"),
+  phase: text("phase"),
+  roofType: text("roof_type"),
   preferredSurveyDate: text("preferred_survey_date"),
   preferredSurveyTime: text("preferred_survey_time"),
   notes: text("notes"),
@@ -34,10 +39,13 @@ export const serviceRequests = pgTable("service_requests", {
   customerId: varchar("customer_id"),
   customerName: text("customer_name").notNull(),
   customerPhone: text("customer_phone").notNull(),
+  address: text("address"),
   customerVillage: text("customer_village"),
   issueType: text("issue_type").notNull(),
   description: text("description"),
   urgency: text("urgency").notNull().default("medium"),
+  preferredDate: text("preferred_date"),
+  preferredTime: text("preferred_time"),
   assignedTo: text("assigned_to"),
   status: text("status").notNull().default("pending"),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
@@ -102,8 +110,27 @@ export const callbackRequests = pgTable("callback_requests", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   customerName: text("customer_name").notNull(),
   customerPhone: text("customer_phone").notNull(),
+  bestTime: text("best_time"),
+  topic: text("topic"),
+  notes: text("notes"),
   source: text("source").notNull(), // 'price_inquiry' or 'help_request'
   status: text("status").notNull().default("pending"),
+  createdAt: timestamp("created_at").notNull().default(sql`now()`),
+});
+
+export const priceEstimates = pgTable("price_estimates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  customerName: text("customer_name").notNull(),
+  customerPhone: text("customer_phone").notNull(),
+  address: text("address"),
+  village: text("village"),
+  avgBill: integer("avg_bill"),
+  monthlyUnits: integer("monthly_units"),
+  phase: text("phase"),
+  roofType: text("roof_type"),
+  status: text("status").notNull().default("pending"),
+  estimatedCost: integer("estimated_cost"),
+  notes: text("notes"),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
 });
 
@@ -143,6 +170,7 @@ export const insertMessageTemplateSchema = createInsertSchema(messageTemplates).
 export const insertConversationStateSchema = createInsertSchema(conversationStates).omit({ id: true, createdAt: true, lastMessageAt: true });
 export const insertWhatsappLogSchema = createInsertSchema(whatsappLogs).omit({ id: true, createdAt: true });
 export const insertCallbackRequestSchema = createInsertSchema(callbackRequests).omit({ id: true, createdAt: true });
+export const insertPriceEstimateSchema = createInsertSchema(priceEstimates).omit({ id: true, createdAt: true });
 export const insertOtherIssueSchema = createInsertSchema(otherIssues).omit({ id: true, createdAt: true });
 export const insertEventSchema = createInsertSchema(events).omit({ id: true, createdAt: true });
 export const insertFormSchema = createInsertSchema(forms).omit({ id: true, submittedAt: true });
@@ -165,6 +193,8 @@ export type WhatsappLog = typeof whatsappLogs.$inferSelect;
 export type InsertWhatsappLog = z.infer<typeof insertWhatsappLogSchema>;
 export type CallbackRequest = typeof callbackRequests.$inferSelect;
 export type InsertCallbackRequest = z.infer<typeof insertCallbackRequestSchema>;
+export type PriceEstimate = typeof priceEstimates.$inferSelect;
+export type InsertPriceEstimate = z.infer<typeof insertPriceEstimateSchema>;
 export type OtherIssue = typeof otherIssues.$inferSelect;
 export type InsertOtherIssue = z.infer<typeof insertOtherIssueSchema>;
 export type Event = typeof events.$inferSelect;

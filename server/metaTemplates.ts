@@ -44,17 +44,17 @@ const campaignEntryTemplates: MetaTemplate[] = [
       },
       {
         type: "body",
-        text: "Welcome to Sunshine Power!\n\nWe are a PM Surya Ghar registered vendor offering rooftop solar installations in Rajasthan.\n\nHow would you like to continue?"
+        text: "Welcome to Sunshine Power."
       },
       {
         type: "footer",
-        text: "Registered PM Surya Ghar Solar Vendor"
+        text: "PM Surya Ghar Registered Solar Vendor."
       },
       {
         type: "buttons",
         buttons: [
-          { type: "QUICK_REPLY", text: "हिंदी (Hindi)" },
           { type: "QUICK_REPLY", text: "English" },
+          { type: "QUICK_REPLY", text: "Hindi" },
           { type: "URL", text: "Visit Website", url: "https://sunshinepower.net.in" }
         ]
       }
@@ -85,9 +85,10 @@ const mainMenuTemplates: MetaTemplate[] = [
       {
         type: "buttons",
         buttons: [
-          { type: "QUICK_REPLY", text: "Book site survey" },
-          { type: "QUICK_REPLY", text: "Price estimate" },
-          { type: "QUICK_REPLY", text: "Other help" }
+          { type: "QUICK_REPLY", text: "Book Site Survey" },
+          { type: "QUICK_REPLY", text: "Price Estimate" },
+          { type: "QUICK_REPLY", text: "Maintenance / Service Request" },
+          { type: "QUICK_REPLY", text: "Request Callback" }
         ]
       }
     ]
@@ -115,7 +116,8 @@ const mainMenuTemplates: MetaTemplate[] = [
         buttons: [
           { type: "QUICK_REPLY", text: "साइट सर्वे बुक करें" },
           { type: "QUICK_REPLY", text: "मूल्य अनुमान" },
-          { type: "QUICK_REPLY", text: "अन्य सहायता" }
+          { type: "QUICK_REPLY", text: "रखरखाव / सेवा अनुरोध" },
+          { type: "QUICK_REPLY", text: "कॉलबैक का अनुरोध" }
         ]
       }
     ]
