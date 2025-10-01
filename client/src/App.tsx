@@ -17,6 +17,7 @@ import ServiceRequests from "@/pages/ServiceRequests";
 import MessageTemplates from "@/pages/MessageTemplates";
 import Conversations from "@/pages/Conversations";
 import ConversationDetails from "@/pages/ConversationDetails";
+import Status from "@/pages/Status";
 
 function Router() {
   return (
@@ -29,6 +30,7 @@ function Router() {
       <Route path="/message-templates" component={MessageTemplates} />
       <Route path="/conversations" component={Conversations} />
       <Route path="/conversations/:phone" component={ConversationDetails} />
+      <Route path="/status" component={Status} />
       <Route component={NotFound} />
     </Switch>
   );
