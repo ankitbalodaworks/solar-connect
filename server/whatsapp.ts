@@ -27,7 +27,7 @@ interface UploadMediaResponse {
 
 export class WhatsAppService {
   private config: WhatsAppConfig;
-  private baseUrl = "https://graph.facebook.com/v18.0";
+  private baseUrl = "https://graph.facebook.com/v21.0";
 
   constructor() {
     this.config = {
@@ -247,6 +247,79 @@ export class WhatsAppService {
       };
     } catch (error: any) {
       console.error("Error sending WhatsApp list message:", error.response?.data || error.message);
+      return {
+        success: false,
+        error: error.response?.data?.error?.message || error.message,
+      };
+    }
+  }
+
+  async sendFlowMessage(
+    to: string,
+    flowId: string,
+    bodyText: string,
+    buttonText: string,
+    flowToken: string,
+    headerText?: string,
+    footerText?: string,
+    flowActionPayload?: Record<string, any>
+  ): Promise<SendMessageResponse> {
+    try {
+      if (!this.isConfigured()) {
+        return { success: false, error: "WhatsApp not configured" };
+      }
+
+      const parameters: any = {
+        flow_message_version: "3",
+        flow_token: flowToken,
+        flow_id: flowId,
+        flow_cta: buttonText.substring(0, 20),
+        flow_action: "navigate"
+      };
+
+      if (flowActionPayload) {
+        parameters.flow_action_payload = flowActionPayload;
+      }
+
+      const interactive: any = {
+        type: "flow",
+        body: { text: bodyText },
+        action: {
+          name: "flow",
+          parameters
+        }
+      };
+
+      if (headerText) {
+        interactive.header = { type: "text", text: headerText };
+      }
+
+      if (footerText) {
+        interactive.footer = { text: footerText };
+      }
+
+      const response = await axios.post(
+        `${this.baseUrl}/${this.config.phoneNumberId}/messages`,
+        {
+          messaging_product: "whatsapp",
+          to,
+          type: "interactive",
+          interactive,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.config.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      return {
+        success: true,
+        messageId: response.data.messages[0].id,
+      };
+    } catch (error: any) {
+      console.error("Error sending WhatsApp flow message:", error.response?.data || error.message);
       return {
         success: false,
         error: error.response?.data?.error?.message || error.message,
