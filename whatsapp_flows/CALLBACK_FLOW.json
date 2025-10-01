@@ -23,7 +23,7 @@
                 "label": "Full Name",
                 "required": true,
                 "input-type": "text",
-                "max-length": 120
+                "max-chars": 120
               },
               {
                 "type": "TextInput",
@@ -60,7 +60,7 @@
                 "name": "notes",
                 "label": "Notes (Optional)",
                 "required": false,
-                "max-length": 400
+                "max-chars": 400
               },
               {
                 "type": "Footer",

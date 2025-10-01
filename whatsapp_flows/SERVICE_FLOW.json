@@ -23,7 +23,7 @@
                 "label": "Full Name",
                 "required": true,
                 "input-type": "text",
-                "max-length": 120
+                "max-chars": 120
               },
               {
                 "type": "TextInput",
@@ -37,7 +37,7 @@
                 "name": "address",
                 "label": "Address",
                 "required": true,
-                "max-length": 400
+                "max-chars": 400
               },
               {
                 "type": "TextInput",
