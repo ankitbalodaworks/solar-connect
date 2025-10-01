@@ -1,5 +1,5 @@
 {
-  "version": "7.2",
+  "version": "5.0",
   "data_api_version": "3.0",
   "routing_model": {
     "SURVEY_FORM": ["SURVEY_SUCCESS"],
@@ -9,6 +9,7 @@
     {
       "id": "SURVEY_FORM",
       "title": "Book Site Survey",
+      "terminal": true,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
@@ -22,15 +23,14 @@
                 "label": "Full Name",
                 "required": true,
                 "input-type": "text",
-                "max-length": 120,
-                "error-message": "Please enter your name"
+                "max-length": 120
               },
               {
-                "type": "PhoneNumber",
+                "type": "TextInput",
                 "name": "mobile",
                 "label": "Mobile",
                 "required": true,
-                "error-message": "Enter a valid mobile number"
+                "input-type": "phone"
               },
               {
                 "type": "TextArea",
@@ -47,37 +47,32 @@
                 "input-type": "text"
               },
               {
-                "type": "NumberInput",
+                "type": "TextInput",
                 "name": "avg_bill",
                 "label": "Avg Monthly Bill (₹)",
-                "required": true
+                "required": true,
+                "input-type": "number"
               },
               {
-                "type": "SingleSelect",
+                "type": "RadioButtonsGroup",
                 "name": "phase",
                 "label": "Phase",
                 "required": true,
-                "data-source": {
-                  "type": "STATIC",
-                  "data": [
-                    { "id": "1p", "title": "1φ" },
-                    { "id": "3p", "title": "3φ" }
-                  ]
-                }
+                "data-source": [
+                  { "id": "1p", "title": "1φ" },
+                  { "id": "3p", "title": "3φ" }
+                ]
               },
               {
-                "type": "SingleSelect",
+                "type": "Dropdown",
                 "name": "roof_type",
                 "label": "Roof Type",
                 "required": true,
-                "data-source": {
-                  "type": "STATIC",
-                  "data": [
-                    { "id": "rcc", "title": "RCC" },
-                    { "id": "tin", "title": "Tin/Sheet" },
-                    { "id": "other", "title": "Other" }
-                  ]
-                }
+                "data-source": [
+                  { "id": "rcc", "title": "RCC" },
+                  { "id": "tin", "title": "Tin/Sheet" },
+                  { "id": "other", "title": "Other" }
+                ]
               },
               {
                 "type": "DatePicker",
@@ -86,14 +81,14 @@
                 "required": true
               },
               {
-                "type": "TimePicker",
+                "type": "TextInput",
                 "name": "preferred_time",
-                "label": "Preferred Time",
-                "required": true
-              }
-            ],
-            "actions": {
-              "submit": {
+                "label": "Preferred Time (e.g. 10:00 AM)",
+                "required": true,
+                "input-type": "text"
+              },
+              {
+                "type": "Footer",
                 "label": "Submit",
                 "on-click-action": {
                   "name": "data_exchange",
@@ -102,7 +97,7 @@
                   }
                 }
               }
-            }
+            ]
           }
         ]
       }
@@ -110,12 +105,20 @@
     {
       "id": "SURVEY_SUCCESS",
       "title": "Thank you!",
+      "terminal": true,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
           {
-            "type": "Description",
+            "type": "TextBody",
             "text": "Your survey request has been recorded. Our team will contact you shortly."
+          },
+          {
+            "type": "Footer",
+            "label": "Done",
+            "on-click-action": {
+              "name": "complete"
+            }
           }
         ]
       }
