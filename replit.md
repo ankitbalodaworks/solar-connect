@@ -13,7 +13,7 @@ Preferred communication style: Simple, everyday language.
 ### Frontend Architecture
 - **Framework**: React with TypeScript using Vite.
 - **UI Library**: shadcn/ui components on Radix UI, featuring a professional blue color scheme (#3B82F6) with light gray backgrounds (#F9FAFB), professional table-centric design, and custom theme support with light/dark modes.
-- **Routing**: Wouter, handling Dashboard, Customers, Campaigns, Leads, and Service Requests pages.
+- **Routing**: Wouter, handling Dashboard, Customers, Campaigns, Leads, Service Requests, Status, Conversations, and Message Templates pages.
 - **State Management**: TanStack Query (React Query) for server state.
 - **Styling**: Tailwind CSS, Inter font, responsive design, and custom elevation system.
 
@@ -33,6 +33,8 @@ Preferred communication style: Simple, everyday language.
     - `messageTemplates`: WhatsApp interactive templates (16 total for campaign_lead and service_request flows in EN/HI), including Meta approval tracking fields (metaStatus, metaTemplateId).
     - `conversationStates`: Tracks active WhatsApp conversation states.
     - `whatsappLogs`: Audit trail of all WhatsApp messages with status tracking.
+    - `events`: Append-only log of customer journey events (campaign_sent, delivered, read, replied, language_selected, menu choices, form_submitted).
+    - `forms`: Stores complete form submission data for all conversation completions.
     - `callback_requests`: Captures callback requests for price/help.
     - `other_issues`: Captures general issue reports.
 - **Session Management**: Configured for `connect-pg-simple` (PostgreSQL session store).
@@ -47,7 +49,8 @@ Preferred communication style: Simple, everyday language.
     - Automated record creation (Lead, Service Request, Callback Request, Other Issue) upon conversation completion.
     - **Conversation Flow Engine**: Manages multi-step conversations, resolves templates, preserves context, extracts data, and automatically creates database records.
     - **WhatsApp Service**: Handles sending text, button, list messages and webhook processing.
-    - **API Endpoints**: `/api/whatsapp/send`, `/api/whatsapp/webhook`, `/api/whatsapp/status`, `/api/whatsapp/upload-media`, `/api/message-templates/:id/submit`, `/api/message-templates/:id/sync-status`, `/api/whatsapp-logs`.
+    - **API Endpoints**: `/api/whatsapp/send`, `/api/whatsapp/webhook`, `/api/whatsapp/status`, `/api/whatsapp/upload-media`, `/api/message-templates/:id/submit`, `/api/message-templates/:id/sync-status`, `/api/whatsapp-logs`, `/api/contact-status`, `/api/contact-status/:customerPhone/forms`, `/api/contact-status/export/csv`.
+    - **Status Tracking System**: Comprehensive event tracking captures customer journey stages (campaign_sent → delivered → read → replied → language_selected → menu choice → form_submitted) with Status Page UI for monitoring, searching, filtering, and CSV export.
     - **Required Environment Variables**: `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_VERIFY_TOKEN`, `WHATSAPP_APP_SECRET`.
 - **File Processing**: XLSX library (SheetJS) for Excel parsing and React Dropzone for customer data uploads.
 - **Form Management**: React Hook Form with Zod resolvers for validation, and Drizzle-Zod for schema validation.
