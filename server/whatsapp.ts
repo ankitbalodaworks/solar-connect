@@ -358,6 +358,15 @@ export class WhatsAppService {
     }
   }
 
+  generateFlowToken(customerPhone: string): string {
+    const payload = {
+      phone: customerPhone,
+      timestamp: Date.now(),
+    };
+    const payloadBase64 = Buffer.from(JSON.stringify(payload)).toString('base64');
+    return payloadBase64;
+  }
+
   verifyWebhook(mode: string, token: string, challenge: string): string | null {
     if (mode === "subscribe" && token === this.config.verifyToken) {
       return challenge;

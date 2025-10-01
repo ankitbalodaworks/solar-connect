@@ -1,5 +1,6 @@
 import { storage } from "./storage";
 import { type ConversationState, type MessageTemplate } from "@shared/schema";
+import { whatsappService } from "./whatsapp";
 
 interface IncomingMessage {
   customerPhone: string;
@@ -11,9 +12,11 @@ interface IncomingMessage {
 }
 
 interface OutgoingMessage {
-  template: MessageTemplate;
+  template: MessageTemplate | null;
   shouldSend: boolean;
   error?: string;
+  isFlow?: boolean;
+  flowSent?: boolean;
 }
 
 export class ConversationFlowEngine {
@@ -36,6 +39,44 @@ export class ConversationFlowEngine {
       if (!conversationState) {
         conversationState = await this.initializeConversation(message);
       } else {
+        // Check if user is selecting a main menu option - send WhatsApp Flow
+        if (conversationState.currentStep === "main_menu" && message.selectedButtonId) {
+          const flowMapping: Record<string, string> = {
+            "site_survey": "survey",
+            "price_estimate": "price",
+            "service": "service",
+            "callback": "callback",
+          };
+          
+          const flowType = flowMapping[message.selectedButtonId];
+          
+          if (flowType) {
+            const flowResult = await this.sendWhatsAppFlow(
+              message.customerPhone,
+              flowType,
+              conversationState.language || "en"
+            );
+            
+            if (flowResult.success) {
+              // Delete conversation state as flow will handle the rest
+              await storage.deleteConversationState(message.customerPhone);
+              
+              return {
+                template: null,
+                shouldSend: false,
+                isFlow: true,
+                flowSent: true,
+              };
+            } else {
+              return {
+                template: null,
+                shouldSend: false,
+                error: flowResult.error || "Failed to send WhatsApp Flow",
+              };
+            }
+          }
+        }
+        
         conversationState = await this.processStateTransition(conversationState, message);
       }
 
@@ -265,6 +306,117 @@ export class ConversationFlowEngine {
     });
 
     return newState;
+  }
+
+  private async sendWhatsAppFlow(
+    customerPhone: string,
+    flowType: string,
+    language: string
+  ): Promise<{ success: boolean; error?: string }> {
+    try {
+      // Map flow type to flow ID from environment variables
+      const flowIdMapping: Record<string, string> = {
+        survey: process.env.WHATSAPP_FLOW_ID_SURVEY || "",
+        price: process.env.WHATSAPP_FLOW_ID_PRICE || "",
+        service: process.env.WHATSAPP_FLOW_ID_SERVICE || "",
+        callback: process.env.WHATSAPP_FLOW_ID_CALLBACK || "",
+      };
+
+      const flowId = flowIdMapping[flowType];
+      
+      if (!flowId) {
+        return {
+          success: false,
+          error: `Flow ID not configured for ${flowType}. Please set WHATSAPP_FLOW_ID_${flowType.toUpperCase()} environment variable.`,
+        };
+      }
+
+      // Generate flow token with customer phone
+      const flowToken = whatsappService.generateFlowToken(customerPhone);
+
+      // Get flow text based on language
+      const flowTexts: Record<string, Record<string, { body: string; button: string }>> = {
+        survey: {
+          en: {
+            body: "Please fill out this quick form to schedule your free rooftop solar site survey.",
+            button: "Book Survey",
+          },
+          hi: {
+            body: "कृपया अपने मुफ्त छत सोलर साइट सर्वेक्षण को शेड्यूल करने के लिए यह फॉर्म भरें।",
+            button: "सर्वे बुक करें",
+          },
+        },
+        price: {
+          en: {
+            body: "Get an instant price estimate for your solar installation.",
+            button: "Get Estimate",
+          },
+          hi: {
+            body: "अपने सोलर इंस्टॉलेशन के लिए तुरंत मूल्य अनुमान प्राप्त करें।",
+            button: "अनुमान प्राप्त करें",
+          },
+        },
+        service: {
+          en: {
+            body: "Request maintenance or service for your existing solar installation.",
+            button: "Request Service",
+          },
+          hi: {
+            body: "अपने मौजूदा सोलर इंस्टॉलेशन के लिए रखरखाव या सेवा का अनुरोध करें।",
+            button: "सेवा का अनुरोध करें",
+          },
+        },
+        callback: {
+          en: {
+            body: "Request a callback from our team.",
+            button: "Request Callback",
+          },
+          hi: {
+            body: "हमारी टीम से कॉलबैक का अनुरोध करें।",
+            button: "कॉलबैक का अनुरोध करें",
+          },
+        },
+      };
+
+      const text = flowTexts[flowType]?.[language] || flowTexts[flowType].en;
+
+      // Send WhatsApp Flow message
+      const result = await whatsappService.sendFlowMessage(
+        customerPhone,
+        flowId,
+        text.body,
+        text.button,
+        flowToken
+      );
+
+      if (result.success) {
+        // Log the flow message
+        await storage.createWhatsappLog({
+          customerPhone,
+          direction: "outbound",
+          messageType: "button",
+          content: {
+            bodyText: text.body,
+            flowId,
+            flowType,
+          },
+          status: "sent",
+        });
+
+        return { success: true };
+      } else {
+        return {
+          success: false,
+          error: result.error,
+        };
+      }
+    } catch (error) {
+      console.error("Error sending WhatsApp Flow:", error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
   }
 
   private isCompletionStep(step: string): boolean {
