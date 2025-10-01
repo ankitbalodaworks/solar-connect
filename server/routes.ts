@@ -598,6 +598,82 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Contact Status Summary endpoint (for Status Page)
+  app.get("/api/contact-status", async (req, res) => {
+    try {
+      const summary = await storage.getContactStatusSummary();
+      res.json(summary);
+    } catch (error) {
+      console.error("Error fetching contact status:", error);
+      res.status(500).json({ error: "Failed to fetch contact status" });
+    }
+  });
+
+  // Get forms for a specific customer
+  app.get("/api/contact-status/:customerPhone/forms", async (req, res) => {
+    try {
+      const forms = await storage.getForms(req.params.customerPhone);
+      res.json(forms);
+    } catch (error) {
+      console.error("Error fetching forms:", error);
+      res.status(500).json({ error: "Failed to fetch forms" });
+    }
+  });
+
+  // CSV Export of contact status
+  app.get("/api/contact-status/export/csv", async (req, res) => {
+    try {
+      const summary = await storage.getContactStatusSummary();
+      
+      // Helper function to escape CSV fields and prevent formula injection
+      const escapeCsvField = (field: string | null): string => {
+        if (!field) return '""';
+        
+        let value = String(field);
+        
+        // Prevent formula injection by checking for dangerous characters 
+        // after trimming leading whitespace (Excel/Sheets may ignore leading whitespace)
+        const trimmed = value.trimStart();
+        if (/^[=+\-@]/.test(trimmed)) {
+          value = "'" + value;
+        }
+        
+        // Escape quotes by doubling them
+        value = value.replace(/"/g, '""');
+        
+        // Always wrap in quotes for consistency and safety
+        return `"${value}"`;
+      };
+      
+      // Create CSV header
+      const csvRows = ["Phone Number,Latest Event,Timestamp,Forms Submitted"];
+      
+      // Add data rows
+      for (const contact of summary) {
+        const timestamp = contact.latestEventTimestamp ? contact.latestEventTimestamp.toISOString() : '';
+        const row = [
+          escapeCsvField(contact.customerPhone),
+          escapeCsvField(contact.latestEventType),
+          escapeCsvField(timestamp),
+          escapeCsvField(String(contact.formCount))
+        ].join(',');
+        csvRows.push(row);
+      }
+      
+      const csv = csvRows.join('\n');
+      
+      // Add UTF-8 BOM for better Excel compatibility
+      const csvWithBOM = '\uFEFF' + csv;
+      
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader('Content-Disposition', 'attachment; filename=contact-status.csv');
+      res.send(csvWithBOM);
+    } catch (error) {
+      console.error("Error exporting CSV:", error);
+      res.status(500).json({ error: "Failed to export CSV" });
+    }
+  });
+
   // Clear all data endpoint
   app.post("/api/clear-data", async (req, res) => {
     try {

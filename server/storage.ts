@@ -68,6 +68,14 @@ export interface IStorage {
   getForms(customerPhone?: string): Promise<Form[]>;
   getForm(id: string): Promise<Form | undefined>;
   
+  // Contact Status Summary (for Status Page)
+  getContactStatusSummary(): Promise<Array<{
+    customerPhone: string;
+    latestEventType: string | null;
+    latestEventTimestamp: Date | null;
+    formCount: number;
+  }>>;
+  
   // Statistics
   getStatistics(): Promise<{
     totalCustomers: number;
@@ -337,6 +345,50 @@ export class MemStorage implements IStorage {
       .orderBy(desc(events.createdAt))
       .limit(1);
     return result[0];
+  }
+
+  async getContactStatusSummary(): Promise<Array<{
+    customerPhone: string;
+    latestEventType: string | null;
+    latestEventTimestamp: Date | null;
+    formCount: number;
+  }>> {
+    // Get all unique customer phones from events (since we don't have a customers table populated yet)
+    // Start from events but include all contacts
+    const result = await db.execute(sql`
+      WITH all_phones AS (
+        SELECT DISTINCT customer_phone FROM events
+      ),
+      latest_events AS (
+        SELECT DISTINCT ON (customer_phone) 
+          customer_phone,
+          type,
+          created_at
+        FROM events
+        ORDER BY customer_phone, created_at DESC
+      ),
+      form_counts AS (
+        SELECT customer_phone, COUNT(*) as count
+        FROM forms
+        GROUP BY customer_phone
+      )
+      SELECT 
+        ap.customer_phone,
+        le.type as latest_event_type,
+        le.created_at as latest_event_timestamp,
+        COALESCE(fc.count, 0) as form_count
+      FROM all_phones ap
+      LEFT JOIN latest_events le ON ap.customer_phone = le.customer_phone
+      LEFT JOIN form_counts fc ON ap.customer_phone = fc.customer_phone
+      ORDER BY COALESCE(le.created_at, CURRENT_TIMESTAMP) DESC
+    `);
+    
+    return (result.rows as any[]).map(row => ({
+      customerPhone: row.customer_phone,
+      latestEventType: row.latest_event_type || null,
+      latestEventTimestamp: row.latest_event_timestamp ? new Date(row.latest_event_timestamp) : null,
+      formCount: Number(row.form_count || 0),
+    }));
   }
 
   // Forms (submitted form data)
