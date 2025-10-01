@@ -602,6 +602,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // WhatsApp Flow data_exchange endpoints
   const flowHandlers = new FlowHandlers(storage);
   
+  // Unified data_exchange endpoint for WhatsApp Flows (Meta expects this)
+  app.get("/api/whatsapp/data-exchange", (req, res) => {
+    res.status(200).json({
+      success: true,
+      message: "WhatsApp Flow Data Exchange endpoint is active",
+      version: "3.0"
+    });
+  });
+
+  app.post("/api/whatsapp/data-exchange", async (req, res) => {
+    try {
+      const body = req.body;
+      const op = body.data?.op || body.screen;
+      
+      // Route to appropriate flow handler based on operation
+      if (op === "submit_survey_form" || body.screen === "SURVEY_FORM") {
+        return flowHandlers.handleSurveyFlow(req, res);
+      } else if (op === "submit_price_form" || body.screen === "PRICE_FORM") {
+        return flowHandlers.handlePriceFlow(req, res);
+      } else if (op === "submit_service_form" || body.screen === "SERVICE_FORM") {
+        return flowHandlers.handleServiceFlow(req, res);
+      } else if (op === "submit_callback_form" || body.screen === "CALLBACK_FORM") {
+        return flowHandlers.handleCallbackFlow(req, res);
+      } else {
+        // Handle PING and INIT actions
+        const action = body.action?.toUpperCase();
+        if (action === "PING") {
+          return res.json({
+            version: "3.0",
+            data: { status: "active" }
+          });
+        }
+        return res.status(400).json({ 
+          error: "Unknown operation or screen",
+          received: { op, screen: body.screen, action: body.action }
+        });
+      }
+    } catch (error) {
+      console.error("Error in data_exchange endpoint:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+  
   app.post("/api/flows/survey", (req, res) => flowHandlers.handleSurveyFlow(req, res));
   app.post("/api/flows/price", (req, res) => flowHandlers.handlePriceFlow(req, res));
   app.post("/api/flows/service", (req, res) => flowHandlers.handleServiceFlow(req, res));
