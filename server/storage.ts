@@ -1,7 +1,7 @@
-import { type User, type InsertUser, type MessageTemplate, type InsertMessageTemplate, type ConversationState, type InsertConversationState, type WhatsappLog, type InsertWhatsappLog, type Lead, type InsertLead, type ServiceRequest, type InsertServiceRequest, type CallbackRequest, type InsertCallbackRequest, type OtherIssue, type InsertOtherIssue, type Event, type InsertEvent, type Form, type InsertForm } from "@shared/schema";
+import { type User, type InsertUser, type MessageTemplate, type InsertMessageTemplate, type ConversationState, type InsertConversationState, type WhatsappLog, type InsertWhatsappLog, type Lead, type InsertLead, type ServiceRequest, type InsertServiceRequest, type CallbackRequest, type InsertCallbackRequest, type PriceEstimate, type InsertPriceEstimate, type OtherIssue, type InsertOtherIssue, type Event, type InsertEvent, type Form, type InsertForm } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
-import { messageTemplates, conversationStates, whatsappLogs, leads, serviceRequests, customers, campaigns, callbackRequests, otherIssues, events, forms } from "@shared/schema";
+import { messageTemplates, conversationStates, whatsappLogs, leads, serviceRequests, customers, campaigns, callbackRequests, priceEstimates, otherIssues, events, forms } from "@shared/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 
 // modify the interface with any CRUD methods
@@ -50,6 +50,13 @@ export interface IStorage {
   createCallbackRequest(request: InsertCallbackRequest): Promise<CallbackRequest>;
   updateCallbackRequest(id: string, request: Partial<InsertCallbackRequest>): Promise<CallbackRequest | undefined>;
   deleteCallbackRequest(id: string): Promise<boolean>;
+  
+  // Price Estimates
+  getPriceEstimates(): Promise<PriceEstimate[]>;
+  getPriceEstimate(id: string): Promise<PriceEstimate | undefined>;
+  createPriceEstimate(estimate: InsertPriceEstimate): Promise<PriceEstimate>;
+  updatePriceEstimate(id: string, estimate: Partial<InsertPriceEstimate>): Promise<PriceEstimate | undefined>;
+  deletePriceEstimate(id: string): Promise<boolean>;
   
   // Other Issues
   getOtherIssues(): Promise<OtherIssue[]>;
@@ -287,6 +294,34 @@ export class MemStorage implements IStorage {
 
   async deleteCallbackRequest(id: string): Promise<boolean> {
     const result = await db.delete(callbackRequests).where(eq(callbackRequests.id, id)).returning();
+    return result.length > 0;
+  }
+
+  // Price Estimates - Database-backed
+  async getPriceEstimates(): Promise<PriceEstimate[]> {
+    return await db.select().from(priceEstimates).orderBy(desc(priceEstimates.createdAt));
+  }
+
+  async getPriceEstimate(id: string): Promise<PriceEstimate | undefined> {
+    const result = await db.select().from(priceEstimates).where(eq(priceEstimates.id, id));
+    return result[0];
+  }
+
+  async createPriceEstimate(estimate: InsertPriceEstimate): Promise<PriceEstimate> {
+    const result = await db.insert(priceEstimates).values(estimate).returning();
+    return result[0];
+  }
+
+  async updatePriceEstimate(id: string, estimate: Partial<InsertPriceEstimate>): Promise<PriceEstimate | undefined> {
+    const result = await db.update(priceEstimates)
+      .set(estimate)
+      .where(eq(priceEstimates.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deletePriceEstimate(id: string): Promise<boolean> {
+    const result = await db.delete(priceEstimates).where(eq(priceEstimates.id, id)).returning();
     return result.length > 0;
   }
 

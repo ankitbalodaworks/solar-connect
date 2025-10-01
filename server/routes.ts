@@ -6,6 +6,7 @@ import { conversationFlowEngine } from "./conversationFlow";
 import { whatsappService } from "./whatsapp";
 import { notificationService } from "./notifications";
 import { allMetaTemplates } from "./metaTemplates";
+import { FlowHandlers } from "./flowHandlers";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -597,6 +598,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         : "WhatsApp is not configured. Add WHATSAPP_PHONE_NUMBER_ID and WHATSAPP_ACCESS_TOKEN to environment."
     });
   });
+
+  // WhatsApp Flow data_exchange endpoints
+  const flowHandlers = new FlowHandlers(storage);
+  
+  app.post("/api/flows/survey", (req, res) => flowHandlers.handleSurveyFlow(req, res));
+  app.post("/api/flows/price", (req, res) => flowHandlers.handlePriceFlow(req, res));
+  app.post("/api/flows/service", (req, res) => flowHandlers.handleServiceFlow(req, res));
+  app.post("/api/flows/callback", (req, res) => flowHandlers.handleCallbackFlow(req, res));
 
   // Statistics endpoint
   app.get("/api/statistics", async (req, res) => {
