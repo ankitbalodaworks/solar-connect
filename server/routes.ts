@@ -132,9 +132,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         metaTemplateName = getMetaTemplateName(template.flowType, template.stepKey, template.language);
       } catch (mappingError: any) {
-        console.error(`Failed to map template "${template.id}" (${template.name}): ${mappingError.message}`);
+        console.error(`Template "${template.name}" does not require Meta approval: ${mappingError.message}`);
         return res.status(400).json({ 
-          error: `Template mapping failed: ${mappingError.message}` 
+          error: "This template does not require Meta approval. Form field templates are sent as interactive messages within active conversations and do not need pre-approval." 
         });
       }
 
@@ -145,8 +145,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error(`  Looking for: ${metaTemplateName}`);
         console.error(`  flowType: ${template.flowType}, stepKey: ${template.stepKey}, language: ${template.language}`);
         console.error(`  Available Meta templates: ${allMetaTemplates.map(t => t.name).join(", ")}`);
-        return res.status(404).json({ 
-          error: "Meta template definition not found. Please check template configuration." 
+        return res.status(400).json({ 
+          error: "This template does not require Meta approval. Form field templates are sent as interactive messages within active conversations and do not need pre-approval." 
         });
       }
 
@@ -186,12 +186,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Template not found" });
       }
 
-      if (!template.name) {
-        return res.status(400).json({ error: "Template name is required" });
+      if (!template.flowType || !template.stepKey || !template.language) {
+        return res.status(400).json({ error: "Template flowType, stepKey, and language are required" });
       }
 
-      // Fetch status from Meta
-      const result = await whatsappService.syncTemplateStatus(template.name);
+      // Find the matching Meta template name using flowType, stepKey, and language
+      let metaTemplateName: string;
+      try {
+        metaTemplateName = getMetaTemplateName(template.flowType, template.stepKey, template.language);
+      } catch (mappingError: any) {
+        console.error(`Template "${template.name}" does not require Meta approval: ${mappingError.message}`);
+        return res.status(400).json({ 
+          error: "This template does not require Meta approval. Form field templates are sent as interactive messages within active conversations and do not need pre-approval." 
+        });
+      }
+
+      // Fetch status from Meta using the Meta template name
+      const result = await whatsappService.syncTemplateStatus(metaTemplateName);
       
       if (result.success && result.status) {
         // Map Meta status to our database status (normalize to lowercase)
