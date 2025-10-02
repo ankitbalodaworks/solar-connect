@@ -1,0 +1,50 @@
+2025-10-02T19:24:44.312715274Z 
+2025-10-02T19:24:44.312747145Z > rest-express@1.0.0 start
+2025-10-02T19:24:44.312752115Z > NODE_ENV=production node dist/index.js
+2025-10-02T19:24:44.312755075Z 
+2025-10-02T19:24:52.017464305Z 7:24:51 PM [express] serving on port 10000
+2025-10-02T19:24:58.753771164Z ==> Your service is live 🎉
+2025-10-02T19:24:58.93949854Z ==> 
+2025-10-02T19:24:59.023178831Z 7:24:59 PM [express] GET /api/crypto/test-key 304 in 10ms :: {"success":true,"keyPresent":true,"keyL…
+2025-10-02T19:24:59.123698707Z ==> ///////////////////////////////////////////////////////////
+2025-10-02T19:24:59.305520324Z ==> 
+2025-10-02T19:24:59.4878841Z ==> Available at your primary URL https://solar-connect-q0a4.onrender.com
+2025-10-02T19:24:59.671147327Z ==> 
+2025-10-02T19:24:59.853836843Z ==> ///////////////////////////////////////////////////////////
+2025-10-02T19:25:36.894279116Z [CRYPTO DEBUG] Encrypted request received
+2025-10-02T19:25:36.895314466Z [CRYPTO DEBUG] Encrypted AES key length: 344
+2025-10-02T19:25:36.895329147Z [CRYPTO DEBUG] Encrypted AES key (first 40 chars): XE/hi3O43bN1SP3yiBYCKyvDK1aiCgzjfcD5jbgv
+2025-10-02T19:25:36.895333827Z [CRYPTO DEBUG] Encrypted flow data length: 68
+2025-10-02T19:25:36.895337817Z [CRYPTO DEBUG] Encrypted flow data (first 40 chars): LhZMaE6+xCtKlc7H/oxK4SgN6Z1r8gp2VWj8EGOz
+2025-10-02T19:25:36.895341787Z [CRYPTO DEBUG] Initial vector length: 24
+2025-10-02T19:25:36.895345897Z [CRYPTO DEBUG] Initial vector: vgnxgMob2FoxcSgkRPlAfg==
+2025-10-02T19:25:36.911467562Z [CRYPTO DEBUG] Private key length: 1703
+2025-10-02T19:25:36.911602685Z [CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+2025-10-02T19:25:36.912207967Z [CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+2025-10-02T19:25:36.914289877Z [CRYPTO DEBUG] Formatted key length: 1703
+2025-10-02T19:25:36.914469991Z [CRYPTO DEBUG] Has PEM headers: true
+2025-10-02T19:25:36.919911727Z Decryption error: RangeError: Invalid key length
+2025-10-02T19:25:36.919923187Z     at Decipheriv.createCipherBase (node:internal/crypto/cipher:121:19)
+2025-10-02T19:25:36.919927407Z     at Decipheriv.createCipherWithIV (node:internal/crypto/cipher:133:3)
+2025-10-02T19:25:36.919931558Z     at new Decipheriv (node:internal/crypto/cipher:278:3)
+2025-10-02T19:25:36.919935318Z     at Object.createDecipheriv (node:crypto:147:10)
+2025-10-02T19:25:36.919940288Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2558:32)
+2025-10-02T19:25:36.919946558Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+2025-10-02T19:25:36.919950078Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T19:25:36.919953598Z     at file:///opt/render/project/src/dist/index.js:3122:61
+2025-10-02T19:25:36.919957148Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:25:36.919971858Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13) {
+2025-10-02T19:25:36.919975788Z   code: 'ERR_CRYPTO_INVALID_KEYLEN'
+2025-10-02T19:25:36.919979559Z }
+2025-10-02T19:25:36.920269884Z Survey flow error: Error: Failed to decrypt WhatsApp Flow request
+2025-10-02T19:25:36.920279734Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2570:13)
+2025-10-02T19:25:36.920284174Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+2025-10-02T19:25:36.920287985Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T19:25:36.920292645Z     at file:///opt/render/project/src/dist/index.js:3122:61
+2025-10-02T19:25:36.920297315Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:25:36.920302225Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T19:25:36.920305965Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T19:25:36.920350866Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:25:36.920353636Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+2025-10-02T19:25:36.920355876Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-10-02T19:25:36.921787124Z 7:25:36 PM [express] POST /api/flows/survey 500 in 28ms :: {"error":"Failed to process survey flow"}
