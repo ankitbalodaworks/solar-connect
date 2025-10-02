@@ -556,8 +556,7 @@ export class FlowHandlers {
         {
           key: rsaPrivateKey,
           padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-          oaepHash: 'sha256',
-          oaepLabel: Buffer.from('WA-FLOW-DATA')
+          oaepHash: 'sha256'
         },
         encryptedAesKey
       );

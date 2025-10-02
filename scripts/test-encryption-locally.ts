@@ -40,13 +40,12 @@ function testEncryptionDecryption() {
     console.log(`  IV: ${iv.toString('base64')}`);
 
     // Step 2: Encrypt AES key with RSA-OAEP (simulating WhatsApp)
-    console.log('\nStep 2: Encrypting AES key with RSA-OAEP...');
+    console.log('\nStep 2: Encrypting AES key with RSA-OAEP (no label, matching WhatsApp)...');
     const encryptedAesKey = crypto.publicEncrypt(
       {
         key: rsaPublicKey,
         padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-        oaepHash: 'sha256',
-        oaepLabel: Buffer.from('WA-FLOW-DATA')
+        oaepHash: 'sha256'
       },
       aesKey
     );
@@ -87,15 +86,14 @@ function testEncryptionDecryption() {
     console.log('🔓 DECRYPTION TEST (simulating our server)...\n');
 
     // Step 6: Decrypt AES key with RSA-OAEP
-    console.log('Step 6: Decrypting AES key with RSA-OAEP...');
+    console.log('Step 6: Decrypting AES key with RSA-OAEP (no label, matching WhatsApp)...');
     const encryptedAesKeyBuffer = Buffer.from(simulatedRequest.encrypted_aes_key, 'base64');
     
     const decryptedAesKey = crypto.privateDecrypt(
       {
         key: rsaPrivateKey,
         padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-        oaepHash: 'sha256',
-        oaepLabel: Buffer.from('WA-FLOW-DATA')
+        oaepHash: 'sha256'
       },
       encryptedAesKeyBuffer
     );

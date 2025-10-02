@@ -1,0 +1,165 @@
+     ==> Your service is live 🎉
+     ==> 
+     ==> ///////////////////////////////////////////////////////////
+     ==> 
+     ==> Available at your primary URL https://solar-connect-q0a4.onrender.com
+     ==> 
+     ==> ///////////////////////////////////////////////////////////
+[CRYPTO DEBUG] Encrypted request received
+[CRYPTO DEBUG] Encrypted AES key length: 344
+[CRYPTO DEBUG] Encrypted AES key (first 40 chars): g8plnsRgeL4m91o5Efi7ni+jTt1c23E4VfvfZduH
+[CRYPTO DEBUG] Encrypted flow data length: 68
+[CRYPTO DEBUG] Encrypted flow data (first 40 chars): q5f5gTUNzrmhUlYBq/vzrTDjJtUnn8cJxrFpylvq
+[CRYPTO DEBUG] Initial vector length: 24
+[CRYPTO DEBUG] Initial vector: V1dOyQu1iAM4a7i9ODYhOw==
+[CRYPTO DEBUG] Private key length: 1703
+[CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+[CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+[CRYPTO DEBUG] Formatted key length: 1703
+[CRYPTO DEBUG] Has PEM headers: true
+Decryption error: Error: error:02000079:rsa routines::oaep decoding error
+    at Object.privateDecrypt (node:internal/crypto/cipher:79:12)
+    at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2548:30)
+    at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+    at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+    at file:///opt/render/project/src/dist/index.js:3123:61
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15 {
+  library: 'rsa routines',
+  reason: 'oaep decoding error',
+  code: 'ERR_OSSL_RSA_OAEP_DECODING_ERROR'
+}
+Survey flow error: Error: Failed to decrypt WhatsApp Flow request
+    at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2571:13)
+    at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+    at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+    at file:///opt/render/project/src/dist/index.js:3123:61
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+7:12:41 PM [express] POST /api/flows/survey 500 in 42ms :: {"error":"Failed to process survey flow"}
+7:12:45 PM [express] GET /api/crypto/test-key 200 in 6ms :: {"success":true,"keyPresent":true,"keyLe…
+7:12:47 PM [express] GET /api/crypto/test-key 304 in 4ms :: {"success":true,"keyPresent":true,"keyLe…
+[CRYPTO DEBUG] Encrypted request received
+[CRYPTO DEBUG] Encrypted AES key length: 344
+[CRYPTO DEBUG] Encrypted AES key (first 40 chars): BYpLZHp/dcuysozD6uiZ11GGLnEc3Q7l6z/t1YmJ
+[CRYPTO DEBUG] Encrypted flow data length: 68
+[CRYPTO DEBUG] Encrypted flow data (first 40 chars): 04SnyH3QTvyg4hgrYIhVCPHENvRPn6GVlAucPUg5
+[CRYPTO DEBUG] Initial vector length: 24
+[CRYPTO DEBUG] Initial vector: 1VQgorclTNnMhLXCEpz9Zg==
+[CRYPTO DEBUG] Private key length: 1703
+[CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+[CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+[CRYPTO DEBUG] Formatted key length: 1703
+[CRYPTO DEBUG] Has PEM headers: true
+Decryption error: Error: error:02000079:rsa routines::oaep decoding error
+    at Object.privateDecrypt (node:internal/crypto/cipher:79:12)
+    at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2548:30)
+    at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+    at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+    at file:///opt/render/project/src/dist/index.js:3123:61
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15 {
+  library: 'rsa routines',
+  reason: 'oaep decoding error',
+  code: 'ERR_OSSL_RSA_OAEP_DECODING_ERROR'
+}
+Survey flow error: Error: Failed to decrypt WhatsApp Flow request
+    at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2571:13)
+    at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+    at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+    at file:///opt/render/project/src/dist/index.js:3123:61
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+7:13:20 PM [express] POST /api/flows/survey 500 in 4ms :: {"error":"Failed to process survey flow"}
+[CRYPTO DEBUG] Encrypted request received
+[CRYPTO DEBUG] Encrypted AES key length: 344
+[CRYPTO DEBUG] Encrypted AES key (first 40 chars): bjYy8T4zOeF1O2m6GPf/l75xx2lOG/UK5TDLveTk
+[CRYPTO DEBUG] Encrypted flow data length: 68
+[CRYPTO DEBUG] Encrypted flow data (first 40 chars): I3IpeySvomjxGgaIVQ6GjWXVArwUxAtC0s8pM9Pw
+[CRYPTO DEBUG] Initial vector length: 24
+[CRYPTO DEBUG] Initial vector: OXCOy2ovnlQ5iX6cILac6A==
+[CRYPTO DEBUG] Private key length: 1703
+[CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+[CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+[CRYPTO DEBUG] Formatted key length: 1703
+[CRYPTO DEBUG] Has PEM headers: true
+Decryption error: Error: error:02000079:rsa routines::oaep decoding error
+    at Object.privateDecrypt (node:internal/crypto/cipher:79:12)
+    at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2548:30)
+    at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+    at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+    at file:///opt/render/project/src/dist/index.js:3123:61
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15 {
+  library: 'rsa routines',
+  reason: 'oaep decoding error',
+  code: 'ERR_OSSL_RSA_OAEP_DECODING_ERROR'
+}
+Survey flow error: Error: Failed to decrypt WhatsApp Flow request
+    at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2571:13)
+    at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+    at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+    at file:///opt/render/project/src/dist/index.js:3123:61
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+7:13:22 PM [express] POST /api/flows/survey 500 in 5ms :: {"error":"Failed to process survey flow"}
+[CRYPTO DEBUG] Encrypted request received
+[CRYPTO DEBUG] Encrypted AES key length: 344
+[CRYPTO DEBUG] Encrypted AES key (first 40 chars): c/OqtoZZHFIQn0bs93oiBOQ5z+YkXQ8kTPID6B0I
+[CRYPTO DEBUG] Encrypted flow data length: 68
+[CRYPTO DEBUG] Encrypted flow data (first 40 chars): oHaduSUukL+IFZptQVB7E1G2uYaioXHU6i+fuzYw
+[CRYPTO DEBUG] Initial vector length: 24
+[CRYPTO DEBUG] Initial vector: jXpbSrUQM7k0zxBIXU+r1w==
+[CRYPTO DEBUG] Private key length: 1703
+[CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+[CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+[CRYPTO DEBUG] Formatted key length: 1703
+[CRYPTO DEBUG] Has PEM headers: true
+Decryption error: Error: error:02000079:rsa routines::oaep decoding error
+    at Object.privateDecrypt (node:internal/crypto/cipher:79:12)
+    at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2548:30)
+    at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+    at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+    at file:///opt/render/project/src/dist/index.js:3123:61
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15 {
+  library: 'rsa routines',
+  reason: 'oaep decoding error',
+  code: 'ERR_OSSL_RSA_OAEP_DECODING_ERROR'
+}
+Survey flow error: Error: Failed to decrypt WhatsApp Flow request
+    at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2571:13)
+    at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+    at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+    at file:///opt/render/project/src/dist/index.js:3123:61
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+7:13:31 PM [express] POST /api/flows/survey 500 in 3ms :: {"error":"Failed to process survey flow"}
