@@ -46,7 +46,23 @@ export class FlowHandlers {
   async handleSurveyFlow(req: Request, res: Response) {
     try {
       const body: FlowDataExchangeRequest = req.body;
-      const decryptedData = this.decryptFlowData(body);
+      let decryptedData;
+      
+      try {
+        decryptedData = this.decryptFlowData(body);
+      } catch (decryptError: any) {
+        // If decryption fails due to key mismatch, return 421 to force WhatsApp to refresh cached public key
+        if (decryptError.message?.includes('Invalid AES key length') || 
+            decryptError.message?.includes('OAEP') ||
+            decryptError.message?.includes('Public/private key mismatch')) {
+          console.error('[FLOW] Decryption failed - forcing WhatsApp to refresh public key (HTTP 421)');
+          console.error('[FLOW] Wait 30 minutes after receiving this error for cache to clear');
+          return res.status(421).json({ 
+            error: "Encryption key mismatch - forcing client to refresh public key. Wait 30 minutes and try again." 
+          });
+        }
+        throw decryptError;
+      }
       
       const action = decryptedData.action?.toUpperCase() as "PING" | "INIT" | "DATA_EXCHANGE";
       const aesKey = (decryptedData as any)._aesKey;
@@ -156,7 +172,21 @@ export class FlowHandlers {
   async handlePriceFlow(req: Request, res: Response) {
     try {
       const body: FlowDataExchangeRequest = req.body;
-      const decryptedData = this.decryptFlowData(body);
+      let decryptedData;
+      
+      try {
+        decryptedData = this.decryptFlowData(body);
+      } catch (decryptError: any) {
+        if (decryptError.message?.includes('Invalid AES key length') || 
+            decryptError.message?.includes('OAEP') ||
+            decryptError.message?.includes('Public/private key mismatch')) {
+          console.error('[FLOW] Decryption failed - forcing WhatsApp to refresh public key (HTTP 421)');
+          return res.status(421).json({ 
+            error: "Encryption key mismatch - forcing client to refresh public key. Wait 30 minutes and try again." 
+          });
+        }
+        throw decryptError;
+      }
       
       const action = decryptedData.action?.toUpperCase() as "PING" | "INIT" | "DATA_EXCHANGE";
       const aesKey = (decryptedData as any)._aesKey;
@@ -264,7 +294,21 @@ export class FlowHandlers {
   async handleServiceFlow(req: Request, res: Response) {
     try {
       const body: FlowDataExchangeRequest = req.body;
-      const decryptedData = this.decryptFlowData(body);
+      let decryptedData;
+      
+      try {
+        decryptedData = this.decryptFlowData(body);
+      } catch (decryptError: any) {
+        if (decryptError.message?.includes('Invalid AES key length') || 
+            decryptError.message?.includes('OAEP') ||
+            decryptError.message?.includes('Public/private key mismatch')) {
+          console.error('[FLOW] Decryption failed - forcing WhatsApp to refresh public key (HTTP 421)');
+          return res.status(421).json({ 
+            error: "Encryption key mismatch - forcing client to refresh public key. Wait 30 minutes and try again." 
+          });
+        }
+        throw decryptError;
+      }
       
       const action = decryptedData.action?.toUpperCase() as "PING" | "INIT" | "DATA_EXCHANGE";
       const aesKey = (decryptedData as any)._aesKey;
@@ -372,7 +416,21 @@ export class FlowHandlers {
   async handleCallbackFlow(req: Request, res: Response) {
     try {
       const body: FlowDataExchangeRequest = req.body;
-      const decryptedData = this.decryptFlowData(body);
+      let decryptedData;
+      
+      try {
+        decryptedData = this.decryptFlowData(body);
+      } catch (decryptError: any) {
+        if (decryptError.message?.includes('Invalid AES key length') || 
+            decryptError.message?.includes('OAEP') ||
+            decryptError.message?.includes('Public/private key mismatch')) {
+          console.error('[FLOW] Decryption failed - forcing WhatsApp to refresh public key (HTTP 421)');
+          return res.status(421).json({ 
+            error: "Encryption key mismatch - forcing client to refresh public key. Wait 30 minutes and try again." 
+          });
+        }
+        throw decryptError;
+      }
       
       const action = decryptedData.action?.toUpperCase() as "PING" | "INIT" | "DATA_EXCHANGE";
       const aesKey = (decryptedData as any)._aesKey;
