@@ -16,6 +16,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // use storage to perform CRUD operations on the storage interface
   // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
 
+  // Health Check endpoint for Render.com and other monitoring services
+  app.get("/health", (req, res) => {
+    res.status(200).json({ 
+      status: "ok", 
+      timestamp: new Date().toISOString(),
+      service: "Sunshine Power WhatsApp Platform"
+    });
+  });
+
   // Message Templates API
   app.get("/api/message-templates", async (req, res) => {
     try {

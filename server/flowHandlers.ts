@@ -477,6 +477,22 @@ export class FlowHandlers {
   private decryptFlowData(body: any): FlowDataExchangeRequest {
     // Check if the request is encrypted (has the 3 encryption fields)
     if (body.encrypted_flow_data && body.encrypted_aes_key && body.initial_vector) {
+      // Validate that the encrypted fields are valid base64 strings
+      const isValidBase64 = (str: string): boolean => {
+        try {
+          return Buffer.from(str, 'base64').toString('base64') === str;
+        } catch {
+          return false;
+        }
+      };
+
+      if (!isValidBase64(body.encrypted_aes_key) || 
+          !isValidBase64(body.encrypted_flow_data) || 
+          !isValidBase64(body.initial_vector)) {
+        console.error('[FLOW] Invalid base64 encoding in encrypted request');
+        throw new Error('Invalid encrypted data format');
+      }
+
       return this.decryptEncryptedRequest(body as EncryptedFlowRequest);
     }
     
