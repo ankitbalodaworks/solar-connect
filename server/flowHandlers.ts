@@ -46,6 +46,12 @@ export class FlowHandlers {
   async handleSurveyFlow(req: Request, res: Response) {
     try {
       const body: FlowDataExchangeRequest = req.body;
+      
+      // Handle health check probes gracefully
+      if (!body || Object.keys(body).length === 0) {
+        return res.status(200).json({ status: "ok", endpoint: "survey_flow" });
+      }
+      
       const decryptedData = this.decryptFlowData(body);
       
       const action = decryptedData.action?.toUpperCase() as "PING" | "INIT" | "DATA_EXCHANGE";
@@ -149,6 +155,13 @@ export class FlowHandlers {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Validation failed", details: error.errors });
       }
+      
+      // If decryption fails (likely health check probe), return 200 to indicate endpoint is healthy
+      if (error instanceof Error && error.message.includes("decrypt")) {
+        console.log("[HEALTH] Decryption failed - likely health check probe, returning 200");
+        return res.status(200).json({ status: "ok", endpoint: "survey_flow", note: "Encryption required for data exchange" });
+      }
+      
       return res.status(500).json({ error: "Failed to process survey flow" });
     }
   }
@@ -257,6 +270,13 @@ export class FlowHandlers {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Validation failed", details: error.errors });
       }
+      
+      // If decryption fails (likely health check probe), return 200 to indicate endpoint is healthy
+      if (error instanceof Error && error.message.includes("decrypt")) {
+        console.log("[HEALTH] Decryption failed - likely health check probe, returning 200");
+        return res.status(200).json({ status: "ok", endpoint: "price_flow", note: "Encryption required for data exchange" });
+      }
+      
       return res.status(500).json({ error: "Failed to process price flow" });
     }
   }
@@ -365,6 +385,13 @@ export class FlowHandlers {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Validation failed", details: error.errors });
       }
+      
+      // If decryption fails (likely health check probe), return 200 to indicate endpoint is healthy
+      if (error instanceof Error && error.message.includes("decrypt")) {
+        console.log("[HEALTH] Decryption failed - likely health check probe, returning 200");
+        return res.status(200).json({ status: "ok", endpoint: "service_flow", note: "Encryption required for data exchange" });
+      }
+      
       return res.status(500).json({ error: "Failed to process service flow" });
     }
   }
@@ -470,6 +497,13 @@ export class FlowHandlers {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Validation failed", details: error.errors });
       }
+      
+      // If decryption fails (likely health check probe), return 200 to indicate endpoint is healthy
+      if (error instanceof Error && error.message.includes("decrypt")) {
+        console.log("[HEALTH] Decryption failed - likely health check probe, returning 200");
+        return res.status(200).json({ status: "ok", endpoint: "callback_flow", note: "Encryption required for data exchange" });
+      }
+      
       return res.status(500).json({ error: "Failed to process callback flow" });
     }
   }
