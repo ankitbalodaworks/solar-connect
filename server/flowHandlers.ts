@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import type { IStorage } from "./storage";
 import { insertLeadSchema, insertServiceRequestSchema, insertPriceEstimateSchema, insertCallbackRequestSchema, insertFormSchema, insertEventSchema } from "@shared/schema";
 import { z } from "zod";
+import crypto from "crypto";
 
 interface FlowDataExchangeRequest {
   version: string;
@@ -9,6 +10,12 @@ interface FlowDataExchangeRequest {
   screen: string;
   data: Record<string, any>;
   flow_token: string;
+}
+
+interface EncryptedFlowRequest {
+  encrypted_flow_data: string;
+  encrypted_aes_key: string;
+  initial_vector: string;
 }
 
 interface FlowDataExchangeResponse {
@@ -42,20 +49,34 @@ export class FlowHandlers {
       const decryptedData = this.decryptFlowData(body);
       
       const action = decryptedData.action?.toUpperCase() as "PING" | "INIT" | "DATA_EXCHANGE";
+      const aesKey = (decryptedData as any)._aesKey;
+      const initialVector = (decryptedData as any)._initialVector;
 
       if (action === "PING") {
-        return res.json({
+        const response = {
           version: "3.0",
           data: { status: "active" }
-        });
+        };
+        
+        if (aesKey && initialVector) {
+          const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
+          return res.status(200).json(encryptedResponse);
+        }
+        return res.json(response);
       }
 
       if (action === "INIT") {
-        return res.json({
+        const response = {
           version: "3.0",
           screen: "SURVEY_FORM",
           data: {}
-        });
+        };
+        
+        if (aesKey && initialVector) {
+          const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
+          return res.status(200).json(encryptedResponse);
+        }
+        return res.json(response);
       }
 
       if (action === "DATA_EXCHANGE") {
@@ -115,6 +136,10 @@ export class FlowHandlers {
           }
         };
 
+        if (aesKey && initialVector) {
+          const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
+          return res.status(200).json(encryptedResponse);
+        }
         return res.json(response);
       }
 
@@ -134,20 +159,34 @@ export class FlowHandlers {
       const decryptedData = this.decryptFlowData(body);
       
       const action = decryptedData.action?.toUpperCase() as "PING" | "INIT" | "DATA_EXCHANGE";
+      const aesKey = (decryptedData as any)._aesKey;
+      const initialVector = (decryptedData as any)._initialVector;
 
       if (action === "PING") {
-        return res.json({
+        const response = {
           version: "3.0",
           data: { status: "active" }
-        });
+        };
+        
+        if (aesKey && initialVector) {
+          const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
+          return res.status(200).json(encryptedResponse);
+        }
+        return res.json(response);
       }
 
       if (action === "INIT") {
-        return res.json({
+        const response = {
           version: "3.0",
           screen: "PRICE_FORM",
           data: {}
-        });
+        };
+        
+        if (aesKey && initialVector) {
+          const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
+          return res.status(200).json(encryptedResponse);
+        }
+        return res.json(response);
       }
 
       if (action === "DATA_EXCHANGE") {
@@ -205,6 +244,10 @@ export class FlowHandlers {
           }
         };
 
+        if (aesKey && initialVector) {
+          const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
+          return res.status(200).json(encryptedResponse);
+        }
         return res.json(response);
       }
 
@@ -224,20 +267,34 @@ export class FlowHandlers {
       const decryptedData = this.decryptFlowData(body);
       
       const action = decryptedData.action?.toUpperCase() as "PING" | "INIT" | "DATA_EXCHANGE";
+      const aesKey = (decryptedData as any)._aesKey;
+      const initialVector = (decryptedData as any)._initialVector;
 
       if (action === "PING") {
-        return res.json({
+        const response = {
           version: "3.0",
           data: { status: "active" }
-        });
+        };
+        
+        if (aesKey && initialVector) {
+          const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
+          return res.status(200).json(encryptedResponse);
+        }
+        return res.json(response);
       }
 
       if (action === "INIT") {
-        return res.json({
+        const response = {
           version: "3.0",
           screen: "SERVICE_FORM",
           data: {}
-        });
+        };
+        
+        if (aesKey && initialVector) {
+          const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
+          return res.status(200).json(encryptedResponse);
+        }
+        return res.json(response);
       }
 
       if (action === "DATA_EXCHANGE") {
@@ -295,6 +352,10 @@ export class FlowHandlers {
           }
         };
 
+        if (aesKey && initialVector) {
+          const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
+          return res.status(200).json(encryptedResponse);
+        }
         return res.json(response);
       }
 
@@ -314,20 +375,34 @@ export class FlowHandlers {
       const decryptedData = this.decryptFlowData(body);
       
       const action = decryptedData.action?.toUpperCase() as "PING" | "INIT" | "DATA_EXCHANGE";
+      const aesKey = (decryptedData as any)._aesKey;
+      const initialVector = (decryptedData as any)._initialVector;
 
       if (action === "PING") {
-        return res.json({
+        const response = {
           version: "3.0",
           data: { status: "active" }
-        });
+        };
+        
+        if (aesKey && initialVector) {
+          const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
+          return res.status(200).json(encryptedResponse);
+        }
+        return res.json(response);
       }
 
       if (action === "INIT") {
-        return res.json({
+        const response = {
           version: "3.0",
           screen: "CALLBACK_FORM",
           data: {}
-        });
+        };
+        
+        if (aesKey && initialVector) {
+          const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
+          return res.status(200).json(encryptedResponse);
+        }
+        return res.json(response);
       }
 
       if (action === "DATA_EXCHANGE") {
@@ -382,6 +457,10 @@ export class FlowHandlers {
           }
         };
 
+        if (aesKey && initialVector) {
+          const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
+          return res.status(200).json(encryptedResponse);
+        }
         return res.json(response);
       }
 
@@ -395,10 +474,93 @@ export class FlowHandlers {
     }
   }
 
-  private decryptFlowData(body: FlowDataExchangeRequest): FlowDataExchangeRequest {
-    // TODO: Implement proper signature verification for WhatsApp Flow data_exchange
-    // For now, this is a pass-through, but in production this MUST verify Meta's signature
-    return body;
+  private decryptFlowData(body: any): FlowDataExchangeRequest {
+    // Check if the request is encrypted (has the 3 encryption fields)
+    if (body.encrypted_flow_data && body.encrypted_aes_key && body.initial_vector) {
+      return this.decryptEncryptedRequest(body as EncryptedFlowRequest);
+    }
+    
+    // If not encrypted, return as-is (for backward compatibility during development)
+    return body as FlowDataExchangeRequest;
+  }
+
+  private decryptEncryptedRequest(encryptedRequest: EncryptedFlowRequest): FlowDataExchangeRequest {
+    try {
+      const privateKey = process.env.WHATSAPP_FLOW_PRIVATE_KEY;
+      
+      if (!privateKey) {
+        throw new Error("WHATSAPP_FLOW_PRIVATE_KEY environment variable is not set");
+      }
+
+      // Decode base64 inputs
+      const encryptedAesKey = Buffer.from(encryptedRequest.encrypted_aes_key, 'base64');
+      const encryptedFlowData = Buffer.from(encryptedRequest.encrypted_flow_data, 'base64');
+      const initialVector = Buffer.from(encryptedRequest.initial_vector, 'base64');
+
+      // Decrypt AES key using RSA private key
+      const rsaPrivateKey = crypto.createPrivateKey({
+        key: privateKey,
+        format: 'pem',
+      });
+
+      const aesKey = crypto.privateDecrypt(
+        {
+          key: rsaPrivateKey,
+          padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+          oaepHash: 'sha256'
+        },
+        encryptedAesKey
+      );
+
+      // Extract auth tag (last 16 bytes) and ciphertext
+      const authTag = encryptedFlowData.slice(-16);
+      const ciphertext = encryptedFlowData.slice(0, -16);
+
+      // Decrypt flow data using AES-256-GCM
+      const decipher = crypto.createDecipheriv('aes-256-gcm', aesKey, initialVector);
+      decipher.setAuthTag(authTag);
+
+      const decryptedData = Buffer.concat([
+        decipher.update(ciphertext),
+        decipher.final()
+      ]);
+
+      const parsedData = JSON.parse(decryptedData.toString('utf8'));
+      
+      // Store the AES key and IV in the request for later encryption of response
+      (parsedData as any)._aesKey = aesKey;
+      (parsedData as any)._initialVector = initialVector;
+      
+      return parsedData;
+    } catch (error) {
+      console.error("Decryption error:", error);
+      throw new Error("Failed to decrypt WhatsApp Flow request");
+    }
+  }
+
+  private encryptResponse(responseData: any, aesKey: Buffer, initialVector: Buffer): object {
+    try {
+      // Flip the IV (reverse bytes) for encryption
+      const flippedIv = Buffer.from(initialVector).reverse();
+
+      // Encrypt response using AES-256-GCM
+      const cipher = crypto.createCipheriv('aes-256-gcm', aesKey, flippedIv);
+      
+      const encryptedData = Buffer.concat([
+        cipher.update(JSON.stringify(responseData), 'utf8'),
+        cipher.final(),
+        cipher.getAuthTag() // Append auth tag
+      ]);
+
+      // Return the encrypted response in the format WhatsApp expects
+      return {
+        encrypted_flow_data: encryptedData.toString('base64'),
+        initial_vector: flippedIv.toString('base64')
+      };
+    } catch (error) {
+      console.error("Encryption error:", error);
+      throw new Error("Failed to encrypt WhatsApp Flow response");
+    }
   }
 
   private extractPhoneFromFlowToken(flowToken: string): string {

@@ -49,9 +49,10 @@ Preferred communication style: Simple, everyday language.
     - Automated record creation (Lead, Service Request, Callback Request, Other Issue) upon conversation completion.
     - **Conversation Flow Engine**: Manages multi-step conversations, resolves templates, preserves context, extracts data, and automatically creates database records.
     - **WhatsApp Service**: Handles sending text, button, list messages and webhook processing.
-    - **API Endpoints**: `/api/whatsapp/send`, `/api/whatsapp/webhook`, `/api/whatsapp/status`, `/api/whatsapp/upload-media`, `/api/message-templates/:id/submit`, `/api/message-templates/:id/sync-status`, `/api/whatsapp-logs`, `/api/contact-status`, `/api/contact-status/:customerPhone/forms`, `/api/contact-status/export/csv`.
+    - **WhatsApp Flow Encryption**: Full end-to-end encryption implementation for WhatsApp Flows using RSA-OAEP (2048-bit) for AES key exchange and AES-256-GCM for payload encryption/decryption. Supports encrypted PING, INIT, and DATA_EXCHANGE actions with automatic response encryption.
+    - **API Endpoints**: `/api/whatsapp/send`, `/api/whatsapp/webhook`, `/api/whatsapp/status`, `/api/whatsapp/upload-media`, `/api/flows/survey`, `/api/flows/price`, `/api/flows/service`, `/api/flows/callback`, `/api/whatsapp/data-exchange`, `/api/message-templates/:id/submit`, `/api/message-templates/:id/sync-status`, `/api/whatsapp-logs`, `/api/contact-status`, `/api/contact-status/:customerPhone/forms`, `/api/contact-status/export/csv`.
     - **Status Tracking System**: Comprehensive event tracking captures customer journey stages (campaign_sent → delivered → read → replied → language_selected → menu choice → form_submitted) with Status Page UI for monitoring, searching, filtering, and CSV export.
-    - **Required Environment Variables**: `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_VERIFY_TOKEN`, `WHATSAPP_APP_SECRET`.
+    - **Required Environment Variables**: `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_VERIFY_TOKEN`, `WHATSAPP_APP_SECRET`, `WHATSAPP_FLOW_PRIVATE_KEY`.
 - **File Processing**: XLSX library (SheetJS) for Excel parsing and React Dropzone for customer data uploads.
 - **Form Management**: React Hook Form with Zod resolvers for validation, and Drizzle-Zod for schema validation.
 - **Development Tools**: Replit-specific plugins, TypeScript strict mode, path aliases.
