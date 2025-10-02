@@ -650,6 +650,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/flows/service", (req, res) => flowHandlers.handleServiceFlow(req, res));
   app.post("/api/flows/callback", (req, res) => flowHandlers.handleCallbackFlow(req, res));
 
+  // Diagnostic endpoint to test encryption key
+  app.get("/api/crypto/test-key", async (req, res) => {
+    try {
+      const crypto = await import('crypto');
+      const privateKeyEnv = process.env.WHATSAPP_FLOW_PRIVATE_KEY;
+      
+      if (!privateKeyEnv) {
+        return res.status(500).json({ 
+          error: "WHATSAPP_FLOW_PRIVATE_KEY not set",
+          keyPresent: false
+        });
+      }
+
+      const formattedKey = privateKeyEnv.replace(/\\n/g, '\n');
+      
+      // Test that we can create a private key object
+      let keyObj;
+      try {
+        keyObj = crypto.createPrivateKey({
+          key: formattedKey,
+          format: 'pem'
+        });
+      } catch (e: any) {
+        return res.status(500).json({
+          error: "Failed to parse private key",
+          keyLength: privateKeyEnv.length,
+          formattedLength: formattedKey.length,
+          startsCorrectly: formattedKey.startsWith('-----BEGIN'),
+          endsCorrectly: formattedKey.endsWith('-----\n') || formattedKey.endsWith('-----'),
+          parseError: e.message
+        });
+      }
+
+      // Test encrypt/decrypt with OAEP label
+      const testData = crypto.randomBytes(32);
+      const publicKey = keyObj.export({ type: 'spki', format: 'pem' });
+      
+      const encrypted = crypto.publicEncrypt({
+        key: publicKey,
+        padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+        oaepHash: 'sha256',
+        oaepLabel: Buffer.from('WA-FLOW-DATA')
+      }, testData);
+
+      const decrypted = crypto.privateDecrypt({
+        key: formattedKey,
+        padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+        oaepHash: 'sha256',
+        oaepLabel: Buffer.from('WA-FLOW-DATA')
+      }, encrypted);
+
+      const success = testData.equals(decrypted);
+
+      res.json({
+        success,
+        keyPresent: true,
+        keyLength: privateKeyEnv.length,
+        formattedLength: formattedKey.length,
+        hasProperFormat: formattedKey.includes('-----BEGIN') && formattedKey.includes('-----END'),
+        encryptDecryptWorks: success,
+        publicKeyFingerprint: crypto.createHash('sha256').update(publicKey).digest('hex').substring(0, 16)
+      });
+    } catch (error: any) {
+      res.status(500).json({ 
+        error: "Crypto test failed", 
+        details: error.message,
+        stack: error.stack
+      });
+    }
+  });
+
   // Statistics endpoint
   app.get("/api/statistics", async (req, res) => {
     try {

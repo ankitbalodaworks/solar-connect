@@ -492,8 +492,15 @@ export class FlowHandlers {
         throw new Error("WHATSAPP_FLOW_PRIVATE_KEY environment variable is not set");
       }
 
+      // Log key info for debugging (without exposing the actual key)
+      console.log('[CRYPTO DEBUG] Private key length:', privateKey.length);
+      console.log('[CRYPTO DEBUG] Key starts with:', privateKey.substring(0, 27));
+      console.log('[CRYPTO DEBUG] Key ends with:', privateKey.substring(privateKey.length - 25));
+
       // Format the private key properly (replace literal \n with actual newlines)
       const formattedPrivateKey = privateKey.replace(/\\n/g, '\n');
+      console.log('[CRYPTO DEBUG] Formatted key length:', formattedPrivateKey.length);
+      console.log('[CRYPTO DEBUG] Has PEM headers:', formattedPrivateKey.includes('-----BEGIN') && formattedPrivateKey.includes('-----END'));
 
       // Decode base64 inputs
       const encryptedAesKey = Buffer.from(encryptedRequest.encrypted_aes_key, 'base64');

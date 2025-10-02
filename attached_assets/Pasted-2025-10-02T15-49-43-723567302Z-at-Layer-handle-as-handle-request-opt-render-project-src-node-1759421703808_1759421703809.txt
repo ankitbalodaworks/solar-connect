@@ -1,0 +1,152 @@
+2025-10-02T15:49:43.723567302Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T15:49:43.723571472Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T15:49:43.723575562Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T15:49:43.723580082Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T15:49:43.723584232Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+2025-10-02T15:49:43.723588793Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-10-02T15:49:43.724496518Z 3:49:43 PM [express] POST /api/flows/survey 500 in 9ms :: {"error":"Failed to process survey flow"}
+2025-10-02T15:54:24.019410146Z ==> Detected service running on port 10000
+2025-10-02T15:54:24.493861512Z ==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
+2025-10-02T15:55:57.033382833Z ==> Deploying...
+2025-10-02T15:56:47.929025353Z ==> Your service is live 🎉
+2025-10-02T15:56:48.115452289Z ==> 
+2025-10-02T15:56:48.303117366Z ==> ///////////////////////////////////////////////////////////
+2025-10-02T15:56:48.487854733Z ==> 
+2025-10-02T15:56:48.67462538Z ==> Available at your primary URL https://solar-connect-q0a4.onrender.com
+2025-10-02T15:56:48.857979807Z ==> 
+2025-10-02T15:56:49.041333144Z ==> ///////////////////////////////////////////////////////////
+2025-10-02T15:57:16.882913822Z     at file:///opt/render/project/src/dist/index.js:3086:61
+2025-10-02T15:57:16.882917432Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T15:57:16.882931063Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T15:57:16.882935523Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T15:57:16.882939224Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T15:57:16.882942874Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15 {
+2025-10-02T15:57:16.882947194Z   library: 'rsa routines',
+2025-10-02T15:57:16.882950664Z   reason: 'oaep decoding error',
+2025-10-02T15:57:16.882955084Z   code: 'ERR_OSSL_RSA_OAEP_DECODING_ERROR'
+2025-10-02T15:57:16.882958725Z }
+2025-10-02T15:57:16.883151884Z Survey flow error: Error: Failed to decrypt WhatsApp Flow request
+2025-10-02T15:57:16.883160655Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2541:13)
+2025-10-02T15:57:16.883165115Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2500:19)
+2025-10-02T15:57:16.883168595Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T15:57:16.883172745Z     at file:///opt/render/project/src/dist/index.js:3086:61
+2025-10-02T15:57:16.883176786Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T15:57:16.883180596Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T15:57:16.883184256Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T15:57:16.883187866Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T15:57:16.883191486Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+2025-10-02T15:57:16.883233868Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-10-02T15:57:16.885473653Z 3:57:16 PM [express] POST /api/flows/survey 500 in 71ms :: {"error":"Failed to process survey flow"}
+2025-10-02T16:01:49.072798583Z ==> Detected service running on port 10000
+2025-10-02T16:01:49.99027093Z ==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
+2025-10-02T16:07:21.483408766Z ==> Deploying...
+2025-10-02T16:07:42.390205764Z ==> Running 'npm run start'
+2025-10-02T16:07:43.593208804Z 
+2025-10-02T16:07:43.593238245Z > rest-express@1.0.0 start
+2025-10-02T16:07:43.593245085Z > NODE_ENV=production node dist/index.js
+2025-10-02T16:07:43.593247235Z 
+2025-10-02T16:07:52.095771192Z 4:07:51 PM [express] serving on port 10000
+2025-10-02T16:08:02.333167693Z ==> Your service is live 🎉
+2025-10-02T16:08:02.53118054Z ==> 
+2025-10-02T16:08:02.722664957Z ==> ///////////////////////////////////////////////////////////
+2025-10-02T16:08:02.916535703Z ==> 
+2025-10-02T16:08:03.09984079Z ==> Available at your primary URL https://solar-connect-q0a4.onrender.com
+2025-10-02T16:08:03.294812556Z ==> 
+2025-10-02T16:08:03.480071024Z ==> ///////////////////////////////////////////////////////////
+2025-10-02T16:08:53.530766719Z ==> Deploying...
+2025-10-02T16:09:13.578230537Z ==> Running 'npm run start'
+2025-10-02T16:09:14.592621102Z 
+2025-10-02T16:09:14.592647492Z > rest-express@1.0.0 start
+2025-10-02T16:09:14.592652463Z > NODE_ENV=production node dist/index.js
+2025-10-02T16:09:14.592654792Z 
+2025-10-02T16:09:23.490126795Z 4:09:23 PM [express] serving on port 10000
+2025-10-02T16:09:24.403341188Z ==> Your service is live 🎉
+2025-10-02T16:09:24.592464145Z ==> 
+2025-10-02T16:09:24.778517172Z ==> ///////////////////////////////////////////////////////////
+2025-10-02T16:09:24.965059689Z ==> 
+2025-10-02T16:09:25.147039206Z ==> Available at your primary URL https://solar-connect-q0a4.onrender.com
+2025-10-02T16:09:25.329653383Z ==> 
+2025-10-02T16:09:25.51660155Z ==> ///////////////////////////////////////////////////////////
+2025-10-02T16:09:45.078572408Z Decryption error: Error: error:02000079:rsa routines::oaep decoding error
+2025-10-02T16:09:45.078599659Z     at Object.privateDecrypt (node:internal/crypto/cipher:79:12)
+2025-10-02T16:09:45.078603889Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2518:30)
+2025-10-02T16:09:45.078608589Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2500:19)
+2025-10-02T16:09:45.078611289Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T16:09:45.078613789Z     at file:///opt/render/project/src/dist/index.js:3086:61
+2025-10-02T16:09:45.078616229Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T16:09:45.078618929Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T16:09:45.078621269Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T16:09:45.078623609Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T16:09:45.078626399Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15 {
+2025-10-02T16:09:45.078629449Z   library: 'rsa routines',
+2025-10-02T16:09:45.078631959Z   reason: 'oaep decoding error',
+2025-10-02T16:09:45.078634859Z   code: 'ERR_OSSL_RSA_OAEP_DECODING_ERROR'
+2025-10-02T16:09:45.07863766Z }
+2025-10-02T16:09:45.078690121Z Survey flow error: Error: Failed to decrypt WhatsApp Flow request
+2025-10-02T16:09:45.078697861Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2541:13)
+2025-10-02T16:09:45.078700721Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2500:19)
+2025-10-02T16:09:45.078703291Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T16:09:45.078706111Z     at file:///opt/render/project/src/dist/index.js:3086:61
+2025-10-02T16:09:45.078708621Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T16:09:45.078711061Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T16:09:45.078713441Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T16:09:45.078715501Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T16:09:45.078717911Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+2025-10-02T16:09:45.078720141Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-10-02T16:09:45.080654551Z 4:09:45 PM [express] POST /api/flows/survey 500 in 70ms :: {"error":"Failed to process survey flow"}
+2025-10-02T16:09:50.348515081Z Decryption error: Error: error:02000079:rsa routines::oaep decoding error
+2025-10-02T16:09:50.348546771Z     at Object.privateDecrypt (node:internal/crypto/cipher:79:12)
+2025-10-02T16:09:50.348551901Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2518:30)
+2025-10-02T16:09:50.348556552Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2500:19)
+2025-10-02T16:09:50.348574532Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T16:09:50.348577112Z     at file:///opt/render/project/src/dist/index.js:3086:61
+2025-10-02T16:09:50.348579542Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T16:09:50.348581902Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T16:09:50.348584172Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T16:09:50.348586272Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T16:09:50.348588852Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15 {
+2025-10-02T16:09:50.348591402Z   library: 'rsa routines',
+2025-10-02T16:09:50.348593712Z   reason: 'oaep decoding error',
+2025-10-02T16:09:50.348596552Z   code: 'ERR_OSSL_RSA_OAEP_DECODING_ERROR'
+2025-10-02T16:09:50.348598802Z }
+2025-10-02T16:09:50.348607993Z Survey flow error: Error: Failed to decrypt WhatsApp Flow request
+2025-10-02T16:09:50.348610563Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2541:13)
+2025-10-02T16:09:50.348612883Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2500:19)
+2025-10-02T16:09:50.348615523Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T16:09:50.348617943Z     at file:///opt/render/project/src/dist/index.js:3086:61
+2025-10-02T16:09:50.348620203Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T16:09:50.348622643Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T16:09:50.348625013Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T16:09:50.348627393Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T16:09:50.348629603Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+2025-10-02T16:09:50.348631853Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-10-02T16:09:50.350022282Z 4:09:50 PM [express] POST /api/flows/survey 500 in 4ms :: {"error":"Failed to process survey flow"}
+2025-10-02T16:09:52.689360421Z Decryption error: Error: error:02000079:rsa routines::oaep decoding error
+2025-10-02T16:09:52.689393181Z     at Object.privateDecrypt (node:internal/crypto/cipher:79:12)
+2025-10-02T16:09:52.689401282Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2518:30)
+2025-10-02T16:09:52.689406162Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2500:19)
+2025-10-02T16:09:52.689409132Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T16:09:52.689411942Z     at file:///opt/render/project/src/dist/index.js:3086:61
+2025-10-02T16:09:52.689414752Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T16:09:52.689417702Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T16:09:52.689420532Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T16:09:52.689423392Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T16:09:52.689426282Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15 {
+2025-10-02T16:09:52.689445983Z   library: 'rsa routines',
+2025-10-02T16:09:52.689448212Z   reason: 'oaep decoding error',
+2025-10-02T16:09:52.689451243Z   code: 'ERR_OSSL_RSA_OAEP_DECODING_ERROR'
+2025-10-02T16:09:52.689452963Z }
+2025-10-02T16:09:52.689504214Z Survey flow error: Error: Failed to decrypt WhatsApp Flow request
+2025-10-02T16:09:52.689515484Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2541:13)
+2025-10-02T16:09:52.689519554Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2500:19)
+2025-10-02T16:09:52.689521914Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T16:09:52.689524394Z     at file:///opt/render/project/src/dist/index.js:3086:61
+2025-10-02T16:09:52.689526564Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T16:09:52.689528654Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T16:09:52.689530924Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T16:09:52.689533344Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T16:09:52.689535634Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+2025-10-02T16:09:52.689537834Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-10-02T16:09:52.690574366Z 4:09:52 PM [express] POST /api/flows/survey 500 in 4ms :: {"error":"Failed to process survey flow"}
+2025-10-02T16:14:27.826584629Z ==> Detected service running on port 10000
+2025-10-02T16:14:28.312862428Z ==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
