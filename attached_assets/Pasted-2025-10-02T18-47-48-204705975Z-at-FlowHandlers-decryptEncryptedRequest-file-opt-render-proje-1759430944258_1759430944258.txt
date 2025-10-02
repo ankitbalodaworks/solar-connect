@@ -1,0 +1,50 @@
+2025-10-02T18:47:48.204705975Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2571:13)
+2025-10-02T18:47:48.204711375Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+2025-10-02T18:47:48.204715346Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T18:47:48.204719766Z     at file:///opt/render/project/src/dist/index.js:3123:61
+2025-10-02T18:47:48.204723636Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T18:47:48.204727516Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T18:47:48.204731696Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T18:47:48.204767007Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T18:47:48.204769807Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+2025-10-02T18:47:48.204772047Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-10-02T18:47:48.206926592Z 6:47:48 PM [express] POST /api/flows/survey 500 in 95ms :: {"error":"Failed to process survey flow"}
+2025-10-02T18:47:59.877254213Z [CRYPTO DEBUG] Encrypted request received
+2025-10-02T18:47:59.877280953Z [CRYPTO DEBUG] Encrypted AES key length: 344
+2025-10-02T18:47:59.877286024Z [CRYPTO DEBUG] Encrypted AES key (first 40 chars): ZRwzWZ319GluILXPsGJvris8v3SJTrrzhLZBt6fS
+2025-10-02T18:47:59.877290504Z [CRYPTO DEBUG] Encrypted flow data length: 68
+2025-10-02T18:47:59.877383415Z [CRYPTO DEBUG] Encrypted flow data (first 40 chars): t6BQRl++Jrufab79kN+3AJWuPm5Fnln/L2qXLTa3
+2025-10-02T18:47:59.877388775Z [CRYPTO DEBUG] Initial vector length: 24
+2025-10-02T18:47:59.877393325Z [CRYPTO DEBUG] Initial vector: UgTsZrg4rObnKRWes70XCg==
+2025-10-02T18:47:59.877397235Z [CRYPTO DEBUG] Private key length: 1703
+2025-10-02T18:47:59.877400895Z [CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+2025-10-02T18:47:59.877405195Z [CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+2025-10-02T18:47:59.877409055Z [CRYPTO DEBUG] Formatted key length: 1703
+2025-10-02T18:47:59.877412826Z [CRYPTO DEBUG] Has PEM headers: true
+2025-10-02T18:47:59.878049796Z Decryption error: Error: error:02000079:rsa routines::oaep decoding error
+2025-10-02T18:47:59.878060236Z     at Object.privateDecrypt (node:internal/crypto/cipher:79:12)
+2025-10-02T18:47:59.878065306Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2548:30)
+2025-10-02T18:47:59.878069526Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+2025-10-02T18:47:59.878073437Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T18:47:59.878077317Z     at file:///opt/render/project/src/dist/index.js:3123:61
+2025-10-02T18:47:59.878081477Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T18:47:59.878085467Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T18:47:59.878089877Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T18:47:59.878093947Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T18:47:59.878097937Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15 {
+2025-10-02T18:47:59.878102357Z   library: 'rsa routines',
+2025-10-02T18:47:59.878106177Z   reason: 'oaep decoding error',
+2025-10-02T18:47:59.878110197Z   code: 'ERR_OSSL_RSA_OAEP_DECODING_ERROR'
+2025-10-02T18:47:59.878114047Z }
+2025-10-02T18:47:59.87826988Z Survey flow error: Error: Failed to decrypt WhatsApp Flow request
+2025-10-02T18:47:59.87827958Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2571:13)
+2025-10-02T18:47:59.87828415Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+2025-10-02T18:47:59.87828806Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T18:47:59.87829261Z     at file:///opt/render/project/src/dist/index.js:3123:61
+2025-10-02T18:47:59.87829677Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T18:47:59.87831168Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T18:47:59.878388711Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T18:47:59.878391912Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T18:47:59.878394542Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+2025-10-02T18:47:59.878396882Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-10-02T18:47:59.879124363Z 6:47:59 PM [express] POST /api/flows/survey 500 in 4ms :: {"error":"Failed to process survey flow"}
