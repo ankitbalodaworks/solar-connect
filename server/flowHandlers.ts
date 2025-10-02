@@ -511,8 +511,11 @@ export class FlowHandlers {
       // Log incoming encrypted data for debugging
       console.log('[CRYPTO DEBUG] Encrypted request received');
       console.log('[CRYPTO DEBUG] Encrypted AES key length:', encryptedRequest.encrypted_aes_key?.length || 0);
+      console.log('[CRYPTO DEBUG] Encrypted AES key (first 40 chars):', encryptedRequest.encrypted_aes_key?.substring(0, 40) || 'N/A');
       console.log('[CRYPTO DEBUG] Encrypted flow data length:', encryptedRequest.encrypted_flow_data?.length || 0);
+      console.log('[CRYPTO DEBUG] Encrypted flow data (first 40 chars):', encryptedRequest.encrypted_flow_data?.substring(0, 40) || 'N/A');
       console.log('[CRYPTO DEBUG] Initial vector length:', encryptedRequest.initial_vector?.length || 0);
+      console.log('[CRYPTO DEBUG] Initial vector:', encryptedRequest.initial_vector || 'N/A');
 
       // Log key info for debugging (without exposing the actual key)
       console.log('[CRYPTO DEBUG] Private key length:', privateKey.length);
