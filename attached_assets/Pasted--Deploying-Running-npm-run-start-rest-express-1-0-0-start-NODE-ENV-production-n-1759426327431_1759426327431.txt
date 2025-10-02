@@ -1,0 +1,47 @@
+     ==> Deploying...
+==> Running 'npm run start'
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.js
+5:27:21 PM [express] serving on port 10000
+     ==> Your service is live 🎉
+     ==> 
+     ==> ///////////////////////////////////////////////////////////
+     ==> 
+     ==> Available at your primary URL https://solar-connect-q0a4.onrender.com
+     ==> 
+     ==> ///////////////////////////////////////////////////////////
+5:28:52 PM [express] GET /api/crypto/test-key 304 in 7ms :: {"success":true,"keyPresent":true,"keyLe…
+[CRYPTO DEBUG] Private key length: 1703
+[CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+[CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+[CRYPTO DEBUG] Formatted key length: 1703
+[CRYPTO DEBUG] Has PEM headers: true
+Decryption error: Error: error:02000079:rsa routines::oaep decoding error
+    at Object.privateDecrypt (node:internal/crypto/cipher:79:12)
+    at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2560:30)
+    at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2530:19)
+    at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2137:34)
+    at file:///opt/render/project/src/dist/index.js:3135:61
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15 {
+  library: 'rsa routines',
+  reason: 'oaep decoding error',
+  code: 'ERR_OSSL_RSA_OAEP_DECODING_ERROR'
+}
+Survey flow error: Error: Failed to decrypt WhatsApp Flow request
+    at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2583:13)
+    at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2530:19)
+    at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2137:34)
+    at file:///opt/render/project/src/dist/index.js:3135:61
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+[HEALTH] Decryption failed - likely health check probe, returning 200
+5:28:56 PM [express] POST /api/flows/survey 200 in 30ms :: {"status":"ok","endpoint":"survey_flow","…
+Need better ways to work with logs? Try theRender CLI, Render MCP Server, or set up a log stream integration 
