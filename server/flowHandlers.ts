@@ -60,7 +60,7 @@ export class FlowHandlers {
         
         if (aesKey && initialVector) {
           const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
-          return res.status(200).json(encryptedResponse);
+          return res.status(200).contentType('text/plain').send(encryptedResponse);
         }
         return res.json(response);
       }
@@ -74,7 +74,7 @@ export class FlowHandlers {
         
         if (aesKey && initialVector) {
           const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
-          return res.status(200).json(encryptedResponse);
+          return res.status(200).contentType('text/plain').send(encryptedResponse);
         }
         return res.json(response);
       }
@@ -138,7 +138,7 @@ export class FlowHandlers {
 
         if (aesKey && initialVector) {
           const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
-          return res.status(200).json(encryptedResponse);
+          return res.status(200).contentType('text/plain').send(encryptedResponse);
         }
         return res.json(response);
       }
@@ -170,7 +170,7 @@ export class FlowHandlers {
         
         if (aesKey && initialVector) {
           const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
-          return res.status(200).json(encryptedResponse);
+          return res.status(200).contentType('text/plain').send(encryptedResponse);
         }
         return res.json(response);
       }
@@ -184,7 +184,7 @@ export class FlowHandlers {
         
         if (aesKey && initialVector) {
           const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
-          return res.status(200).json(encryptedResponse);
+          return res.status(200).contentType('text/plain').send(encryptedResponse);
         }
         return res.json(response);
       }
@@ -246,7 +246,7 @@ export class FlowHandlers {
 
         if (aesKey && initialVector) {
           const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
-          return res.status(200).json(encryptedResponse);
+          return res.status(200).contentType('text/plain').send(encryptedResponse);
         }
         return res.json(response);
       }
@@ -278,7 +278,7 @@ export class FlowHandlers {
         
         if (aesKey && initialVector) {
           const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
-          return res.status(200).json(encryptedResponse);
+          return res.status(200).contentType('text/plain').send(encryptedResponse);
         }
         return res.json(response);
       }
@@ -292,7 +292,7 @@ export class FlowHandlers {
         
         if (aesKey && initialVector) {
           const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
-          return res.status(200).json(encryptedResponse);
+          return res.status(200).contentType('text/plain').send(encryptedResponse);
         }
         return res.json(response);
       }
@@ -354,7 +354,7 @@ export class FlowHandlers {
 
         if (aesKey && initialVector) {
           const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
-          return res.status(200).json(encryptedResponse);
+          return res.status(200).contentType('text/plain').send(encryptedResponse);
         }
         return res.json(response);
       }
@@ -386,7 +386,7 @@ export class FlowHandlers {
         
         if (aesKey && initialVector) {
           const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
-          return res.status(200).json(encryptedResponse);
+          return res.status(200).contentType('text/plain').send(encryptedResponse);
         }
         return res.json(response);
       }
@@ -400,7 +400,7 @@ export class FlowHandlers {
         
         if (aesKey && initialVector) {
           const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
-          return res.status(200).json(encryptedResponse);
+          return res.status(200).contentType('text/plain').send(encryptedResponse);
         }
         return res.json(response);
       }
@@ -459,7 +459,7 @@ export class FlowHandlers {
 
         if (aesKey && initialVector) {
           const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
-          return res.status(200).json(encryptedResponse);
+          return res.status(200).contentType('text/plain').send(encryptedResponse);
         }
         return res.json(response);
       }
@@ -541,7 +541,7 @@ export class FlowHandlers {
     }
   }
 
-  private encryptResponse(responseData: any, aesKey: Buffer, initialVector: Buffer): object {
+  private encryptResponse(responseData: any, aesKey: Buffer, initialVector: Buffer): string {
     try {
       // Flip the IV (reverse bytes) for encryption
       const flippedIv = Buffer.from(initialVector).reverse();
@@ -555,11 +555,8 @@ export class FlowHandlers {
         cipher.getAuthTag() // Append auth tag
       ]);
 
-      // Return the encrypted response in the format WhatsApp expects
-      return {
-        encrypted_flow_data: encryptedData.toString('base64'),
-        initial_vector: flippedIv.toString('base64')
-      };
+      // Return the encrypted response as base64 string (WhatsApp expects plain text, not JSON)
+      return encryptedData.toString('base64');
     } catch (error) {
       console.error("Encryption error:", error);
       throw new Error("Failed to encrypt WhatsApp Flow response");
