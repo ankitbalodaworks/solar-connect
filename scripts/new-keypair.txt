@@ -1,0 +1,103 @@
+============================================================
+NEW PRIVATE KEY (Copy this EXACTLY to Render)
+============================================================
+-----BEGIN PRIVATE KEY-----
+MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDHvozjxI5VNvQO
+Si3tqev+XmN9/7ZY/dhavZhGczY9Ok17goBFhGCa0b0eWm9VOJz2UfcoaPiBKvSw
+qR+2Ap2forpfBJ9/Rbr/gUlF8Ol8jf7S8hngKjRkh28CN3D0RjHQrEcgGxpdzH3B
+yt4vP2S++Fl8Q+D3YtxCTvUCViO5EjrRufgF+WjBQhMh/MPN1NBRUMtXhlKxBqLt
+fStOJ5UdNryg+p/v33oGtj1b3HvSU2e1ch9z5RHhclb3+fRdi/pj0z0+Qhz2OL17
+nmE8R0ksuZny+x7JSFe9UU8Z7llvDwJa6V/rH+EylRZQJZ+0hI+GjccWQaYQmMEP
+2XFM4bUvAgMBAAECggEAXdU7FGiqwIdPQUNBrisr7NPkgzVUMRwWvhHg7f+DlGHG
+MmZM4dtdEn3DDPZI5Mzyl5hLtlURoIRQbIkWl4dFCtAEI0zlrIFSZmMSy+NvnA6M
+jgYjd7X75NnmoTDwRCCRmEjGJOP2j+fXj+lAVQu/xSKfzwuILE7pz9CNsqpKn86H
+BlcA4QPOEZcDxXAkT9hbhoYHPJHtmo6+N0xd5e0QbDKiTCLyrp0XS4luUOSnBM5B
+uDDwVIvao2kL+p4DklpJH4H+yScvZlcNy0KeVG0Zt+cIzSKd/XfKjv1x7VKA+/jM
+E+37gv4JAkTNhUX1fsefr2UEOAHIEZqzzD96386kUQKBgQDnNBhe9JTbUN/H14pa
+P238LNS5YNzrcS41hwKEWrSSo9Ok3V+f5grsLRB/2M2wKTn6+bAiposi+Lszx6R2
+CkgUogKyotxcFVGPlZGc3x7IgwY0K6X9TpF/d8m8+quIACxLQN4NyVqvmjE4Max1
+rZ5zS37c8sSqLEoVQYyhqsQZKQKBgQDdKrcIXeDsFm3w0VQWwO10/ABs1/ovHAVK
+KyDyN7vl1Z5oyg5XfjQQL4mR0jogdIL/md4r9B+gIxDUi+SFiA9CIeENj9TOfpST
+MzhEauZP+jXoNZ0QhAEOx5AHLVXGMgMJN3I+IDG1AZITs5gU/d4ZT9lGxy5jWKfM
+Yp2s49WulwKBgQCOB87A5ndbk38lgR+Y+UZTmCbGCt8sM8czUtEVBbPQMZwet2+7
+BtLG65grMcCJ64mWyDSP1Me8oBhAYvCBIyfMpQoLO0kruFz2W+er+tUqUHNLMVUz
+G0T+jVP9J/CgB5suT5cZ2QxAu/RolPtg/1tLcKFqkiiGcdbA4BfIaOM2oQKBgEdA
+zbsaU658A2uEZSz3dwkrbw+h/W5T/rhIcNLYdea0DdcA0eIKPMfCKPYb3rI6F0I1
+1kge3FmBMpjngPYsQY4y0AjIf+0PBtrts4EHV7AIknl/XFzHyndyf8pwJqQ11JiR
+jnLJeHoySVejkqmgqH9LJFsTLLTBCT5lvxrGRD99AoGBAKMOCd5Nb4M9AEt5LGTz
+L64q/M+vNrYZU7P0ipws1/hE8P+fai/eOSM8jED8ZPdy4d/PW9dMhQ+2m5xeUv50
+lYZu+9MNNN7/YdmYhlsCzxwXnjhUExRPd9CSzXcbuyqrbnm88h4O+30kS5ODIDML
+mPPC1xpg5czGn3olwpA7V6ZC
+-----END PRIVATE KEY-----
+
+Length: 1704 bytes ✅
+
+============================================================
+NEW PUBLIC KEY (Upload to Meta)
+============================================================
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx76M48SOVTb0Dkot7anr
+/l5jff+2WP3YWr2YRnM2PTpNe4KARYRgmtG9HlpvVTic9lH3KGj4gSr0sKkftgKd
+n6K6XwSff0W6/4FJRfDpfI3+0vIZ4Co0ZIdvAjdw9EYx0KxHIBsaXcx9wcreLz9k
+vvhZfEPg92LcQk71AlYjuRI60bn4BflowUITIfzDzdTQUVDLV4ZSsQai7X0rTieV
+HTa8oPqf7996BrY9W9x70lNntXIfc+UR4XJW9/n0XYv6Y9M9PkIc9ji9e55hPEdJ
+LLmZ8vseyUhXvVFPGe5Zbw8CWulf6x/hMpUWUCWftISPho3HFkGmEJjBD9lxTOG1
+LwIDAQAB
+-----END PUBLIC KEY-----
+
+Public Key Fingerprint: 0f5e5d117fca725b
+
+============================================================
+STEP-BY-STEP INSTRUCTIONS
+============================================================
+
+STEP 1: Update Local Replit Environment
+-----------------------------------------
+1. Open your Replit Secrets (click the lock icon 🔒 in left sidebar)
+2. Find WHATSAPP_FLOW_PRIVATE_KEY
+3. Delete the old value
+4. Copy the NEW PRIVATE KEY above (all lines from -----BEGIN to -----END)
+5. Paste it as the value
+6. Click Save
+
+STEP 2: Update Render Environment
+----------------------------------
+1. Go to: https://dashboard.render.com
+2. Select service: solar-connect-q0a4
+3. Go to Environment tab
+4. Find WHATSAPP_FLOW_PRIVATE_KEY
+5. Click Edit
+6. Delete old value completely
+7. Copy the NEW PRIVATE KEY above (all lines from -----BEGIN to -----END)
+8. Paste it EXACTLY as-is (preserve all newlines)
+9. Click Save Changes
+10. Wait for auto-redeploy (2-3 minutes)
+
+STEP 3: Upload NEW Public Key to Meta
+--------------------------------------
+1. Copy the NEW PUBLIC KEY above (from -----BEGIN PUBLIC KEY----- to -----END PUBLIC KEY-----)
+2. Run this command in Replit Shell:
+   
+   tsx scripts/upload-public-key.ts
+
+3. When prompted, paste the NEW PUBLIC KEY
+4. Press Enter twice to finish
+5. Verify Meta shows "Successfully uploaded"
+
+STEP 4: Verify Everything Works
+--------------------------------
+After all updates:
+
+1. Check Render test endpoint (should show 1704):
+   https://solar-connect-q0a4.onrender.com/api/crypto/test-key
+
+2. Check local test endpoint (should show 1704):
+   http://localhost:5000/api/crypto/test-key
+
+3. Test WhatsApp Flow health check:
+   - Go to Meta Business Suite → WhatsApp → Flows
+   - Select Survey Flow
+   - Click "Test Endpoint"
+   - Should pass ✅
+
+============================================================
