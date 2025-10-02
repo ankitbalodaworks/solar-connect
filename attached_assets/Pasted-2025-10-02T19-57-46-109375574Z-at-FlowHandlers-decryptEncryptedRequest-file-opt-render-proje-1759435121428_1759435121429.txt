@@ -1,0 +1,50 @@
+2025-10-02T19:57:46.109375574Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2577:13)
+2025-10-02T19:57:46.109380935Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+2025-10-02T19:57:46.109385375Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T19:57:46.109405815Z     at file:///opt/render/project/src/dist/index.js:3129:61
+2025-10-02T19:57:46.109408945Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:57:46.109411695Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T19:57:46.109414485Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T19:57:46.109417385Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:57:46.109420105Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+2025-10-02T19:57:46.109423055Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-10-02T19:57:46.110126719Z 7:57:46 PM [express] POST /api/flows/survey 500 in 5ms :: {"error":"Failed to process survey flow"}
+2025-10-02T19:57:53.667507931Z [CRYPTO DEBUG] Encrypted request received
+2025-10-02T19:57:53.667528721Z [CRYPTO DEBUG] Encrypted AES key length: 344
+2025-10-02T19:57:53.667532821Z [CRYPTO DEBUG] Encrypted AES key (first 40 chars): Vc+HG+wtBDrUBtD3CiV/oUMt0QBRPCatQ8yveAiZ
+2025-10-02T19:57:53.667541382Z [CRYPTO DEBUG] Encrypted flow data length: 68
+2025-10-02T19:57:53.667544071Z [CRYPTO DEBUG] Encrypted flow data (first 40 chars): nzwRx87hw8C/dLGKWaXRezrDsow1NFObopodpYCt
+2025-10-02T19:57:53.667546382Z [CRYPTO DEBUG] Initial vector length: 24
+2025-10-02T19:57:53.667549212Z [CRYPTO DEBUG] Initial vector: 8g02e+kJnd31XP+M8hIEOw==
+2025-10-02T19:57:53.667576062Z [CRYPTO DEBUG] Private key length: 1703
+2025-10-02T19:57:53.667579142Z [CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+2025-10-02T19:57:53.667594092Z [CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+2025-10-02T19:57:53.667641643Z [CRYPTO DEBUG] Formatted key length: 1703
+2025-10-02T19:57:53.667699545Z [CRYPTO DEBUG] Has PEM headers: true
+2025-10-02T19:57:53.669397496Z [CRYPTO DEBUG] Decrypted AES key length: 16 bytes (should be 32 for AES-256)
+2025-10-02T19:57:53.669413547Z [CRYPTO DEBUG] Decrypted AES key (hex): 99a5c0eb0e7f7d09612ae23430d20868...
+2025-10-02T19:57:53.669427247Z [CRYPTO ERROR] AES key length mismatch! Expected 32 bytes, got 16
+2025-10-02T19:57:53.669468768Z [CRYPTO ERROR] This means Meta is encrypting with a DIFFERENT public key!
+2025-10-02T19:57:53.669639711Z Decryption error: Error: Invalid AES key length: 16 bytes (expected 32). Public/private key mismatch.
+2025-10-02T19:57:53.669648381Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2561:15)
+2025-10-02T19:57:53.669651051Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+2025-10-02T19:57:53.669655671Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T19:57:53.669657751Z     at file:///opt/render/project/src/dist/index.js:3129:61
+2025-10-02T19:57:53.669659481Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:57:53.669661301Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T19:57:53.669662991Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T19:57:53.669664642Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:57:53.669666822Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+2025-10-02T19:57:53.669668522Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-10-02T19:57:53.669728833Z Survey flow error: Error: Failed to decrypt WhatsApp Flow request
+2025-10-02T19:57:53.669732823Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2577:13)
+2025-10-02T19:57:53.669735673Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+2025-10-02T19:57:53.669737433Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T19:57:53.669739123Z     at file:///opt/render/project/src/dist/index.js:3129:61
+2025-10-02T19:57:53.669740773Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:57:53.669742423Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T19:57:53.669744203Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T19:57:53.669745873Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:57:53.669747593Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+2025-10-02T19:57:53.669749283Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-10-02T19:57:53.670498577Z 7:57:53 PM [express] POST /api/flows/survey 500 in 3ms :: {"error":"Failed to process survey flow"}

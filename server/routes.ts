@@ -687,6 +687,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Reconstruct with proper newlines
         formattedKey = header + '\n' + base64Lines.join('\n') + '\n' + footer;
       }
+
+      // If ?raw=1 is specified, output the raw key as plain text for copying to Render
+      if (req.query.raw === '1') {
+        res.setHeader('Content-Type', 'text/plain');
+        return res.send(formattedKey);
+      }
       
       // Test that we can create a private key object
       let keyObj;
