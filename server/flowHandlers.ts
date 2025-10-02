@@ -497,8 +497,22 @@ export class FlowHandlers {
       console.log('[CRYPTO DEBUG] Key starts with:', privateKey.substring(0, 27));
       console.log('[CRYPTO DEBUG] Key ends with:', privateKey.substring(privateKey.length - 25));
 
-      // Format the private key properly (replace literal \n with actual newlines)
-      const formattedPrivateKey = privateKey.replace(/\\n/g, '\n');
+      // Format the private key properly
+      // 1. Replace literal \n with actual newlines
+      let formattedPrivateKey = privateKey.replace(/\\n/g, '\n');
+      
+      // 2. Fix single-line PEM (spaces instead of newlines between base64 chunks)
+      if (formattedPrivateKey.startsWith('-----BEGIN PRIVATE KEY----- ')) {
+        // Extract the parts
+        const parts = formattedPrivateKey.split(' ');
+        const header = parts.slice(0, 3).join(' '); // "-----BEGIN PRIVATE KEY-----"
+        const footer = parts.slice(-3).join(' '); // "-----END PRIVATE KEY-----"
+        const base64Lines = parts.slice(3, -3); // All the base64 chunks between header and footer
+        
+        // Reconstruct with proper newlines
+        formattedPrivateKey = header + '\n' + base64Lines.join('\n') + '\n' + footer;
+      }
+      
       console.log('[CRYPTO DEBUG] Formatted key length:', formattedPrivateKey.length);
       console.log('[CRYPTO DEBUG] Has PEM headers:', formattedPrivateKey.includes('-----BEGIN') && formattedPrivateKey.includes('-----END'));
 

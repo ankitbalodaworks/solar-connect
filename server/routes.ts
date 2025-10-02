@@ -663,7 +663,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const formattedKey = privateKeyEnv.replace(/\\n/g, '\n');
+      // Format the private key properly
+      // 1. Replace literal \n with actual newlines
+      let formattedKey = privateKeyEnv.replace(/\\n/g, '\n');
+      
+      // 2. Fix single-line PEM (spaces instead of newlines between base64 chunks)
+      if (formattedKey.startsWith('-----BEGIN PRIVATE KEY----- ')) {
+        // Extract the parts
+        const parts = formattedKey.split(' ');
+        const header = parts.slice(0, 3).join(' '); // "-----BEGIN PRIVATE KEY-----"
+        const footer = parts.slice(-3).join(' '); // "-----END PRIVATE KEY-----"
+        const base64Lines = parts.slice(3, -3); // All the base64 chunks between header and footer
+        
+        // Reconstruct with proper newlines
+        formattedKey = header + '\n' + base64Lines.join('\n') + '\n' + footer;
+      }
       
       // Test that we can create a private key object
       let keyObj;
