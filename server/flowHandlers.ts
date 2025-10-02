@@ -561,6 +561,15 @@ export class FlowHandlers {
         encryptedAesKey
       );
 
+      console.log('[CRYPTO DEBUG] Decrypted AES key length:', aesKey.length, 'bytes (should be 32 for AES-256)');
+      console.log('[CRYPTO DEBUG] Decrypted AES key (hex):', aesKey.toString('hex').substring(0, 40) + '...');
+
+      if (aesKey.length !== 32) {
+        console.error('[CRYPTO ERROR] AES key length mismatch! Expected 32 bytes, got', aesKey.length);
+        console.error('[CRYPTO ERROR] This means Meta is encrypting with a DIFFERENT public key!');
+        throw new Error(`Invalid AES key length: ${aesKey.length} bytes (expected 32). Public/private key mismatch.`);
+      }
+
       // Extract auth tag (last 16 bytes) and ciphertext
       const authTag = encryptedFlowData.slice(-16);
       const ciphertext = encryptedFlowData.slice(0, -16);

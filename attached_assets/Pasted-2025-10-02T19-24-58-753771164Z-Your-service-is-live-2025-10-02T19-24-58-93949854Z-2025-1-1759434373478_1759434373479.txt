@@ -1,0 +1,237 @@
+2025-10-02T19:24:58.753771164Z ==> Your service is live 🎉
+2025-10-02T19:24:58.93949854Z ==> 
+2025-10-02T19:24:59.123698707Z ==> ///////////////////////////////////////////////////////////
+2025-10-02T19:24:59.305520324Z ==> 
+2025-10-02T19:24:59.4878841Z ==> Available at your primary URL https://solar-connect-q0a4.onrender.com
+2025-10-02T19:24:59.671147327Z ==> 
+2025-10-02T19:24:59.853836843Z ==> ///////////////////////////////////////////////////////////
+2025-10-02T19:25:36.895337817Z [CRYPTO DEBUG] Encrypted flow data (first 40 chars): LhZMaE6+xCtKlc7H/oxK4SgN6Z1r8gp2VWj8EGOz
+2025-10-02T19:25:36.895341787Z [CRYPTO DEBUG] Initial vector length: 24
+2025-10-02T19:25:36.895345897Z [CRYPTO DEBUG] Initial vector: vgnxgMob2FoxcSgkRPlAfg==
+2025-10-02T19:25:36.911467562Z [CRYPTO DEBUG] Private key length: 1703
+2025-10-02T19:25:36.911602685Z [CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+2025-10-02T19:25:36.912207967Z [CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+2025-10-02T19:25:36.914289877Z [CRYPTO DEBUG] Formatted key length: 1703
+2025-10-02T19:25:36.914469991Z [CRYPTO DEBUG] Has PEM headers: true
+2025-10-02T19:25:36.919911727Z Decryption error: RangeError: Invalid key length
+2025-10-02T19:25:36.919923187Z     at Decipheriv.createCipherBase (node:internal/crypto/cipher:121:19)
+2025-10-02T19:25:36.919927407Z     at Decipheriv.createCipherWithIV (node:internal/crypto/cipher:133:3)
+2025-10-02T19:25:36.919931558Z     at new Decipheriv (node:internal/crypto/cipher:278:3)
+2025-10-02T19:25:36.919935318Z     at Object.createDecipheriv (node:crypto:147:10)
+2025-10-02T19:25:36.919940288Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2558:32)
+2025-10-02T19:25:36.919946558Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+2025-10-02T19:25:36.919950078Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T19:25:36.919953598Z     at file:///opt/render/project/src/dist/index.js:3122:61
+2025-10-02T19:25:36.919957148Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:25:36.919971858Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13) {
+2025-10-02T19:25:36.919975788Z   code: 'ERR_CRYPTO_INVALID_KEYLEN'
+2025-10-02T19:25:36.919979559Z }
+2025-10-02T19:25:36.920269884Z Survey flow error: Error: Failed to decrypt WhatsApp Flow request
+2025-10-02T19:25:36.920279734Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2570:13)
+2025-10-02T19:25:36.920284174Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+2025-10-02T19:25:36.920287985Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T19:25:36.920292645Z     at file:///opt/render/project/src/dist/index.js:3122:61
+2025-10-02T19:25:36.920297315Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:25:36.920302225Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T19:25:36.920305965Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T19:25:36.920350866Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:25:36.920353636Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+2025-10-02T19:25:36.920355876Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-10-02T19:25:36.921787124Z 7:25:36 PM [express] POST /api/flows/survey 500 in 28ms :: {"error":"Failed to process survey flow"}
+2025-10-02T19:29:54.947490773Z ==> Detected service running on port 10000
+2025-10-02T19:29:55.425942279Z ==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
+2025-10-02T19:30:36.032626753Z 7:30:36 PM [express] GET /api/crypto/test-key 304 in 4ms :: {"success":true,"keyPresent":true,"keyLe…
+2025-10-02T19:36:27.130211407Z 7:36:27 PM [express] GET /api/crypto/test-key 304 in 4ms :: {"success":true,"keyPresent":true,"keyLe…
+2025-10-02T19:36:43.576960111Z ==> Deploying...
+2025-10-02T19:37:03.604354513Z ==> Running 'npm run start'
+2025-10-02T19:37:04.905552601Z 
+2025-10-02T19:37:04.905600112Z > rest-express@1.0.0 start
+2025-10-02T19:37:04.905606032Z > NODE_ENV=production node dist/index.js
+2025-10-02T19:37:04.905608822Z 
+2025-10-02T19:37:13.70759649Z 7:37:13 PM [express] serving on port 10000
+2025-10-02T19:37:15.865266299Z ==> Your service is live 🎉
+2025-10-02T19:37:17.380908192Z ==> 
+2025-10-02T19:37:17.564086869Z ==> ///////////////////////////////////////////////////////////
+2025-10-02T19:37:20.206883582Z ==> 
+2025-10-02T19:37:21.632430882Z ==> Available at your primary URL https://solar-connect-q0a4.onrender.com
+2025-10-02T19:37:22.956658528Z ==> 
+2025-10-02T19:37:24.233157438Z ==> ///////////////////////////////////////////////////////////
+2025-10-02T19:40:17.1590154Z [CRYPTO DEBUG] Encrypted request received
+2025-10-02T19:40:17.160287721Z [CRYPTO DEBUG] Encrypted AES key length: 344
+2025-10-02T19:40:17.160312312Z [CRYPTO DEBUG] Encrypted AES key (first 40 chars): IPnUMYbdPx/KEIy3o7sqJAoOpL02tc2wZ7h+tiVB
+2025-10-02T19:40:17.160409023Z [CRYPTO DEBUG] Encrypted flow data length: 68
+2025-10-02T19:40:17.160429923Z [CRYPTO DEBUG] Encrypted flow data (first 40 chars): mY0DD30VgcK5dZBXxSPTTL1ZcmZNJWklN52G3wDe
+2025-10-02T19:40:17.160559296Z [CRYPTO DEBUG] Initial vector length: 24
+2025-10-02T19:40:17.160695648Z [CRYPTO DEBUG] Initial vector: 5HjxzgnGY1xYHU+Ti3hFLw==
+2025-10-02T19:40:17.16084625Z [CRYPTO DEBUG] Private key length: 1703
+2025-10-02T19:40:17.160886871Z [CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+2025-10-02T19:40:17.160897241Z [CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+2025-10-02T19:40:17.160963272Z [CRYPTO DEBUG] Formatted key length: 1703
+2025-10-02T19:40:17.161110135Z [CRYPTO DEBUG] Has PEM headers: true
+2025-10-02T19:40:17.207408208Z Decryption error: RangeError: Invalid key length
+2025-10-02T19:40:17.207438379Z     at Decipheriv.createCipherBase (node:internal/crypto/cipher:121:19)
+2025-10-02T19:40:17.207443379Z     at Decipheriv.createCipherWithIV (node:internal/crypto/cipher:133:3)
+2025-10-02T19:40:17.207452339Z     at new Decipheriv (node:internal/crypto/cipher:278:3)
+2025-10-02T19:40:17.207457539Z     at Object.createDecipheriv (node:crypto:147:10)
+2025-10-02T19:40:17.207462249Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2558:32)
+2025-10-02T19:40:17.207469229Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+2025-10-02T19:40:17.20747384Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T19:40:17.20747839Z     at file:///opt/render/project/src/dist/index.js:3122:61
+2025-10-02T19:40:17.20748276Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:40:17.20749004Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13) {
+2025-10-02T19:40:17.20749409Z   code: 'ERR_CRYPTO_INVALID_KEYLEN'
+2025-10-02T19:40:17.20749834Z }
+2025-10-02T19:40:17.207635132Z Survey flow error: Error: Failed to decrypt WhatsApp Flow request
+2025-10-02T19:40:17.207650183Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2570:13)
+2025-10-02T19:40:17.207656643Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+2025-10-02T19:40:17.207662303Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T19:40:17.207667713Z     at file:///opt/render/project/src/dist/index.js:3122:61
+2025-10-02T19:40:17.207672963Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:40:17.207677723Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T19:40:17.207683103Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T19:40:17.207689093Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:40:17.207708053Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+2025-10-02T19:40:17.207710453Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-10-02T19:40:17.210288086Z 7:40:17 PM [express] POST /api/flows/survey 500 in 52ms :: {"error":"Failed to process survey flow"}
+2025-10-02T19:40:26.898882605Z 7:40:26 PM [express] GET /api/crypto/test-key 304 in 7ms :: {"success":true,"keyPresent":true,"keyLe…
+2025-10-02T19:40:37.06893477Z ==> Deploying...
+2025-10-02T19:41:03.267060446Z ==> Running 'npm run start'
+2025-10-02T19:41:04.459041378Z 
+2025-10-02T19:41:04.45907367Z > rest-express@1.0.0 start
+2025-10-02T19:41:04.45907901Z > NODE_ENV=production node dist/index.js
+2025-10-02T19:41:04.459081011Z 
+2025-10-02T19:41:13.265068656Z 7:41:13 PM [express] serving on port 10000
+2025-10-02T19:41:17.969490004Z ==> Your service is live 🎉
+2025-10-02T19:41:19.343957367Z ==> 
+2025-10-02T19:41:19.534134524Z ==> ///////////////////////////////////////////////////////////
+2025-10-02T19:41:19.718761611Z ==> 
+2025-10-02T19:41:19.902826548Z ==> Available at your primary URL https://solar-connect-q0a4.onrender.com
+2025-10-02T19:41:20.090397955Z ==> 
+2025-10-02T19:41:20.275949882Z ==> ///////////////////////////////////////////////////////////
+2025-10-02T19:42:14.852820667Z [CRYPTO DEBUG] Encrypted request received
+2025-10-02T19:42:14.853356734Z [CRYPTO DEBUG] Encrypted AES key length: 344
+2025-10-02T19:42:14.853374625Z [CRYPTO DEBUG] Encrypted AES key (first 40 chars): Pamgy7pO29bYGIBcdMODJHAiqe5JsRMea+l1GnbK
+2025-10-02T19:42:14.85346495Z [CRYPTO DEBUG] Encrypted flow data length: 68
+2025-10-02T19:42:14.853481221Z [CRYPTO DEBUG] Encrypted flow data (first 40 chars): r6I2A61ibBQ7tuF1Sij1HZmtpgff77y2uQuNJV7e
+2025-10-02T19:42:14.853612607Z [CRYPTO DEBUG] Initial vector length: 24
+2025-10-02T19:42:14.853732873Z [CRYPTO DEBUG] Initial vector: /7P5rXOIIzUmV3ZrhxzKTw==
+2025-10-02T19:42:14.853851219Z [CRYPTO DEBUG] Private key length: 1703
+2025-10-02T19:42:14.853885691Z [CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+2025-10-02T19:42:14.853890351Z [CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+2025-10-02T19:42:14.853967385Z [CRYPTO DEBUG] Formatted key length: 1703
+2025-10-02T19:42:14.854086571Z [CRYPTO DEBUG] Has PEM headers: true
+2025-10-02T19:42:14.865753582Z Decryption error: RangeError: Invalid key length
+2025-10-02T19:42:14.865771833Z     at Decipheriv.createCipherBase (node:internal/crypto/cipher:121:19)
+2025-10-02T19:42:14.865776644Z     at Decipheriv.createCipherWithIV (node:internal/crypto/cipher:133:3)
+2025-10-02T19:42:14.865781694Z     at new Decipheriv (node:internal/crypto/cipher:278:3)
+2025-10-02T19:42:14.865785974Z     at Object.createDecipheriv (node:crypto:147:10)
+2025-10-02T19:42:14.865791254Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2558:32)
+2025-10-02T19:42:14.865796285Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+2025-10-02T19:42:14.865799185Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T19:42:14.865802115Z     at file:///opt/render/project/src/dist/index.js:3122:61
+2025-10-02T19:42:14.865804995Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:42:14.865807795Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13) {
+2025-10-02T19:42:14.865810715Z   code: 'ERR_CRYPTO_INVALID_KEYLEN'
+2025-10-02T19:42:14.865813555Z }
+2025-10-02T19:42:14.865894059Z Survey flow error: Error: Failed to decrypt WhatsApp Flow request
+2025-10-02T19:42:14.8659014Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2570:13)
+2025-10-02T19:42:14.86590597Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+2025-10-02T19:42:14.86591071Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T19:42:14.865915541Z     at file:///opt/render/project/src/dist/index.js:3122:61
+2025-10-02T19:42:14.865920161Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:42:14.865924971Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T19:42:14.865929591Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T19:42:14.865934272Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:42:14.865952773Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+2025-10-02T19:42:14.865955573Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-10-02T19:42:14.867909972Z 7:42:14 PM [express] POST /api/flows/survey 500 in 16ms :: {"error":"Failed to process survey flow"}
+2025-10-02T19:42:23.889673399Z [CRYPTO DEBUG] Encrypted request received
+2025-10-02T19:42:23.889758284Z [CRYPTO DEBUG] Encrypted AES key length: 344
+2025-10-02T19:42:23.889766724Z [CRYPTO DEBUG] Encrypted AES key (first 40 chars): PJHdbFBVLBrJxc2TRCpSi+3u/lwc0RRsDk5cVEFF
+2025-10-02T19:42:23.889775335Z [CRYPTO DEBUG] Encrypted flow data length: 68
+2025-10-02T19:42:23.889843208Z [CRYPTO DEBUG] Encrypted flow data (first 40 chars): GdYxOOg05vfVR+FnCO1JZFpehtCROblSmmz1cEz8
+2025-10-02T19:42:23.889856149Z [CRYPTO DEBUG] Initial vector length: 24
+2025-10-02T19:42:23.88988718Z [CRYPTO DEBUG] Initial vector: 8fYZVTYNEgwf33ubO/0ReQ==
+2025-10-02T19:42:23.889895391Z [CRYPTO DEBUG] Private key length: 1703
+2025-10-02T19:42:23.889899591Z [CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+2025-10-02T19:42:23.889938783Z [CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+2025-10-02T19:42:23.889957634Z [CRYPTO DEBUG] Formatted key length: 1703
+2025-10-02T19:42:23.890002356Z [CRYPTO DEBUG] Has PEM headers: true
+2025-10-02T19:42:23.89244111Z Decryption error: RangeError: Invalid key length
+2025-10-02T19:42:23.89245006Z     at Decipheriv.createCipherBase (node:internal/crypto/cipher:121:19)
+2025-10-02T19:42:23.892454791Z     at Decipheriv.createCipherWithIV (node:internal/crypto/cipher:133:3)
+2025-10-02T19:42:23.892460311Z     at new Decipheriv (node:internal/crypto/cipher:278:3)
+2025-10-02T19:42:23.892464621Z     at Object.createDecipheriv (node:crypto:147:10)
+2025-10-02T19:42:23.892469851Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2558:32)
+2025-10-02T19:42:23.892474792Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+2025-10-02T19:42:23.892479302Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T19:42:23.892483662Z     at file:///opt/render/project/src/dist/index.js:3122:61
+2025-10-02T19:42:23.892488522Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:42:23.892492682Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13) {
+2025-10-02T19:42:23.892495573Z   code: 'ERR_CRYPTO_INVALID_KEYLEN'
+2025-10-02T19:42:23.892498423Z }
+2025-10-02T19:42:23.892614968Z Survey flow error: Error: Failed to decrypt WhatsApp Flow request
+2025-10-02T19:42:23.892627909Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2570:13)
+2025-10-02T19:42:23.892633969Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+2025-10-02T19:42:23.89263884Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T19:42:23.89264364Z     at file:///opt/render/project/src/dist/index.js:3122:61
+2025-10-02T19:42:23.8926482Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:42:23.892652561Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T19:42:23.892656621Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T19:42:23.892660551Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:42:23.892678842Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+2025-10-02T19:42:23.892682032Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-10-02T19:42:23.893355706Z 7:42:23 PM [express] POST /api/flows/survey 500 in 4ms :: {"error":"Failed to process survey flow"}
+2025-10-02T19:42:46.455486782Z ==> No open ports detected, continuing to scan...
+2025-10-02T19:42:46.915036582Z ==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
+2025-10-02T19:44:24.549977539Z ==> Deploying...
+2025-10-02T19:44:43.924189639Z ==> Running 'npm run start'
+2025-10-02T19:44:45.023324134Z 
+2025-10-02T19:44:45.023350015Z > rest-express@1.0.0 start
+2025-10-02T19:44:45.023354415Z > NODE_ENV=production node dist/index.js
+2025-10-02T19:44:45.023356755Z 
+2025-10-02T19:44:53.416107512Z 7:44:53 PM [express] serving on port 10000
+2025-10-02T19:44:57.465283726Z ==> Your service is live 🎉
+2025-10-02T19:44:58.596204447Z ==> 
+2025-10-02T19:44:58.780353934Z ==> ///////////////////////////////////////////////////////////
+2025-10-02T19:44:58.964451321Z ==> 
+2025-10-02T19:44:59.321524726Z ==> Available at your primary URL https://solar-connect-q0a4.onrender.com
+2025-10-02T19:45:00.336195474Z ==> 
+2025-10-02T19:45:01.643005831Z ==> ///////////////////////////////////////////////////////////
+2025-10-02T19:45:39.622773003Z [CRYPTO DEBUG] Encrypted request received
+2025-10-02T19:45:39.623185314Z [CRYPTO DEBUG] Encrypted AES key length: 344
+2025-10-02T19:45:39.623219146Z [CRYPTO DEBUG] Encrypted AES key (first 40 chars): X6hRtkX5bMn3o6bxd7H7v9Ekp/RA7OyAi1fCrzJW
+2025-10-02T19:45:39.623280197Z [CRYPTO DEBUG] Encrypted flow data length: 68
+2025-10-02T19:45:39.623314018Z [CRYPTO DEBUG] Encrypted flow data (first 40 chars): yRIOQZQTwrxipr1QT8vpfLsz0DlsqsJNabcup3p+
+2025-10-02T19:45:39.623912705Z [CRYPTO DEBUG] Initial vector length: 24
+2025-10-02T19:45:39.623926266Z [CRYPTO DEBUG] Initial vector: IfOYChlSbu75/LBglCjahA==
+2025-10-02T19:45:39.623930956Z [CRYPTO DEBUG] Private key length: 1703
+2025-10-02T19:45:39.623935536Z [CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+2025-10-02T19:45:39.623939946Z [CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+2025-10-02T19:45:39.623943966Z [CRYPTO DEBUG] Formatted key length: 1703
+2025-10-02T19:45:39.623963287Z [CRYPTO DEBUG] Has PEM headers: true
+2025-10-02T19:45:39.71637199Z Decryption error: RangeError: Invalid key length
+2025-10-02T19:45:39.716417471Z     at Decipheriv.createCipherBase (node:internal/crypto/cipher:121:19)
+2025-10-02T19:45:39.716423002Z     at Decipheriv.createCipherWithIV (node:internal/crypto/cipher:133:3)
+2025-10-02T19:45:39.716427791Z     at new Decipheriv (node:internal/crypto/cipher:278:3)
+2025-10-02T19:45:39.716431562Z     at Object.createDecipheriv (node:crypto:147:10)
+2025-10-02T19:45:39.716435782Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2558:32)
+2025-10-02T19:45:39.716441812Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+2025-10-02T19:45:39.716445682Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T19:45:39.716449352Z     at file:///opt/render/project/src/dist/index.js:3122:61
+2025-10-02T19:45:39.716453122Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:45:39.716456732Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13) {
+2025-10-02T19:45:39.716460712Z   code: 'ERR_CRYPTO_INVALID_KEYLEN'
+2025-10-02T19:45:39.716464412Z }
+2025-10-02T19:45:39.716540905Z Survey flow error: Error: Failed to decrypt WhatsApp Flow request
+2025-10-02T19:45:39.716555255Z     at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2570:13)
+2025-10-02T19:45:39.716562135Z     at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2511:19)
+2025-10-02T19:45:39.716567495Z     at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2134:34)
+2025-10-02T19:45:39.716573166Z     at file:///opt/render/project/src/dist/index.js:3122:61
+2025-10-02T19:45:39.716577886Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:45:39.716583596Z     at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+2025-10-02T19:45:39.716588566Z     at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+2025-10-02T19:45:39.716597496Z     at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+2025-10-02T19:45:39.716623437Z     at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+2025-10-02T19:45:39.716626227Z     at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+2025-10-02T19:45:39.718311925Z 7:45:39 PM [express] POST /api/flows/survey 500 in 96ms :: {"error":"Failed to process survey flow"}
