@@ -543,11 +543,8 @@ export class FlowHandlers {
 
   private encryptResponse(responseData: any, aesKey: Buffer, initialVector: Buffer): string {
     try {
-      // Flip the IV (reverse bytes) for encryption
-      const flippedIv = Buffer.from(initialVector).reverse();
-
-      // Encrypt response using AES-256-GCM
-      const cipher = crypto.createCipheriv('aes-256-gcm', aesKey, flippedIv);
+      // Encrypt response using AES-256-GCM with the same IV from the request
+      const cipher = crypto.createCipheriv('aes-256-gcm', aesKey, initialVector);
       
       const encryptedData = Buffer.concat([
         cipher.update(JSON.stringify(responseData), 'utf8'),
