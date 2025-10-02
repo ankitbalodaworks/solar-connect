@@ -685,10 +685,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Test encrypt/decrypt with OAEP label
       const testData = crypto.randomBytes(32);
-      const publicKey = keyObj.export({ type: 'spki', format: 'pem' });
+      
+      // Extract public key from private key properly
+      const publicKeyObj = crypto.createPublicKey(keyObj);
+      const publicKeyPem = publicKeyObj.export({ type: 'spki', format: 'pem' });
       
       const encrypted = crypto.publicEncrypt({
-        key: publicKey,
+        key: publicKeyPem,
         padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
         oaepHash: 'sha256',
         oaepLabel: Buffer.from('WA-FLOW-DATA')
@@ -710,7 +713,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         formattedLength: formattedKey.length,
         hasProperFormat: formattedKey.includes('-----BEGIN') && formattedKey.includes('-----END'),
         encryptDecryptWorks: success,
-        publicKeyFingerprint: crypto.createHash('sha256').update(publicKey).digest('hex').substring(0, 16)
+        publicKeyFingerprint: crypto.createHash('sha256').update(publicKeyPem).digest('hex').substring(0, 16),
+        expectedLength: 1704,
+        actualLength: privateKeyEnv.length,
+        lengthMatch: privateKeyEnv.length === 1704
       });
     } catch (error: any) {
       res.status(500).json({ 
