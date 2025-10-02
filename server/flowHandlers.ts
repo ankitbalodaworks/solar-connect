@@ -492,6 +492,9 @@ export class FlowHandlers {
         throw new Error("WHATSAPP_FLOW_PRIVATE_KEY environment variable is not set");
       }
 
+      // Format the private key properly (replace literal \n with actual newlines)
+      const formattedPrivateKey = privateKey.replace(/\\n/g, '\n');
+
       // Decode base64 inputs
       const encryptedAesKey = Buffer.from(encryptedRequest.encrypted_aes_key, 'base64');
       const encryptedFlowData = Buffer.from(encryptedRequest.encrypted_flow_data, 'base64');
@@ -499,7 +502,7 @@ export class FlowHandlers {
 
       // Decrypt AES key using RSA private key
       const rsaPrivateKey = crypto.createPrivateKey({
-        key: privateKey,
+        key: formattedPrivateKey,
         format: 'pem',
       });
 
