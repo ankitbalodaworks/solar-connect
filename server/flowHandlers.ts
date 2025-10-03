@@ -672,9 +672,15 @@ export class FlowHandlers {
 
   private encryptResponse(responseData: any, aesKey: Buffer, initialVector: Buffer): string {
     try {
-      // Encrypt response using AES-GCM (128 or 256 depending on key size) with the same IV from the request
+      // WhatsApp Flows requires FLIPPING the IV for response encryption (XOR each byte with 0xFF)
+      const flippedIV = Buffer.from(initialVector.map(byte => byte ^ 0xFF));
+      
+      console.log('[CRYPTO DEBUG] Original IV:', initialVector.toString('base64'));
+      console.log('[CRYPTO DEBUG] Flipped IV:', flippedIV.toString('base64'));
+      
+      // Encrypt response using AES-GCM (128 or 256 depending on key size) with the flipped IV
       const aesAlgorithm = aesKey.length === 16 ? 'aes-128-gcm' : 'aes-256-gcm';
-      const cipher = crypto.createCipheriv(aesAlgorithm, aesKey, initialVector);
+      const cipher = crypto.createCipheriv(aesAlgorithm, aesKey, flippedIV);
       
       const encryptedData = Buffer.concat([
         cipher.update(JSON.stringify(responseData), 'utf8'),
