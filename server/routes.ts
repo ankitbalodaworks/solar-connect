@@ -68,7 +68,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/message-templates/:id", async (req, res) => {
     try {
       const validatedData = insertMessageTemplateSchema.partial().parse(req.body);
-      const template = await storage.updateMessageTemplate(req.params.id, validatedData);
+      
+      // Reset Meta approval status when template is modified
+      // This allows re-submission after changes
+      const updateData = {
+        ...validatedData,
+        metaStatus: "draft" as const,
+        metaTemplateId: null,
+        metaStatusUpdatedAt: null,
+        submissionError: null,
+      };
+      
+      const template = await storage.updateMessageTemplate(req.params.id, updateData);
       if (!template) {
         return res.status(404).json({ error: "Template not found" });
       }
@@ -261,6 +272,86 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error syncing template status:", error);
       res.status(500).json({ error: "Failed to sync template status" });
+    }
+  });
+
+  // Bulk submit all templates to Meta
+  app.post("/api/message-templates/bulk-submit", async (req, res) => {
+    try {
+      const templates = await storage.getMessageTemplates();
+      
+      const results = {
+        submitted: [] as string[],
+        skipped: [] as string[],
+        failed: [] as { id: string; name: string; error: string }[],
+      };
+      
+      for (const template of templates) {
+        // Skip if no required fields
+        if (!template.flowType || !template.stepKey || !template.language) {
+          results.skipped.push(template.name);
+          continue;
+        }
+        
+        // Skip if already approved or pending
+        const normalizedStatus = (template.metaStatus || "draft").toLowerCase();
+        if (normalizedStatus === "approved" || normalizedStatus === "pending") {
+          results.skipped.push(template.name);
+          continue;
+        }
+        
+        // Find matching Meta template
+        let metaTemplateName: string;
+        try {
+          metaTemplateName = getMetaTemplateName(template.flowType, template.stepKey, template.language);
+        } catch (mappingError: any) {
+          // This template doesn't require Meta approval
+          results.skipped.push(template.name);
+          continue;
+        }
+        
+        const metaTemplate = allMetaTemplates.find((t) => t.name === metaTemplateName);
+        if (!metaTemplate) {
+          results.skipped.push(template.name);
+          continue;
+        }
+        
+        // Submit to Meta
+        const result = await whatsappService.submitSingleTemplate(metaTemplate);
+        
+        if (result.success) {
+          await storage.updateMessageTemplate(template.id, {
+            metaTemplateId: result.id,
+            metaStatus: "pending",
+            metaStatusUpdatedAt: new Date(),
+            submissionError: null,
+          });
+          results.submitted.push(template.name);
+        } else {
+          await storage.updateMessageTemplate(template.id, {
+            submissionError: result.error,
+          });
+          results.failed.push({
+            id: template.id,
+            name: template.name,
+            error: result.error || "Unknown error",
+          });
+        }
+      }
+      
+      res.json({
+        success: true,
+        summary: {
+          total: templates.length,
+          submitted: results.submitted.length,
+          skipped: results.skipped.length,
+          failed: results.failed.length,
+        },
+        details: results,
+      });
+    } catch (error) {
+      console.error("Error bulk submitting templates:", error);
+      res.status(500).json({ error: "Failed to bulk submit templates" });
     }
   });
 

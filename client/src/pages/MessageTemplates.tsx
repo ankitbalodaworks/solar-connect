@@ -190,6 +190,28 @@ export default function MessageTemplates() {
     },
   });
 
+  const bulkSubmitMutation = useMutation({
+    mutationFn: async () => {
+      return await apiRequest("POST", "/api/message-templates/bulk-submit");
+    },
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/message-templates"] });
+      const { summary } = data;
+      toast({
+        title: "Bulk submission complete",
+        description: `Submitted: ${summary.submitted}, Skipped: ${summary.skipped}, Failed: ${summary.failed}`,
+      });
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.message || error?.error || String(error) || "Failed to bulk submit templates.";
+      toast({
+        title: "Bulk submission failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleOpenDialog = (template?: MessageTemplate) => {
     if (template) {
       setEditingTemplate(template);
@@ -322,10 +344,21 @@ export default function MessageTemplates() {
             Manage WhatsApp message templates for automated conversation flows
           </p>
         </div>
-        <Button onClick={() => handleOpenDialog()} data-testid="button-add-template">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Template
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button 
+            variant="outline"
+            onClick={() => bulkSubmitMutation.mutate()}
+            disabled={bulkSubmitMutation.isPending}
+            data-testid="button-submit-all"
+          >
+            <Upload className={`h-4 w-4 mr-2 ${bulkSubmitMutation.isPending ? 'animate-pulse' : ''}`} />
+            {bulkSubmitMutation.isPending ? "Submitting All..." : "Submit All to Meta"}
+          </Button>
+          <Button onClick={() => handleOpenDialog()} data-testid="button-add-template">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Template
+          </Button>
+        </div>
       </div>
 
       <Card>
