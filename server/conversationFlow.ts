@@ -207,12 +207,9 @@ export class ConversationFlowEngine {
         } else if (message.selectedButtonId === "english") {
           language = "en";
           nextStep = "main_menu";
-        } else if (message.selectedButtonId === "visit_website") {
-          // User chose to visit website, end conversation
-          await storage.deleteConversationState(message.customerPhone);
-          return undefined;
         } else {
           // Unrecognized button at entry, restart
+          console.log(`Unrecognized button ${message.selectedButtonId} at campaign_entry, restarting flow`);
           return await this.restartConversation(message.customerPhone);
         }
       } else if (selectedButton.nextStep) {
@@ -255,7 +252,41 @@ export class ConversationFlowEngine {
       };
     } 
     // Handle text responses
-    else if (currentTemplate.messageType === "text") {
+    else if (currentTemplate.messageType === "text" || message.messageType === "text") {
+      // Special handling for 'W' or 'w' at campaign_entry (visit website)
+      if (currentState.currentStep === "campaign_entry" && 
+          (message.content.toLowerCase() === "w" || message.content.toLowerCase() === "website")) {
+        // Send website link and end conversation
+        await storage.createWhatsappLog({
+          customerPhone: message.customerPhone,
+          direction: "outbound",
+          messageType: "text",
+          content: {
+            text: "Visit our website: https://www.sunshinepower.in",
+          },
+          status: "pending",
+        });
+        
+        await storage.deleteConversationState(message.customerPhone);
+        return {
+          template: {
+            id: 0,
+            flowType: "campaign",
+            stepName: "website_link",
+            language: null,
+            messageType: "text",
+            bodyText: "Visit our website: https://www.sunshinepower.in\n\nThank you for your interest! 🌞",
+            headerText: null,
+            footerText: null,
+            buttons: null,
+            listSections: null,
+            headerMediaId: null,
+            createdAt: new Date(),
+          },
+          shouldSend: true,
+        };
+      }
+      
       // Store text input in context
       updatedContext[currentState.currentStep] = {
         text: message.content,

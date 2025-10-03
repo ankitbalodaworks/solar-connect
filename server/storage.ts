@@ -11,70 +11,70 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  
+
   // Message Templates
   getMessageTemplates(flowType?: string, language?: string, stepKey?: string): Promise<MessageTemplate[]>;
   getMessageTemplate(id: string): Promise<MessageTemplate | undefined>;
   createMessageTemplate(template: InsertMessageTemplate): Promise<MessageTemplate>;
   updateMessageTemplate(id: string, template: Partial<InsertMessageTemplate>): Promise<MessageTemplate | undefined>;
   deleteMessageTemplate(id: string): Promise<boolean>;
-  
+
   // Conversation States
   getConversationStates(customerPhone?: string): Promise<ConversationState[]>;
   getConversationState(customerPhone: string): Promise<ConversationState | undefined>;
   createConversationState(state: InsertConversationState): Promise<ConversationState>;
   updateConversationState(customerPhone: string, state: Partial<InsertConversationState>): Promise<ConversationState | undefined>;
   deleteConversationState(customerPhone: string): Promise<boolean>;
-  
+
   // WhatsApp Logs
   createWhatsappLog(log: InsertWhatsappLog): Promise<WhatsappLog>;
   getWhatsappLogs(customerPhone?: string, limit?: number): Promise<WhatsappLog[]>;
-  
+
   // Leads
   getLeads(): Promise<Lead[]>;
   getLead(id: string): Promise<Lead | undefined>;
   createLead(lead: InsertLead): Promise<Lead>;
   updateLead(id: string, lead: Partial<InsertLead>): Promise<Lead | undefined>;
   deleteLead(id: string): Promise<boolean>;
-  
+
   // Service Requests
   getServiceRequests(): Promise<ServiceRequest[]>;
   getServiceRequest(id: string): Promise<ServiceRequest | undefined>;
   createServiceRequest(request: InsertServiceRequest): Promise<ServiceRequest>;
   updateServiceRequest(id: string, request: Partial<InsertServiceRequest>): Promise<ServiceRequest | undefined>;
   deleteServiceRequest(id: string): Promise<boolean>;
-  
+
   // Callback Requests
   getCallbackRequests(): Promise<CallbackRequest[]>;
   getCallbackRequest(id: string): Promise<CallbackRequest | undefined>;
   createCallbackRequest(request: InsertCallbackRequest): Promise<CallbackRequest>;
   updateCallbackRequest(id: string, request: Partial<InsertCallbackRequest>): Promise<CallbackRequest | undefined>;
   deleteCallbackRequest(id: string): Promise<boolean>;
-  
+
   // Price Estimates
   getPriceEstimates(): Promise<PriceEstimate[]>;
   getPriceEstimate(id: string): Promise<PriceEstimate | undefined>;
   createPriceEstimate(estimate: InsertPriceEstimate): Promise<PriceEstimate>;
   updatePriceEstimate(id: string, estimate: Partial<InsertPriceEstimate>): Promise<PriceEstimate | undefined>;
   deletePriceEstimate(id: string): Promise<boolean>;
-  
+
   // Other Issues
   getOtherIssues(): Promise<OtherIssue[]>;
   getOtherIssue(id: string): Promise<OtherIssue | undefined>;
   createOtherIssue(issue: InsertOtherIssue): Promise<OtherIssue>;
   updateOtherIssue(id: string, issue: Partial<InsertOtherIssue>): Promise<OtherIssue | undefined>;
   deleteOtherIssue(id: string): Promise<boolean>;
-  
+
   // Events (for status tracking)
   createEvent(event: InsertEvent): Promise<Event>;
   getEvents(customerPhone?: string, limit?: number): Promise<Event[]>;
   getLatestEventByPhone(customerPhone: string): Promise<Event | undefined>;
-  
+
   // Forms (submitted form data)
   createForm(form: InsertForm): Promise<Form>;
   getForms(customerPhone?: string): Promise<Form[]>;
   getForm(id: string): Promise<Form | undefined>;
-  
+
   // Contact Status Summary (for Status Page)
   getContactStatusSummary(): Promise<Array<{
     customerPhone: string;
@@ -82,7 +82,7 @@ export interface IStorage {
     latestEventTimestamp: Date | null;
     formCount: number;
   }>>;
-  
+
   // Statistics
   getStatistics(): Promise<{
     totalCustomers: number;
@@ -91,7 +91,7 @@ export interface IStorage {
     totalServiceRequests: number;
     activeConversations: number;
   }>;
-  
+
   // Clear all test data
   clearAllData(): Promise<void>;
 }
@@ -130,11 +130,11 @@ export class MemStorage implements IStorage {
     if (conditions.length === 0) {
       return await db.select().from(messageTemplates);
     }
-    
+
     if (conditions.length === 1) {
       return await db.select().from(messageTemplates).where(conditions[0]);
     }
-    
+
     return await db.select().from(messageTemplates).where(and(...conditions));
   }
 
@@ -361,15 +361,15 @@ export class MemStorage implements IStorage {
 
   async getEvents(customerPhone?: string, limit?: number): Promise<Event[]> {
     let query = db.select().from(events).orderBy(desc(events.createdAt));
-    
+
     if (customerPhone) {
       query = query.where(eq(events.customerPhone, customerPhone)) as any;
     }
-    
+
     if (limit) {
       query = query.limit(limit) as any;
     }
-    
+
     return await query;
   }
 
@@ -417,7 +417,7 @@ export class MemStorage implements IStorage {
       LEFT JOIN form_counts fc ON ap.customer_phone = fc.customer_phone
       ORDER BY COALESCE(le.created_at, CURRENT_TIMESTAMP) DESC
     `);
-    
+
     return (result.rows as any[]).map(row => ({
       customerPhone: row.customer_phone,
       latestEventType: row.latest_event_type || null,
@@ -480,3 +480,127 @@ export class MemStorage implements IStorage {
 }
 
 export const storage = new MemStorage();
+
+// Message Templates data
+// Note: This should be part of your database seeding or initialization logic
+// and not hardcoded directly in the storage class if the database is persistent.
+// For a purely in-memory storage or for demonstration purposes, it can be here.
+
+// Add message templates to the database on startup if they don't exist
+async function seedMessageTemplates() {
+  const existingTemplates = await db.select().from(messageTemplates);
+  if (existingTemplates.length > 0) {
+    return; // Skip seeding if templates already exist
+  }
+
+  await db.insert(messageTemplates).values([
+    // Campaign Entry Point
+    {
+      flowType: "campaign",
+      stepName: "campaign_entry",
+      language: null, // Universal language for initial entry
+      messageType: "button",
+      bodyText: "Welcome to Sunshine Power! ☀️\n\nWe help you save money with solar energy under PM Surya Ghar Yojana.\n\nसनशाइन पावर में आपका स्वागत है! ☀️\n\nहम PM सूर्य घर योजना के तहत सोलर ऊर्जा से आपके पैसे बचाने में मदद करते हैं।",
+      headerText: null,
+      footerText: "Reply 'W' to visit website", // Added footer text as per changes
+      buttons: [
+        { id: "english", title: "English" }, // Removed nextStep, handled by conversation flow
+        { id: "hindi", title: "हिंदी" } // Removed nextStep, handled by conversation flow
+      ],
+      listSections: null,
+      headerMediaId: null,
+    },
+    // Main Menu (English)
+    {
+      flowType: "campaign",
+      stepName: "main_menu",
+      language: "en",
+      messageType: "button",
+      bodyText: "How can we help you today?",
+      headerText: "Main Menu", // Added header text
+      footerText: null,
+      buttons: [
+        { id: "site_survey", title: "Book Site Survey" },
+        { id: "price_estimate", title: "Price Estimate" },
+        { id: "service", title: "Service/Support" }
+      ],
+      listSections: null,
+      headerMediaId: null,
+    },
+    // Main Menu (Hindi)
+    {
+      flowType: "campaign",
+      stepName: "main_menu",
+      language: "hi",
+      messageType: "button",
+      bodyText: "आज हम आपकी कैसे मदद कर सकते हैं?",
+      headerText: "मुख्य मेनू", // Added header text
+      footerText: null,
+      buttons: [
+        { id: "site_survey", title: "साइट सर्वे बुक करें" },
+        { id: "price_estimate", title: "मूल्य अनुमान" },
+        { id: "service", title: "सेवा/समर्थन" }
+      ],
+      listSections: null,
+      headerMediaId: null,
+    },
+    // Example template for site survey
+    {
+      flowType: "campaign",
+      stepName: "site_survey_request",
+      language: "en",
+      messageType: "text",
+      bodyText: "Please provide your address for the site survey.",
+      headerText: null,
+      footerText: null,
+      buttons: null,
+      listSections: null,
+      headerMediaId: null,
+    },
+    // Example template for price estimate
+    {
+      flowType: "campaign",
+      stepName: "price_estimate_request",
+      language: "en",
+      messageType: "text",
+      bodyText: "Please provide details about the system size and your location for a price estimate.",
+      headerText: null,
+      footerText: null,
+      buttons: null,
+      listSections: null,
+      headerMediaId: null,
+    },
+    // Example template for service/support
+    {
+      flowType: "campaign",
+      stepName: "service_request",
+      language: "en",
+      messageType: "text",
+      bodyText: "Please describe your service or support issue.",
+      headerText: null,
+      footerText: null,
+      buttons: null,
+      listSections: null,
+      headerMediaId: null,
+    },
+     // Template for handling 'W' reply to visit website
+    {
+      flowType: "campaign",
+      stepName: "visit_website",
+      language: null, // Can be universal or specific if needed
+      messageType: "button", // Or could be just text if no further interaction
+      bodyText: "Click the button below to visit our website.",
+      headerText: null,
+      footerText: null,
+      buttons: [
+        { id: "open_website", title: "Visit Website", url: "https://sunshinepower.com" } // Use URL type button
+      ],
+      listSections: null,
+      headerMediaId: null,
+    },
+  ]);
+}
+
+// Call the seed function when the module is loaded
+// In a real application, this might be called during application startup
+seedMessageTemplates().catch(console.error);
