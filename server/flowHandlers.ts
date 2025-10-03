@@ -52,11 +52,15 @@ export class FlowHandlers {
         decryptedData = this.decryptFlowData(body);
       } catch (decryptError: any) {
         // If decryption fails due to key mismatch, return 421 to force WhatsApp to refresh cached public key
-        if (decryptError.message?.includes('Invalid AES key length') || 
-            decryptError.message?.includes('OAEP') ||
-            decryptError.message?.includes('Public/private key mismatch')) {
-          console.error('[FLOW] Decryption failed - forcing WhatsApp to refresh public key (HTTP 421)');
-          console.error('[FLOW] Wait 30 minutes after receiving this error for cache to clear');
+        const errorMsg = decryptError.message || String(decryptError);
+        if (errorMsg.includes('Invalid AES key length') || 
+            errorMsg.includes('OAEP') ||
+            errorMsg.includes('oaep') ||
+            errorMsg.includes('Public/private key mismatch') ||
+            errorMsg.includes('Failed to decrypt')) {
+          console.error('[FLOW SURVEY] Decryption failed - forcing WhatsApp to refresh public key (HTTP 421)');
+          console.error('[FLOW SURVEY] Error:', errorMsg);
+          console.error('[FLOW SURVEY] Wait 30 minutes after receiving this error for cache to clear');
           return res.status(421).json({ 
             error: "Encryption key mismatch - forcing client to refresh public key. Wait 30 minutes and try again." 
           });
@@ -299,10 +303,14 @@ export class FlowHandlers {
       try {
         decryptedData = this.decryptFlowData(body);
       } catch (decryptError: any) {
-        if (decryptError.message?.includes('Invalid AES key length') || 
-            decryptError.message?.includes('OAEP') ||
-            decryptError.message?.includes('Public/private key mismatch')) {
-          console.error('[FLOW] Decryption failed - forcing WhatsApp to refresh public key (HTTP 421)');
+        const errorMsg = decryptError.message || String(decryptError);
+        if (errorMsg.includes('Invalid AES key length') || 
+            errorMsg.includes('OAEP') ||
+            errorMsg.includes('oaep') ||
+            errorMsg.includes('Public/private key mismatch') ||
+            errorMsg.includes('Failed to decrypt')) {
+          console.error('[FLOW SERVICE] Decryption failed - forcing WhatsApp to refresh public key (HTTP 421)');
+          console.error('[FLOW SERVICE] Error:', errorMsg);
           return res.status(421).json({ 
             error: "Encryption key mismatch - forcing client to refresh public key. Wait 30 minutes and try again." 
           });
@@ -421,10 +429,14 @@ export class FlowHandlers {
       try {
         decryptedData = this.decryptFlowData(body);
       } catch (decryptError: any) {
-        if (decryptError.message?.includes('Invalid AES key length') || 
-            decryptError.message?.includes('OAEP') ||
-            decryptError.message?.includes('Public/private key mismatch')) {
-          console.error('[FLOW] Decryption failed - forcing WhatsApp to refresh public key (HTTP 421)');
+        const errorMsg = decryptError.message || String(decryptError);
+        if (errorMsg.includes('Invalid AES key length') || 
+            errorMsg.includes('OAEP') ||
+            errorMsg.includes('oaep') ||
+            errorMsg.includes('Public/private key mismatch') ||
+            errorMsg.includes('Failed to decrypt')) {
+          console.error('[FLOW CALLBACK] Decryption failed - forcing WhatsApp to refresh public key (HTTP 421)');
+          console.error('[FLOW CALLBACK] Error:', errorMsg);
           return res.status(421).json({ 
             error: "Encryption key mismatch - forcing client to refresh public key. Wait 30 minutes and try again." 
           });
@@ -650,7 +662,8 @@ export class FlowHandlers {
       return parsedData;
     } catch (error) {
       console.error("Decryption error:", error);
-      throw new Error("Failed to decrypt WhatsApp Flow request");
+      // Re-throw the original error to preserve the error message for 421 handling
+      throw error;
     }
   }
 
