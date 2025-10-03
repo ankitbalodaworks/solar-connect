@@ -1,0 +1,102 @@
+
+{
+  "version": "7.3",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "CALLBACK_FORM": ["CALLBACK_SUCCESS"],
+    "CALLBACK_SUCCESS": []
+  },
+  "screens": [
+    {
+      "id": "CALLBACK_FORM",
+      "title": "कॉलबैक अनुरोध",
+      "terminal": true,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "form",
+            "children": [
+              {
+                "type": "TextInput",
+                "name": "full_name",
+                "label": "पूरा नाम",
+                "required": true,
+                "input-type": "text",
+                "max-chars": 120
+              },
+              {
+                "type": "TextInput",
+                "name": "mobile",
+                "label": "मोबाइल",
+                "required": true,
+                "input-type": "phone"
+              },
+              {
+                "type": "RadioButtonsGroup",
+                "name": "best_time",
+                "label": "कॉल करने का सबसे अच्छा समय",
+                "required": true,
+                "data-source": [
+                  { "id": "morning", "title": "सुबह" },
+                  { "id": "afternoon", "title": "दोपहर" },
+                  { "id": "evening", "title": "शाम" }
+                ]
+              },
+              {
+                "type": "Dropdown",
+                "name": "topic",
+                "label": "विषय",
+                "required": true,
+                "data-source": [
+                  { "id": "site_survey", "title": "साइट सर्वे" },
+                  { "id": "price_estimate", "title": "मूल्य अनुमान" },
+                  { "id": "maintenance", "title": "रखरखाव/सेवा" },
+                  { "id": "other", "title": "अन्य" }
+                ]
+              },
+              {
+                "type": "TextArea",
+                "name": "notes",
+                "label": "टिप्पणियां (वैकल्पिक)",
+                "required": false
+              },
+              {
+                "type": "Footer",
+                "label": "जमा करें",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "op": "submit_callback_form"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "CALLBACK_SUCCESS",
+      "title": "धन्यवाद!",
+      "terminal": true,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextBody",
+            "text": "हम आपके पसंदीदा समय पर आपको कॉल करेंगे।"
+          },
+          {
+            "type": "Footer",
+            "label": "पूर्ण",
+            "on-click-action": {
+              "name": "complete"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+
+{
+  "version": "7.3",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "SURVEY_FORM": ["SURVEY_SUCCESS"],
+    "SURVEY_SUCCESS": []
+  },
+  "screens": [
+    {
+      "id": "SURVEY_FORM",
+      "title": "साइट सर्वे बुक करें",
+      "terminal": true,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "form",
+            "children": [
+              {
+                "type": "TextInput",
+                "name": "full_name",
+                "label": "पूरा नाम",
+                "required": true,
+                "input-type": "text",
+                "max-chars": 120
+              },
+              {
+                "type": "TextInput",
+                "name": "mobile",
+                "label": "मोबाइल",
+                "required": true,
+                "input-type": "phone"
+              },
+              {
+                "type": "TextArea",
+                "name": "address",
+                "label": "पता",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "name": "village",
+                "label": "गांव/शहर",
+                "required": true,
+                "input-type": "text"
+              },
+              {
+                "type": "TextInput",
+                "name": "avg_bill",
+                "label": "औसत मासिक बिल (₹)",
+                "required": true,
+                "input-type": "number"
+              },
+              {
+                "type": "RadioButtonsGroup",
+                "name": "phase",
+                "label": "फेज",
+                "required": true,
+                "data-source": [
+                  { "id": "1p", "title": "1φ" },
+                  { "id": "3p", "title": "3φ" }
+                ]
+              },
+              {
+                "type": "Dropdown",
+                "name": "roof_type",
+                "label": "छत का प्रकार",
+                "required": true,
+                "data-source": [
+                  { "id": "rcc", "title": "RCC" },
+                  { "id": "tin", "title": "टिन/शीट" },
+                  { "id": "other", "title": "अन्य" }
+                ]
+              },
+              {
+                "type": "DatePicker",
+                "name": "preferred_date",
+                "label": "पसंदीदा तारीख",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "name": "preferred_time",
+                "label": "पसंदीदा समय (जैसे 10:00 AM)",
+                "required": true,
+                "input-type": "text"
+              },
+              {
+                "type": "Footer",
+                "label": "जमा करें",
+                "on-click-action": {
+                  "name": "data_exchange",
+                  "payload": {
+                    "op": "submit_survey_form"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "SURVEY_SUCCESS",
+      "title": "धन्यवाद!",
+      "terminal": true,
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextBody",
+            "text": "आपका सर्वे अनुरोध दर्ज किया गया है। हमारी टीम जल्द ही आपसे संपर्क करेगी।"
+          },
+          {
+            "type": "Footer",
+            "label": "पूर्ण",
+            "on-click-action": {
+              "name": "complete"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
