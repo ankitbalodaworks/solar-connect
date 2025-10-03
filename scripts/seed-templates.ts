@@ -85,11 +85,65 @@ async function seedTemplates() {
         set: mainMenuHi
       });
 
+    // Help Submenu - English
+    const helpSubmenuEn = {
+      name: "sunshine_help_submenu_en",
+      flowType: "campaign",
+      stepKey: "help_submenu",
+      messageType: "button",
+      language: "en",
+      headerText: "Help & Support",
+      bodyText: "We are here to help you!\n\nPlease select what you need:",
+      footerText: "Sunshine Power",
+      buttons: [
+        { id: "maintenance", title: "Maintenance request", nextStep: null },
+        { id: "callback", title: "Request callback", nextStep: null },
+        { id: "other_issue", title: "Register issue", nextStep: null }
+      ],
+      metaStatus: "approved"
+    };
+
+    console.log("📝 Inserting help_submenu_en template...");
+    await db.insert(messageTemplates)
+      .values(helpSubmenuEn)
+      .onConflictDoUpdate({
+        target: [messageTemplates.flowType, messageTemplates.language, messageTemplates.stepKey],
+        set: helpSubmenuEn
+      });
+
+    // Help Submenu - Hindi
+    const helpSubmenuHi = {
+      name: "sunshine_help_submenu_hi",
+      flowType: "campaign",
+      stepKey: "help_submenu",
+      messageType: "button",
+      language: "hi",
+      headerText: "सहायता और समर्थन",
+      bodyText: "हम आपकी मदद के लिए यहां हैं!\n\nकृपया चुनें आपको क्या चाहिए:",
+      footerText: "Sunshine Power",
+      buttons: [
+        { id: "maintenance", title: "रखरखाव अनुरोध", nextStep: null },
+        { id: "callback", title: "कॉलबैक का अनुरोध", nextStep: null },
+        { id: "other_issue", title: "समस्या दर्ज करें", nextStep: null }
+      ],
+      metaStatus: "approved"
+    };
+
+    console.log("📝 Inserting help_submenu_hi template...");
+    await db.insert(messageTemplates)
+      .values(helpSubmenuHi)
+      .onConflictDoUpdate({
+        target: [messageTemplates.flowType, messageTemplates.language, messageTemplates.stepKey],
+        set: helpSubmenuHi
+      });
+
     console.log("✅ Template seed completed successfully!");
     console.log("\nTemplates loaded:");
     console.log("  - Campaign Entry (with image header, 3 buttons)");
     console.log("  - Main Menu English (3 buttons)");
     console.log("  - Main Menu Hindi (3 buttons)");
+    console.log("  - Help Submenu English (3 buttons)");
+    console.log("  - Help Submenu Hindi (3 buttons)");
 
     process.exit(0);
   } catch (error) {
