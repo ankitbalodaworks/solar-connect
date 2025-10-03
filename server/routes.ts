@@ -7,6 +7,7 @@ import { whatsappService } from "./whatsapp";
 import { notificationService } from "./notifications";
 import { allMetaTemplates } from "./metaTemplates";
 import { FlowHandlers } from "./flowHandlers";
+import { ALL_FLOWS } from "./whatsappFlows";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -749,6 +750,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/flows/price", (req, res) => flowHandlers.handlePriceFlow(req, res));
   app.post("/api/flows/service", (req, res) => flowHandlers.handleServiceFlow(req, res));
   app.post("/api/flows/callback", (req, res) => flowHandlers.handleCallbackFlow(req, res));
+  
+  // Hindi flow endpoints (serve Hindi flow JSON definitions)
+  app.get("/api/flows/survey-hi", (req, res) => {
+    res.json(ALL_FLOWS.SURVEY_HI);
+  });
+  app.get("/api/flows/price-hi", (req, res) => {
+    res.json(ALL_FLOWS.PRICE_HI);
+  });
+  app.get("/api/flows/service-hi", (req, res) => {
+    res.json(ALL_FLOWS.SERVICE_HI);
+  });
+  app.get("/api/flows/callback-hi", (req, res) => {
+    res.json(ALL_FLOWS.CALLBACK_HI);
+  });
+  
+  // Hindi flow handlers (same as English, data structure is identical)
+  app.post("/api/flows/survey-hi", (req, res) => flowHandlers.handleSurveyFlow(req, res));
+  app.post("/api/flows/price-hi", (req, res) => flowHandlers.handlePriceFlow(req, res));
+  app.post("/api/flows/service-hi", (req, res) => flowHandlers.handleServiceFlow(req, res));
+  app.post("/api/flows/callback-hi", (req, res) => flowHandlers.handleCallbackFlow(req, res));
 
   // Diagnostic endpoint to test encryption key
   app.get("/api/crypto/test-key", async (req, res) => {
