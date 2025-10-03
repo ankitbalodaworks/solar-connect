@@ -1,0 +1,253 @@
+8:59:27 PM [express] POST /api/flows/survey 200 in 73ms
+[CRYPTO DEBUG] Encrypted request received
+[CRYPTO DEBUG] Encrypted AES key length: 344
+[CRYPTO DEBUG] Encrypted AES key (first 40 chars): WqOVMpm/A+PRmOpGa2RoNf9Jdu/J4/Z9VN/py3uj
+[CRYPTO DEBUG] Encrypted flow data length: 268
+[CRYPTO DEBUG] Encrypted flow data (first 40 chars): l/dnchDPETWhJ2i65LXWxp1FMJtYf3H1r5jT+fDS
+[CRYPTO DEBUG] Initial vector length: 24
+[CRYPTO DEBUG] Initial vector: F9kDOZcCwePKxcDwbzY75g==
+[CRYPTO DEBUG] Private key length: 1703
+[CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+[CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+[CRYPTO DEBUG] Formatted key length: 1703
+[CRYPTO DEBUG] Has PEM headers: true
+[CRYPTO DEBUG] Decrypted AES key length: 16 bytes
+[CRYPTO DEBUG] Decrypted AES key (hex): 025660fe4d1c681853ff830f656f2fc7...
+[CRYPTO DEBUG] Using algorithm: aes-128-gcm
+Survey flow error: ZodError: [
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "undefined",
+    "path": [
+      "customerName"
+    ],
+    "message": "Required"
+  }
+]
+    at get error (file:///opt/render/project/src/node_modules/zod/lib/index.mjs:587:31)
+    at ZodObject.parse (file:///opt/render/project/src/node_modules/zod/lib/index.mjs:663:22)
+    at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2331:48)
+    at file:///opt/render/project/src/dist/index.js:3389:61
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12) {
+  issues: [
+    {
+      code: 'invalid_type',
+      expected: 'string',
+      received: 'undefined',
+      path: [Array],
+      message: 'Required'
+    }
+  ],
+  addIssue: [Function (anonymous)],
+  addIssues: [Function (anonymous)],
+  errors: [
+    {
+      code: 'invalid_type',
+      expected: 'string',
+      received: 'undefined',
+      path: [Array],
+      message: 'Required'
+    }
+  ]
+}
+9:00:33 PM [express] POST /api/flows/survey 400 in 10ms :: {"error":"Validation failed","details":[{…
+[CRYPTO DEBUG] Encrypted request received
+[CRYPTO DEBUG] Encrypted AES key length: 344
+[CRYPTO DEBUG] Encrypted AES key (first 40 chars): FO9M1NVoJRfhxd10TBZPCuNzFUOd8ev34zNc1FkZ
+[CRYPTO DEBUG] Encrypted flow data length: 268
+[CRYPTO DEBUG] Encrypted flow data (first 40 chars): kXOx2XiisygfjJZhf/LfGrn7VSeiHftTSURG/qf1
+[CRYPTO DEBUG] Initial vector length: 24
+[CRYPTO DEBUG] Initial vector: cEgBSFM2o090B9x8HJwLMA==
+[CRYPTO DEBUG] Private key length: 1703
+[CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+[CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+[CRYPTO DEBUG] Formatted key length: 1703
+[CRYPTO DEBUG] Has PEM headers: true
+[CRYPTO DEBUG] Decrypted AES key length: 16 bytes
+[CRYPTO DEBUG] Decrypted AES key (hex): ce975ba8ce5ea4246ddb1f8e52558fa6...
+[CRYPTO DEBUG] Using algorithm: aes-128-gcm
+Survey flow error: ZodError: [
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "undefined",
+    "path": [
+      "customerName"
+    ],
+    "message": "Required"
+  }
+]
+    at get error (file:///opt/render/project/src/node_modules/zod/lib/index.mjs:587:31)
+    at ZodObject.parse (file:///opt/render/project/src/node_modules/zod/lib/index.mjs:663:22)
+    at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2331:48)
+    at file:///opt/render/project/src/dist/index.js:3389:61
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12) {
+  issues: [
+    {
+      code: 'invalid_type',
+      expected: 'string',
+      received: 'undefined',
+      path: [Array],
+      message: 'Required'
+    }
+  ],
+  addIssue: [Function (anonymous)],
+  addIssues: [Function (anonymous)],
+  errors: [
+    {
+      code: 'invalid_type',
+      expected: 'string',
+      received: 'undefined',
+      path: [Array],
+      message: 'Required'
+    }
+  ]
+}
+9:00:38 PM [express] POST /api/flows/survey 400 in 4ms :: {"error":"Validation failed","details":[{"…
+[CRYPTO DEBUG] Encrypted request received
+[CRYPTO DEBUG] Encrypted AES key length: 344
+[CRYPTO DEBUG] Encrypted AES key (first 40 chars): FthNj6SCagxrnfwfKsRsFFiAS15W867ZVEr9yqA0
+[CRYPTO DEBUG] Encrypted flow data length: 268
+[CRYPTO DEBUG] Encrypted flow data (first 40 chars): RqNRWyymzwh+Wd5w+Qz3qnMUqnd7vrrIDkSVAvKO
+[CRYPTO DEBUG] Initial vector length: 24
+[CRYPTO DEBUG] Initial vector: pBuGfHBIfIu0WsSFGXoMcw==
+[CRYPTO DEBUG] Private key length: 1703
+[CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+[CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+[CRYPTO DEBUG] Formatted key length: 1703
+[CRYPTO DEBUG] Has PEM headers: true
+[CRYPTO DEBUG] Decrypted AES key length: 16 bytes
+[CRYPTO DEBUG] Decrypted AES key (hex): 45677e21f2b9906610953d264fc2d8b5...
+[CRYPTO DEBUG] Using algorithm: aes-128-gcm
+Survey flow error: ZodError: [
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "undefined",
+    "path": [
+      "customerName"
+    ],
+    "message": "Required"
+  }
+]
+    at get error (file:///opt/render/project/src/node_modules/zod/lib/index.mjs:587:31)
+    at ZodObject.parse (file:///opt/render/project/src/node_modules/zod/lib/index.mjs:663:22)
+    at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2331:48)
+    at file:///opt/render/project/src/dist/index.js:3389:61
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12) {
+  issues: [
+    {
+      code: 'invalid_type',
+      expected: 'string',
+      received: 'undefined',
+      path: [Array],
+      message: 'Required'
+    }
+  ],
+  addIssue: [Function (anonymous)],
+  addIssues: [Function (anonymous)],
+  errors: [
+    {
+      code: 'invalid_type',
+      expected: 'string',
+      received: 'undefined',
+      path: [Array],
+      message: 'Required'
+    }
+  ]
+}
+9:01:07 PM [express] POST /api/flows/survey 400 in 3ms :: {"error":"Validation failed","details":[{"…
+[CRYPTO DEBUG] Encrypted request received
+[CRYPTO DEBUG] Encrypted AES key length: 344
+[CRYPTO DEBUG] Encrypted AES key (first 40 chars): bwCMjRDK80KBXQx6mUPBWAwacZxckDJO++TTN/li
+[CRYPTO DEBUG] Encrypted flow data length: 264
+[CRYPTO DEBUG] Encrypted flow data (first 40 chars): NBFWDn8siVFQ45ibxGU6oep31nEeo3QQRnOi1fdN
+[CRYPTO DEBUG] Initial vector length: 24
+[CRYPTO DEBUG] Initial vector: QfNuWP4+tCQpRmRaAfHioA==
+[CRYPTO DEBUG] Private key length: 1703
+[CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+[CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+[CRYPTO DEBUG] Formatted key length: 1703
+[CRYPTO DEBUG] Has PEM headers: true
+Survey flow error: ZodError: [
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "undefined",
+    "path": [
+      "customerName"
+    ],
+    "message": "Required"
+  }
+]
+    at get error (file:///opt/render/project/src/node_modules/zod/lib/index.mjs:587:31)
+    at ZodObject.parse (file:///opt/render/project/src/node_modules/zod/lib/index.mjs:663:22)
+    at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2331:48)
+    at file:///opt/render/project/src/dist/index.js:3389:61
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12) {
+  issues: [
+    {
+      code: 'invalid_type',
+      expected: 'string',
+      received: 'undefined',
+      path: [Array],
+      message: 'Required'
+    }
+  ],
+  addIssue: [Function (anonymous)],
+  addIssues: [Function (anonymous)],
+  errors: [
+    {
+      code: 'invalid_type',
+      expected: 'string',
+      received: 'undefined',
+      path: [Array],
+      message: 'Required'
+    }
+  ]
+}
+[CRYPTO DEBUG] Decrypted AES key length: 16 bytes
+[CRYPTO DEBUG] Decrypted AES key (hex): 44a61b66ccfcf58c63263a1ada4131bc...
+[CRYPTO DEBUG] Using algorithm: aes-128-gcm
+9:02:10 PM [express] POST /api/flows/survey 400 in 4ms :: {"error":"Validation failed","details":[{"…
+[CRYPTO DEBUG] Encrypted request received
+[CRYPTO DEBUG] Encrypted AES key length: 344
+[CRYPTO DEBUG] Encrypted AES key (first 40 chars): Lj7xVa7pYvQl+SkMWbsvkcEoUGExn0qdtFGnR1SF
+[CRYPTO DEBUG] Encrypted flow data length: 68
+[CRYPTO DEBUG] Encrypted flow data (first 40 chars): RgFMMyg6DN7ZprNnFgJ5J4zMl8tQDaejjIzbluQ/
+[CRYPTO DEBUG] Initial vector length: 24
+[CRYPTO DEBUG] Initial vector: u5BJe/ARHeO9UdvZ3ADBlw==
+[CRYPTO DEBUG] Private key length: 1703
+[CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+[CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+[CRYPTO DEBUG] Formatted key length: 1703
+[CRYPTO DEBUG] Has PEM headers: true
+[CRYPTO DEBUG] Decrypted AES key length: 16 bytes
+[CRYPTO DEBUG] Decrypted AES key (hex): b8e969108f92d4ae995192963c764686...
+[CRYPTO DEBUG] Using algorithm: aes-128-gcm
+[CRYPTO DEBUG] Original IV: u5BJe/ARHeO9UdvZ3ADBlw==
+[CRYPTO DEBUG] Flipped IV: RG+2hA/u4hxCriQmI/8+aA==
+9:02:52 PM [express] POST /api/flows/survey 200 in 4ms
+     ==> Detected service running on port 10000
+     ==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
