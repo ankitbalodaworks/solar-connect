@@ -212,13 +212,15 @@ export class ConversationFlowEngine {
           console.log(`Unrecognized button ${message.selectedButtonId} at campaign_entry, restarting flow`);
           return await this.restartConversation(message.customerPhone);
         }
+      } else if (currentState.currentStep === "main_menu" && message.selectedButtonId) {
+        // Main menu button selected - these trigger WhatsApp Flows, handled separately
+        nextStep = currentState.currentStep; // Stay on main menu until flow is sent
       } else if (selectedButton.nextStep) {
         // Follow the nextStep defined in the button
         nextStep = selectedButton.nextStep;
       } else {
-        // Button has no nextStep, this is unexpected, restart flow
-        console.log(`Button ${message.selectedButtonId} has no nextStep, restarting flow`);
-        return await this.restartConversation(message.customerPhone);
+        // No explicit nextStep, stay on current step
+        nextStep = currentState.currentStep;
       }
       
       // Store button selection in context
@@ -255,32 +257,34 @@ export class ConversationFlowEngine {
     else if (currentTemplate.messageType === "text" || message.messageType === "text") {
       // Special handling for 'W' or 'w' at campaign_entry (visit website)
       if (currentState.currentStep === "campaign_entry" && 
-          (message.content.toLowerCase() === "w" || message.content.toLowerCase() === "website")) {
-        // Send website link and end conversation
-        await storage.createWhatsappLog({
+          (message.content.trim().toLowerCase() === "w" || 
+           message.content.trim().toLowerCase() === "website" ||
+           message.content.trim().toLowerCase() === "वेबसाइट")) {
+        // Delete conversation and return website info
+        await storage.deleteConversationState(message.customerPhone);
+        
+        // Create event for website visit
+        await storage.createEvent({
           customerPhone: message.customerPhone,
-          direction: "outbound",
-          messageType: "text",
-          content: {
-            text: "Visit our website: https://www.sunshinepower.in",
-          },
-          status: "pending",
+          type: "website_visit_requested",
+          meta: { source: "campaign_entry" },
         });
         
-        await storage.deleteConversationState(message.customerPhone);
         return {
           template: {
             id: 0,
             flowType: "campaign",
-            stepName: "website_link",
+            stepKey: "website_link",
+            stepName: "Website Link",
             language: null,
             messageType: "text",
-            bodyText: "Visit our website: https://www.sunshinepower.in\n\nThank you for your interest! 🌞",
+            bodyText: "🌐 Visit our website:\nhttps://www.sunshinepower.in\n\n🌐 हमारी वेबसाइट पर जाएं:\nhttps://www.sunshinepower.in\n\nThank you for your interest! 🌞\nआपकी रुचि के लिए धन्यवाद! 🌞",
             headerText: null,
             footerText: null,
             buttons: null,
             listSections: null,
             headerMediaId: null,
+            name: "Website Link",
             createdAt: new Date(),
           },
           shouldSend: true,

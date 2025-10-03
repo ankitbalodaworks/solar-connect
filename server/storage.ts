@@ -497,107 +497,60 @@ async function seedMessageTemplates() {
     // Campaign Entry Point
     {
       flowType: "campaign",
-      stepName: "campaign_entry",
-      language: null, // Universal language for initial entry
+      stepKey: "campaign_entry",
+      stepName: "Campaign Entry - Language Selection",
+      language: null,
       messageType: "button",
-      bodyText: "Welcome to Sunshine Power! ☀️\n\nWe help you save money with solar energy under PM Surya Ghar Yojana.\n\nसनशाइन पावर में आपका स्वागत है! ☀️\n\nहम PM सूर्य घर योजना के तहत सोलर ऊर्जा से आपके पैसे बचाने में मदद करते हैं।",
+      bodyText: "🌞 Welcome to Sunshine Power!\n\nWe help rural Rajasthan save money with solar energy under PM Surya Ghar Yojana.\n\n🌞 सनशाइन पावर में आपका स्वागत है!\n\nहम PM सूर्य घर योजना के तहत ग्रामीण राजस्थान को सोलर ऊर्जा से पैसे बचाने में मदद करते हैं।\n\nPlease choose your language / कृपया अपनी भाषा चुनें:",
       headerText: null,
-      footerText: "Reply 'W' to visit website", // Added footer text as per changes
+      footerText: "Reply 'W' for website / वेबसाइट के लिए 'W' टाइप करें",
       buttons: [
-        { id: "english", title: "English" }, // Removed nextStep, handled by conversation flow
-        { id: "hindi", title: "हिंदी" } // Removed nextStep, handled by conversation flow
+        { id: "english", title: "English" },
+        { id: "hindi", title: "हिंदी" }
       ],
       listSections: null,
       headerMediaId: null,
+      name: "Campaign Entry",
     },
     // Main Menu (English)
     {
       flowType: "campaign",
-      stepName: "main_menu",
+      stepKey: "main_menu",
+      stepName: "Main Menu",
       language: "en",
       messageType: "button",
-      bodyText: "How can we help you today?",
-      headerText: "Main Menu", // Added header text
-      footerText: null,
+      bodyText: "How can we help you with solar energy today?",
+      headerText: "☀️ Sunshine Power",
+      footerText: "PM Surya Ghar Registered Vendor",
       buttons: [
-        { id: "site_survey", title: "Book Site Survey" },
-        { id: "price_estimate", title: "Price Estimate" },
-        { id: "service", title: "Service/Support" }
+        { id: "site_survey", title: "📋 Book Site Survey" },
+        { id: "price_estimate", title: "💰 Price Estimate" },
+        { id: "callback", title: "📞 Request Callback" }
       ],
       listSections: null,
       headerMediaId: null,
+      name: "Main Menu (English)",
     },
     // Main Menu (Hindi)
     {
       flowType: "campaign",
-      stepName: "main_menu",
+      stepKey: "main_menu",
+      stepName: "Main Menu",
       language: "hi",
       messageType: "button",
-      bodyText: "आज हम आपकी कैसे मदद कर सकते हैं?",
-      headerText: "मुख्य मेनू", // Added header text
-      footerText: null,
+      bodyText: "आज हम सोलर ऊर्जा में आपकी कैसे मदद कर सकते हैं?",
+      headerText: "☀️ सनशाइन पावर",
+      footerText: "PM सूर्य घर पंजीकृत विक्रेता",
       buttons: [
-        { id: "site_survey", title: "साइट सर्वे बुक करें" },
-        { id: "price_estimate", title: "मूल्य अनुमान" },
-        { id: "service", title: "सेवा/समर्थन" }
+        { id: "site_survey", title: "📋 साइट सर्वे बुक करें" },
+        { id: "price_estimate", title: "💰 मूल्य अनुमान" },
+        { id: "callback", title: "📞 कॉलबैक का अनुरोध" }
       ],
       listSections: null,
       headerMediaId: null,
+      name: "Main Menu (Hindi)",
     },
-    // Example template for site survey
-    {
-      flowType: "campaign",
-      stepName: "site_survey_request",
-      language: "en",
-      messageType: "text",
-      bodyText: "Please provide your address for the site survey.",
-      headerText: null,
-      footerText: null,
-      buttons: null,
-      listSections: null,
-      headerMediaId: null,
-    },
-    // Example template for price estimate
-    {
-      flowType: "campaign",
-      stepName: "price_estimate_request",
-      language: "en",
-      messageType: "text",
-      bodyText: "Please provide details about the system size and your location for a price estimate.",
-      headerText: null,
-      footerText: null,
-      buttons: null,
-      listSections: null,
-      headerMediaId: null,
-    },
-    // Example template for service/support
-    {
-      flowType: "campaign",
-      stepName: "service_request",
-      language: "en",
-      messageType: "text",
-      bodyText: "Please describe your service or support issue.",
-      headerText: null,
-      footerText: null,
-      buttons: null,
-      listSections: null,
-      headerMediaId: null,
-    },
-     // Template for handling 'W' reply to visit website
-    {
-      flowType: "campaign",
-      stepName: "visit_website",
-      language: null, // Can be universal or specific if needed
-      messageType: "button", // Or could be just text if no further interaction
-      bodyText: "Click the button below to visit our website.",
-      headerText: null,
-      footerText: null,
-      buttons: [
-        { id: "open_website", title: "Visit Website", url: "https://sunshinepower.com" } // Use URL type button
-      ],
-      listSections: null,
-      headerMediaId: null,
-    },
+    
   ]);
 }
 
