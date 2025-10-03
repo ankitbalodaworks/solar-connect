@@ -104,7 +104,12 @@ export class FlowHandlers {
           return res.status(400).json({ error: "Unsupported version" });
         }
 
-        const formData = decryptedData.data;
+        console.log('[FLOW DEBUG] Full decryptedData:', JSON.stringify(decryptedData, null, 2));
+        console.log('[FLOW DEBUG] decryptedData.data structure:', JSON.stringify(decryptedData.data, null, 2));
+        
+        const formData = decryptedData.data?.form || decryptedData.data;
+        console.log('[FLOW DEBUG] Extracted formData:', JSON.stringify(formData, null, 2));
+        
         const customerPhone = this.extractPhoneFromFlowToken(decryptedData.flow_token);
         
         if (!this.validatePhone(customerPhone)) {
@@ -228,7 +233,12 @@ export class FlowHandlers {
           return res.status(400).json({ error: "Unsupported version" });
         }
 
-        const formData = decryptedData.data;
+        console.log('[FLOW DEBUG] Full decryptedData:', JSON.stringify(decryptedData, null, 2));
+        console.log('[FLOW DEBUG] decryptedData.data structure:', JSON.stringify(decryptedData.data, null, 2));
+        
+        const formData = decryptedData.data?.form || decryptedData.data;
+        console.log('[FLOW DEBUG] Extracted formData:', JSON.stringify(formData, null, 2));
+        
         const customerPhone = this.extractPhoneFromFlowToken(decryptedData.flow_token);
         
         if (!this.validatePhone(customerPhone)) {
@@ -354,7 +364,12 @@ export class FlowHandlers {
           return res.status(400).json({ error: "Unsupported version" });
         }
 
-        const formData = decryptedData.data;
+        console.log('[FLOW DEBUG] Full decryptedData:', JSON.stringify(decryptedData, null, 2));
+        console.log('[FLOW DEBUG] decryptedData.data structure:', JSON.stringify(decryptedData.data, null, 2));
+        
+        const formData = decryptedData.data?.form || decryptedData.data;
+        console.log('[FLOW DEBUG] Extracted formData:', JSON.stringify(formData, null, 2));
+        
         const customerPhone = this.extractPhoneFromFlowToken(decryptedData.flow_token);
         
         if (!this.validatePhone(customerPhone)) {
@@ -480,7 +495,12 @@ export class FlowHandlers {
           return res.status(400).json({ error: "Unsupported version" });
         }
 
-        const formData = decryptedData.data;
+        console.log('[FLOW DEBUG] Full decryptedData:', JSON.stringify(decryptedData, null, 2));
+        console.log('[FLOW DEBUG] decryptedData.data structure:', JSON.stringify(decryptedData.data, null, 2));
+        
+        const formData = decryptedData.data?.form || decryptedData.data;
+        console.log('[FLOW DEBUG] Extracted formData:', JSON.stringify(formData, null, 2));
+        
         const customerPhone = this.extractPhoneFromFlowToken(decryptedData.flow_token);
         
         if (!this.validatePhone(customerPhone)) {
