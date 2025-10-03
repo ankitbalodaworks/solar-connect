@@ -631,21 +631,24 @@ export class FlowHandlers {
         encryptedAesKey
       );
 
-      console.log('[CRYPTO DEBUG] Decrypted AES key length:', aesKey.length, 'bytes (should be 32 for AES-256)');
+      console.log('[CRYPTO DEBUG] Decrypted AES key length:', aesKey.length, 'bytes');
       console.log('[CRYPTO DEBUG] Decrypted AES key (hex):', aesKey.toString('hex').substring(0, 40) + '...');
 
-      if (aesKey.length !== 32) {
-        console.error('[CRYPTO ERROR] AES key length mismatch! Expected 32 bytes, got', aesKey.length);
-        console.error('[CRYPTO ERROR] This means Meta is encrypting with a DIFFERENT public key!');
-        throw new Error(`Invalid AES key length: ${aesKey.length} bytes (expected 32). Public/private key mismatch.`);
+      // WhatsApp Flows uses AES-128 (16 bytes), not AES-256 (32 bytes)
+      if (aesKey.length !== 16 && aesKey.length !== 32) {
+        console.error('[CRYPTO ERROR] Invalid AES key length! Expected 16 (AES-128) or 32 (AES-256) bytes, got', aesKey.length);
+        throw new Error(`Invalid AES key length: ${aesKey.length} bytes`);
       }
+      
+      const aesAlgorithm = aesKey.length === 16 ? 'aes-128-gcm' : 'aes-256-gcm';
+      console.log('[CRYPTO DEBUG] Using algorithm:', aesAlgorithm);
 
       // Extract auth tag (last 16 bytes) and ciphertext
       const authTag = encryptedFlowData.slice(-16);
       const ciphertext = encryptedFlowData.slice(0, -16);
 
-      // Decrypt flow data using AES-256-GCM
-      const decipher = crypto.createDecipheriv('aes-256-gcm', aesKey, initialVector);
+      // Decrypt flow data using AES-GCM (128 or 256 depending on key size)
+      const decipher = crypto.createDecipheriv(aesAlgorithm, aesKey, initialVector);
       decipher.setAuthTag(authTag);
 
       const decryptedData = Buffer.concat([
@@ -669,8 +672,9 @@ export class FlowHandlers {
 
   private encryptResponse(responseData: any, aesKey: Buffer, initialVector: Buffer): string {
     try {
-      // Encrypt response using AES-256-GCM with the same IV from the request
-      const cipher = crypto.createCipheriv('aes-256-gcm', aesKey, initialVector);
+      // Encrypt response using AES-GCM (128 or 256 depending on key size) with the same IV from the request
+      const aesAlgorithm = aesKey.length === 16 ? 'aes-128-gcm' : 'aes-256-gcm';
+      const cipher = crypto.createCipheriv(aesAlgorithm, aesKey, initialVector);
       
       const encryptedData = Buffer.concat([
         cipher.update(JSON.stringify(responseData), 'utf8'),

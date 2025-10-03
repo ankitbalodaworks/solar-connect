@@ -1,0 +1,106 @@
+     ==> Your service is live 🎉
+     ==> 
+     ==> ///////////////////////////////////////////////////////////
+     ==> 
+     ==> Available at your primary URL https://solar-connect-q0a4.onrender.com
+     ==> 
+     ==> ///////////////////////////////////////////////////////////
+1:56:18 AM [express] GET /api/crypto/test-key 304 in 7ms :: {"success":true,"keyPresent":true,"keyLe…
+1:57:03 AM [express] GET /api/crypto/test-key 200 in 5ms :: {"success":true,"keyPresent":true,"keyLe…
+[CRYPTO DEBUG] Encrypted request received
+[CRYPTO DEBUG] Encrypted AES key length: 344
+[CRYPTO DEBUG] Encrypted AES key (first 40 chars): J0dxSwVIviXKEomMt4jq16IT3nS0cE0gb8IlB+RF
+[CRYPTO DEBUG] Encrypted flow data length: 68
+[CRYPTO DEBUG] Encrypted flow data (first 40 chars): d4zQDlFCAD7IUaEtTKN38kZz3jAeqH57thGC0cb5
+[CRYPTO DEBUG] Initial vector length: 24
+[CRYPTO DEBUG] Initial vector: EhZMb1ZSA3E7UEoB8VpUHQ==
+[CRYPTO DEBUG] Private key length: 1703
+[CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+[CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+[CRYPTO DEBUG] Formatted key length: 1703
+[CRYPTO DEBUG] Has PEM headers: true
+[CRYPTO DEBUG] Decrypted AES key length: 16 bytes (should be 32 for AES-256)
+[CRYPTO DEBUG] Decrypted AES key (hex): 5587cf129bb320cedd47a5144968f0e6...
+[CRYPTO ERROR] AES key length mismatch! Expected 32 bytes, got 16
+[CRYPTO ERROR] This means Meta is encrypting with a DIFFERENT public key!
+Decryption error: Error: Invalid AES key length: 16 bytes (expected 32). Public/private key mismatch.
+    at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2612:15)
+    at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2562:19)
+    at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2136:30)
+    at file:///opt/render/project/src/dist/index.js:3180:61
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+[FLOW SURVEY] Decryption failed - forcing WhatsApp to refresh public key (HTTP 421)
+[FLOW SURVEY] Error: Invalid AES key length: 16 bytes (expected 32). Public/private key mismatch.
+[FLOW SURVEY] Wait 30 minutes after receiving this error for cache to clear
+1:57:09 AM [express] POST /api/flows/survey 421 in 35ms :: {"error":"Encryption key mismatch - forci…
+[CRYPTO DEBUG] Encrypted request received
+[CRYPTO DEBUG] Encrypted AES key length: 344
+[CRYPTO DEBUG] Encrypted AES key (first 40 chars): AXs/QFObgk9zADrXUSyr9CYcK9gPdyT5P5V2r+CT
+[CRYPTO DEBUG] Encrypted flow data length: 68
+[CRYPTO DEBUG] Encrypted flow data (first 40 chars): KzvMUdaM9rzPngMSVqDdLb/4G/eXAjeUwb7/WU4m
+[CRYPTO DEBUG] Initial vector length: 24
+[CRYPTO DEBUG] Initial vector: D5YYvjmIStm5i3aSE9rM1g==
+[CRYPTO DEBUG] Private key length: 1703
+[CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+[CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+[CRYPTO DEBUG] Formatted key length: 1703
+[CRYPTO DEBUG] Has PEM headers: true
+[CRYPTO DEBUG] Decrypted AES key length: 16 bytes (should be 32 for AES-256)
+[CRYPTO DEBUG] Decrypted AES key (hex): ef359e61322478ef5be962716d6e31de...
+[CRYPTO ERROR] AES key length mismatch! Expected 32 bytes, got 16
+[CRYPTO ERROR] This means Meta is encrypting with a DIFFERENT public key!
+Decryption error: Error: Invalid AES key length: 16 bytes (expected 32). Public/private key mismatch.
+    at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2612:15)
+    at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2562:19)
+    at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2136:30)
+    at file:///opt/render/project/src/dist/index.js:3180:61
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+[FLOW SURVEY] Decryption failed - forcing WhatsApp to refresh public key (HTTP 421)
+[FLOW SURVEY] Error: Invalid AES key length: 16 bytes (expected 32). Public/private key mismatch.
+[FLOW SURVEY] Wait 30 minutes after receiving this error for cache to clear
+1:58:06 AM [express] POST /api/flows/survey 421 in 4ms :: {"error":"Encryption key mismatch - forcin…
+[CRYPTO DEBUG] Encrypted request received
+[CRYPTO DEBUG] Encrypted AES key length: 344
+[CRYPTO DEBUG] Encrypted AES key (first 40 chars): e/iZQvyLB9HVfO1rUU9U5XDvUuQ1LWTRyFEH8r4G
+[CRYPTO DEBUG] Encrypted flow data length: 68
+[CRYPTO DEBUG] Encrypted flow data (first 40 chars): 1NjW3pCb9dsaYWl7UnQZfsJ7d5/VUQNOMiU92n4g
+[CRYPTO DEBUG] Initial vector length: 24
+[CRYPTO DEBUG] Initial vector: xesAhcEg8kNSEl9ZoCeVEQ==
+[CRYPTO DEBUG] Private key length: 1703
+[CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+[CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+[CRYPTO DEBUG] Formatted key length: 1703
+[CRYPTO DEBUG] Has PEM headers: true
+[CRYPTO DEBUG] Decrypted AES key length: 16 bytes (should be 32 for AES-256)
+[CRYPTO DEBUG] Decrypted AES key (hex): 18ac681e1d6d2e746b3c1c43d88c6565...
+[CRYPTO ERROR] AES key length mismatch! Expected 32 bytes, got 16
+[CRYPTO ERROR] This means Meta is encrypting with a DIFFERENT public key!
+Decryption error: Error: Invalid AES key length: 16 bytes (expected 32). Public/private key mismatch.
+    at FlowHandlers.decryptEncryptedRequest (file:///opt/render/project/src/dist/index.js:2612:15)
+    at FlowHandlers.decryptFlowData (file:///opt/render/project/src/dist/index.js:2562:19)
+    at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2136:30)
+    at file:///opt/render/project/src/dist/index.js:3180:61
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12)
+[FLOW SURVEY] Decryption failed - forcing WhatsApp to refresh public key (HTTP 421)
+[FLOW SURVEY] Error: Invalid AES key length: 16 bytes (expected 32). Public/private key mismatch.
+[FLOW SURVEY] Wait 30 minutes after receiving this error for cache to clear
+1:58:09 AM [express] POST /api/flows/survey 421 in 3ms :: {"error":"Encryption key mismatch - forcin…
+1:59:19 AM [express] GET /api/crypto/test-key 200 in 5ms :: {"success":true,"keyPresent":true,"keyLe…
+2:00:41 AM [express] GET /api/crypto/test-key 304 in 4ms :: {"success":true,"keyPresent":true,"keyLe…
+     ==> Detected service running on port 10000
+     ==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
