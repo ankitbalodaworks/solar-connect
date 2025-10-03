@@ -86,8 +86,9 @@ const mainMenuTemplates: MetaTemplate[] = [
         type: "buttons",
         buttons: [
           { type: "QUICK_REPLY", text: "Book Site Survey" },
-          { type: "QUICK_REPLY", text: "Price & Info" },
-          { type: "QUICK_REPLY", text: "Service & Support" }
+          { type: "QUICK_REPLY", text: "Price Estimate" },
+          { type: "QUICK_REPLY", text: "Maintenance / Service Request" },
+          { type: "QUICK_REPLY", text: "Request Callback" }
         ]
       }
     ]
@@ -114,8 +115,9 @@ const mainMenuTemplates: MetaTemplate[] = [
         type: "buttons",
         buttons: [
           { type: "QUICK_REPLY", text: "साइट सर्वे बुक करें" },
-          { type: "QUICK_REPLY", text: "मूल्य और जानकारी" },
-          { type: "QUICK_REPLY", text: "सेवा और सहायता" }
+          { type: "QUICK_REPLY", text: "मूल्य अनुमान" },
+          { type: "QUICK_REPLY", text: "रखरखाव / सेवा अनुरोध" },
+          { type: "QUICK_REPLY", text: "कॉलबैक का अनुरोध" }
         ]
       }
     ]
@@ -302,7 +304,7 @@ const completionTemplates: MetaTemplate[] = [
     components: [
       {
         type: "body",
-        text: "Thank you! Your site survey request has been registered.\n\nOur team will contact you soon to confirm the appointment.\n\nFor any queries, visit: https://sunshinepower.net.in/"
+        text: "✅ Thank you! Your site survey request has been registered.\n\nOur team will contact you soon to confirm the appointment.\n\nFor any queries, visit: https://sunshinepower.net.in/"
       },
       {
         type: "footer",
@@ -317,7 +319,7 @@ const completionTemplates: MetaTemplate[] = [
     components: [
       {
         type: "body",
-        text: "धन्यवाद! आपका साइट सर्वे अनुरोध पंजीकृत हो गया है।\n\nहमारी टीम जल्द ही आपसे संपर्क करेगी।\n\nकिसी भी प्रश्न के लिए: https://sunshinepower.net.in/"
+        text: "✅ धन्यवाद! आपका साइट सर्वे अनुरोध पंजीकृत हो गया है।\n\nहमारी टीम जल्द ही आपसे संपर्क करेगी।\n\nकिसी भी प्रश्न के लिए: https://sunshinepower.net.in/"
       },
       {
         type: "footer",
@@ -333,7 +335,7 @@ const completionTemplates: MetaTemplate[] = [
     components: [
       {
         type: "body",
-        text: "Thank you! Your callback request has been registered.\n\nOur team will call you soon.\n\nWebsite: https://sunshinepower.net.in/"
+        text: "✅ Thank you! Your callback request has been registered.\n\nOur team will call you soon.\n\nWebsite: https://sunshinepower.net.in/"
       },
       {
         type: "footer",
@@ -348,7 +350,7 @@ const completionTemplates: MetaTemplate[] = [
     components: [
       {
         type: "body",
-        text: "धन्यवाद! आपका कॉलबैक अनुरोध पंजीकृत हो गया है।\n\nहमारी टीम जल्द ही आपको कॉल करेगी।\n\nवेबसाइट: https://sunshinepower.net.in/"
+        text: "✅ धन्यवाद! आपका कॉलबैक अनुरोध पंजीकृत हो गया है।\n\nहमारी टीम जल्द ही आपको कॉल करेगी।\n\nवेबसाइट: https://sunshinepower.net.in/"
       },
       {
         type: "footer",
@@ -364,7 +366,7 @@ const completionTemplates: MetaTemplate[] = [
     components: [
       {
         type: "body",
-        text: "Thank you! Your service request has been registered.\n\nOur technician will visit you soon.\n\nWebsite: https://sunshinepower.net.in/"
+        text: "✅ Thank you! Your service request has been registered.\n\nOur technician will visit you soon.\n\nWebsite: https://sunshinepower.net.in/"
       },
       {
         type: "footer",
@@ -379,7 +381,7 @@ const completionTemplates: MetaTemplate[] = [
     components: [
       {
         type: "body",
-        text: "धन्यवाद! आपका सेवा अनुरोध पंजीकृत हो गया है।\n\nहमारा तकनीशियन जल्द ही आपसे मिलेगा।\n\nवेबसाइट: https://sunshinepower.net.in/"
+        text: "✅ धन्यवाद! आपका सेवा अनुरोध पंजीकृत हो गया है।\n\nहमारा तकनीशियन जल्द ही आपसे मिलेगा।\n\nवेबसाइट: https://sunshinepower.net.in/"
       },
       {
         type: "footer",
@@ -395,7 +397,7 @@ const completionTemplates: MetaTemplate[] = [
     components: [
       {
         type: "body",
-        text: "Thank you! Your issue has been registered.\n\nOur team will review and contact you soon.\n\nWebsite: https://sunshinepower.net.in/"
+        text: "✅ Thank you! Your issue has been registered.\n\nOur team will review and contact you soon.\n\nWebsite: https://sunshinepower.net.in/"
       },
       {
         type: "footer",
@@ -410,7 +412,7 @@ const completionTemplates: MetaTemplate[] = [
     components: [
       {
         type: "body",
-        text: "धन्यवाद! आपकी समस्या पंजीकृत हो गई है।\n\nहमारी टीम समीक्षा करेगी और जल्द ही संपर्क करेगी।\n\nवेबसाइट: https://sunshinepower.net.in/"
+        text: "✅ धन्यवाद! आपकी समस्या पंजीकृत हो गई है।\n\nहमारी टीम समीक्षा करेगी और जल्द ही संपर्क करेगी।\n\nवेबसाइट: https://sunshinepower.net.in/"
       },
       {
         type: "footer",
