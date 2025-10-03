@@ -114,11 +114,11 @@ export class FlowHandlers {
         }
         
         const leadData = {
-          customerName: formData.name,
+          customerName: formData.full_name,
           customerPhone: customerPhone,
           address: formData.address,
           village: formData.village,
-          interestedIn: formData.interested_in,
+          interestedIn: "site_survey",
           avgBill: this.parseIntOrUndefined(formData.avg_bill),
           phase: formData.phase,
           roofType: formData.roof_type,
@@ -238,7 +238,7 @@ export class FlowHandlers {
         }
         
         const priceData = {
-          customerName: formData.name,
+          customerName: formData.full_name,
           customerPhone: customerPhone,
           address: formData.address,
           village: formData.village,
@@ -364,12 +364,12 @@ export class FlowHandlers {
         }
         
         const serviceData = {
-          customerName: formData.name,
+          customerName: formData.full_name,
           customerPhone: customerPhone,
           address: formData.address,
           customerVillage: formData.village,
           issueType: formData.issue_type,
-          description: formData.description,
+          description: `Issue: ${formData.issue_type}`,
           urgency: formData.urgency,
           preferredDate: formData.preferred_date,
           preferredTime: formData.preferred_time,
@@ -490,7 +490,7 @@ export class FlowHandlers {
         }
         
         const callbackData = {
-          customerName: formData.name,
+          customerName: formData.full_name,
           customerPhone: customerPhone,
           bestTime: formData.best_time,
           topic: formData.topic,
