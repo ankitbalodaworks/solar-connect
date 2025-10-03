@@ -13,15 +13,16 @@ async function seedTemplates() {
       flowType: "campaign",
       stepKey: "campaign_entry",
       messageType: "button",
-      language: null,
-      bodyText: "🌞 Welcome to Sunshine Power!\n\nWe help rural Rajasthan save money with solar energy under PM Surya Ghar Yojana.\n\n🌞 सनशाइन पावर में आपका स्वागत है!\n\nहम PM सूर्य घर योजना के तहत ग्रामीण राजस्थान को सोलर ऊर्जा से पैसे बचाने में मदद करते हैं।\n\nPlease choose your language / कृपया अपनी भाषा चुनें:",
-      headerMediaId: null,
-      footerText: "Reply 'W' for website / वेबसाइट के लिए 'W' टाइप करें",
+      language: "en",
+      bodyText: "Welcome to Sunshine Power.",
+      headerMediaId: "4245254242364293",
+      footerText: "PM Surya Ghar Registered Solar Vendor.",
       buttons: [
-        { id: "english", title: "English" },
-        { id: "hindi", title: "हिंदी" }
+        { id: "english", title: "English", nextStep: "main_menu" },
+        { id: "hindi", title: "Hindi", nextStep: "main_menu" },
+        { id: "visit_website", title: "Visit Website", nextStep: null }
       ],
-      metaStatus: "draft"
+      metaStatus: "approved"
     };
 
     console.log("📝 Inserting campaign_entry template...");
@@ -40,14 +41,15 @@ async function seedTemplates() {
       messageType: "button",
       language: "en",
       headerText: "Main Menu",
-      bodyText: "How can we help you with solar energy today?",
+      bodyText: "Thank you for choosing Sunshine Power!\n\nHow can we help you today?",
       footerText: "PM Surya Ghar Registered Vendor",
       buttons: [
-        { id: "site_survey", title: "Book Site Survey" },
-        { id: "price_info", title: "Price & Info" },
-        { id: "service_support", title: "Service & Support" }
+        { id: "site_survey", title: "Book Site Survey", nextStep: null },
+        { id: "price_estimate", title: "Price Estimate", nextStep: null },
+        { id: "service", title: "Maintenance / Service Request", nextStep: null },
+        { id: "callback", title: "Request Callback", nextStep: null }
       ],
-      metaStatus: "draft"
+      metaStatus: "approved"
     };
 
     console.log("📝 Inserting main_menu_en template...");
@@ -66,14 +68,15 @@ async function seedTemplates() {
       messageType: "button",
       language: "hi",
       headerText: "मुख्य मेनू",
-      bodyText: "आज हम आपकी कैसे मदद कर सकते हैं?",
+      bodyText: "Sunshine Power चुनने के लिए धन्यवाद!\n\nआज हम आपकी कैसे मदद कर सकते हैं?",
       footerText: "PM Surya Ghar पंजीकृत विक्रेता",
       buttons: [
-        { id: "site_survey", title: "साइट सर्वे बुक करें" },
-        { id: "price_info", title: "मूल्य और जानकारी" },
-        { id: "service_support", title: "सेवा और सहायता" }
+        { id: "site_survey", title: "साइट सर्वे बुक करें", nextStep: null },
+        { id: "price_estimate", title: "मूल्य अनुमान", nextStep: null },
+        { id: "service", title: "रखरखाव / सेवा अनुरोध", nextStep: null },
+        { id: "callback", title: "कॉलबैक का अनुरोध", nextStep: null }
       ],
-      metaStatus: "draft"
+      metaStatus: "approved"
     };
 
     console.log("📝 Inserting main_menu_hi template...");
