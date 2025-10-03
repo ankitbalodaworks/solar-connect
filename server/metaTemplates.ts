@@ -86,9 +86,8 @@ const mainMenuTemplates: MetaTemplate[] = [
         type: "buttons",
         buttons: [
           { type: "QUICK_REPLY", text: "Book Site Survey" },
-          { type: "QUICK_REPLY", text: "Price Estimate" },
-          { type: "QUICK_REPLY", text: "Maintenance / Service Request" },
-          { type: "QUICK_REPLY", text: "Request Callback" }
+          { type: "QUICK_REPLY", text: "Price & Info" },
+          { type: "QUICK_REPLY", text: "Service & Support" }
         ]
       }
     ]
@@ -115,9 +114,8 @@ const mainMenuTemplates: MetaTemplate[] = [
         type: "buttons",
         buttons: [
           { type: "QUICK_REPLY", text: "साइट सर्वे बुक करें" },
-          { type: "QUICK_REPLY", text: "मूल्य अनुमान" },
-          { type: "QUICK_REPLY", text: "रखरखाव / सेवा अनुरोध" },
-          { type: "QUICK_REPLY", text: "कॉलबैक का अनुरोध" }
+          { type: "QUICK_REPLY", text: "मूल्य और जानकारी" },
+          { type: "QUICK_REPLY", text: "सेवा और सहायता" }
         ]
       }
     ]

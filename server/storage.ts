@@ -520,12 +520,12 @@ async function seedMessageTemplates() {
       language: "en",
       messageType: "button",
       bodyText: "How can we help you with solar energy today?",
-      headerText: "☀️ Sunshine Power",
+      headerText: "Main Menu",
       footerText: "PM Surya Ghar Registered Vendor",
       buttons: [
-        { id: "site_survey", title: "📋 Book Site Survey" },
-        { id: "price_estimate", title: "💰 Price Estimate" },
-        { id: "callback", title: "📞 Request Callback" }
+        { id: "site_survey", title: "Book Site Survey" },
+        { id: "price_info", title: "Price & Info" },
+        { id: "service_support", title: "Service & Support" }
       ],
       listSections: null,
       headerMediaId: null,
@@ -539,12 +539,12 @@ async function seedMessageTemplates() {
       language: "hi",
       messageType: "button",
       bodyText: "आज हम सोलर ऊर्जा में आपकी कैसे मदद कर सकते हैं?",
-      headerText: "☀️ सनशाइन पावर",
-      footerText: "PM सूर्य घर पंजीकृत विक्रेता",
+      headerText: "मुख्य मेनू",
+      footerText: "PM Surya Ghar पंजीकृत विक्रेता",
       buttons: [
-        { id: "site_survey", title: "📋 साइट सर्वे बुक करें" },
-        { id: "price_estimate", title: "💰 मूल्य अनुमान" },
-        { id: "callback", title: "📞 कॉलबैक का अनुरोध" }
+        { id: "site_survey", title: "साइट सर्वे बुक करें" },
+        { id: "price_info", title: "मूल्य और जानकारी" },
+        { id: "service_support", title: "सेवा और सहायता" }
       ],
       listSections: null,
       headerMediaId: null,

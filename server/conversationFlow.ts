@@ -47,20 +47,20 @@ export class ConversationFlowEngine {
             "service": "service",
             "callback": "callback",
           };
-          
+
           const flowType = flowMapping[message.selectedButtonId];
-          
+
           if (flowType) {
             const flowResult = await this.sendWhatsAppFlow(
               message.customerPhone,
               flowType,
               conversationState.language || "en"
             );
-            
+
             if (flowResult.success) {
               // Delete conversation state as flow will handle the rest
               await storage.deleteConversationState(message.customerPhone);
-              
+
               return {
                 template: null,
                 shouldSend: false,
@@ -76,7 +76,7 @@ export class ConversationFlowEngine {
             }
           }
         }
-        
+
         conversationState = await this.processStateTransition(conversationState, message);
       }
 
@@ -177,7 +177,7 @@ export class ConversationFlowEngine {
     );
 
     const currentTemplate = templates[0];
-    
+
     // Stateless fallback: if no template found or unrecognized input, restart from campaign_entry
     if (!currentTemplate) {
       console.log(`No template found for step ${currentState.currentStep}, restarting flow`);
@@ -192,7 +192,7 @@ export class ConversationFlowEngine {
     if (currentTemplate.messageType === "button" && message.selectedButtonId) {
       const buttons = currentTemplate.buttons as any[];
       const selectedButton = buttons?.find((btn: any) => btn.id === message.selectedButtonId);
-      
+
       if (!selectedButton) {
         // Unrecognized button, restart flow
         console.log(`Unrecognized button ${message.selectedButtonId}, restarting flow`);
@@ -213,8 +213,18 @@ export class ConversationFlowEngine {
           return await this.restartConversation(message.customerPhone);
         }
       } else if (currentState.currentStep === "main_menu" && message.selectedButtonId) {
-        // Main menu button selected - these trigger WhatsApp Flows, handled separately
-        nextStep = currentState.currentStep; // Stay on main menu until flow is sent
+        // Main menu button handling
+        if (message.selectedButtonId === "site_survey") {
+          // This is handled earlier in the flow (WhatsApp Flow)
+          nextStep = currentState.currentStep;
+        } else if (message.selectedButtonId === "price_info") {
+          nextStep = "price_submenu";
+        } else if (message.selectedButtonId === "service_support") {
+          nextStep = "help_submenu";
+        } else {
+          console.log(`Unrecognized main menu button ${message.selectedButtonId}, restarting flow`);
+          return await this.restartConversation(message.customerPhone);
+        }
       } else if (selectedButton.nextStep) {
         // Follow the nextStep defined in the button
         nextStep = selectedButton.nextStep;
@@ -222,7 +232,7 @@ export class ConversationFlowEngine {
         // No explicit nextStep, stay on current step
         nextStep = currentState.currentStep;
       }
-      
+
       // Store button selection in context
       updatedContext[currentState.currentStep] = {
         buttonId: message.selectedButtonId,
@@ -233,12 +243,12 @@ export class ConversationFlowEngine {
     else if (currentTemplate.messageType === "list" && message.selectedListItemId) {
       const listSections = currentTemplate.listSections as any[];
       let selectedItem: any = null;
-      
+
       for (const section of listSections || []) {
         selectedItem = section.rows?.find((row: any) => row.id === message.selectedListItemId);
         if (selectedItem) break;
       }
-      
+
       if (!selectedItem || !selectedItem.nextStep) {
         // Unrecognized list item or missing nextStep, restart flow
         console.log(`Unrecognized list item ${message.selectedListItemId}, restarting flow`);
@@ -246,7 +256,7 @@ export class ConversationFlowEngine {
       }
 
       nextStep = selectedItem.nextStep;
-      
+
       // Store list selection in context
       updatedContext[currentState.currentStep] = {
         itemId: message.selectedListItemId,
@@ -262,14 +272,14 @@ export class ConversationFlowEngine {
            message.content.trim().toLowerCase() === "वेबसाइट")) {
         // Delete conversation and return website info
         await storage.deleteConversationState(message.customerPhone);
-        
+
         // Create event for website visit
         await storage.createEvent({
           customerPhone: message.customerPhone,
           type: "website_visit_requested",
           meta: { source: "campaign_entry" },
         });
-        
+
         return {
           template: {
             id: 0,
@@ -290,21 +300,21 @@ export class ConversationFlowEngine {
           shouldSend: true,
         };
       }
-      
+
       // Store text input in context
       updatedContext[currentState.currentStep] = {
         text: message.content,
       };
-      
+
       // For text inputs, determine next step based on current step
       const textNextStep = this.getNextStepForTextInput(currentState.currentStep);
-      
+
       if (!textNextStep) {
         // Unknown text step, restart flow
         console.log(`Unknown text step ${currentState.currentStep}, restarting flow`);
         return await this.restartConversation(message.customerPhone);
       }
-      
+
       nextStep = textNextStep;
     } 
     // Unrecognized message type or missing expected interaction
@@ -330,7 +340,7 @@ export class ConversationFlowEngine {
   private async restartConversation(customerPhone: string): Promise<ConversationState> {
     // Delete existing state and restart from campaign_entry
     await storage.deleteConversationState(customerPhone);
-    
+
     const newState = await storage.createConversationState({
       customerPhone,
       customerName: undefined,
@@ -358,7 +368,7 @@ export class ConversationFlowEngine {
       };
 
       const flowId = flowIdMapping[flowType];
-      
+
       if (!flowId) {
         return {
           success: false,
@@ -468,11 +478,11 @@ export class ConversationFlowEngine {
       "survey_village": "survey_date",
       "survey_date": "survey_time",
       "survey_time": "survey_complete",
-      
+
       // Callback Flow
       "callback_name": "callback_mobile",
       "callback_mobile": "callback_complete",
-      
+
       // Service Flow
       "service_name": "service_mobile",
       "service_mobile": "service_address",
@@ -480,7 +490,7 @@ export class ConversationFlowEngine {
       "service_village": "service_urgency",
       // service_urgency is button type, not text
       "service_date": "service_complete",
-      
+
       // Other Issue Flow
       "issue_name": "issue_mobile",
       "issue_mobile": "issue_address",
@@ -488,7 +498,7 @@ export class ConversationFlowEngine {
       "issue_village": "issue_description",
       "issue_description": "issue_complete",
     };
-    
+
     return textStepMapping[currentStep] || null;
   }
 
@@ -694,7 +704,7 @@ export class ConversationFlowEngine {
     customerName: string
   ): Promise<OutgoingMessage> {
     const existingState = await storage.getConversationState(customerPhone);
-    
+
     if (existingState) {
       await storage.deleteConversationState(customerPhone);
     }
