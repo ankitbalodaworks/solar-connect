@@ -380,20 +380,35 @@ export class ConversationFlowEngine {
     language: string
   ): Promise<{ success: boolean; error?: string }> {
     try {
-      // Map flow type to flow ID from environment variables
-      const flowIdMapping: Record<string, string> = {
-        survey: process.env.WHATSAPP_FLOW_ID_SURVEY || "",
-        price: process.env.WHATSAPP_FLOW_ID_PRICE || "",
-        service: process.env.WHATSAPP_FLOW_ID_SERVICE || "",
-        callback: process.env.WHATSAPP_FLOW_ID_CALLBACK || "",
+      // Map flow type to flow ID from environment variables (language-specific)
+      // For Hindi, use *_HI flow IDs, for English use standard flow IDs
+      const flowIdMapping: Record<string, Record<string, string>> = {
+        survey: {
+          en: process.env.WHATSAPP_FLOW_ID_SURVEY || "",
+          hi: process.env.WHATSAPP_FLOW_ID_SURVEY_HI || process.env.WHATSAPP_FLOW_ID_SURVEY || "",
+        },
+        price: {
+          en: process.env.WHATSAPP_FLOW_ID_PRICE || "",
+          hi: process.env.WHATSAPP_FLOW_ID_PRICE_HI || process.env.WHATSAPP_FLOW_ID_PRICE || "",
+        },
+        service: {
+          en: process.env.WHATSAPP_FLOW_ID_SERVICE || "",
+          hi: process.env.WHATSAPP_FLOW_ID_SERVICE_HI || process.env.WHATSAPP_FLOW_ID_SERVICE || "",
+        },
+        callback: {
+          en: process.env.WHATSAPP_FLOW_ID_CALLBACK || "",
+          hi: process.env.WHATSAPP_FLOW_ID_CALLBACK_HI || process.env.WHATSAPP_FLOW_ID_CALLBACK || "",
+        },
       };
 
-      const flowId = flowIdMapping[flowType];
+      // Get the flow ID based on language, fallback to English if language-specific ID not found
+      const flowId = flowIdMapping[flowType]?.[language] || flowIdMapping[flowType]?.en || "";
 
       if (!flowId) {
+        const langSuffix = language === "hi" ? "_HI" : "";
         return {
           success: false,
-          error: `Flow ID not configured for ${flowType}. Please set WHATSAPP_FLOW_ID_${flowType.toUpperCase()} environment variable.`,
+          error: `Flow ID not configured for ${flowType} (${language}). Please set WHATSAPP_FLOW_ID_${flowType.toUpperCase()}${langSuffix} environment variable.`,
         };
       }
 
