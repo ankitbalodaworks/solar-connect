@@ -44,13 +44,15 @@ export class ConversationFlowEngine {
           const flowMapping: Record<string, string> = {
             "site_survey": "survey",
             "price_estimate": "price",
-            "service": "service",
-            "callback": "callback",
+            "help": "help_submenu", // Route to help submenu instead of direct flow
           };
 
           const flowType = flowMapping[message.selectedButtonId];
 
-          if (flowType) {
+          if (flowType === "help_submenu") {
+            // Transition to help_submenu step instead of sending flow
+            conversationState = await this.processStateTransition(conversationState, message);
+          } else if (flowType) {
             const flowResult = await this.sendWhatsAppFlow(
               message.customerPhone,
               flowType,
@@ -77,7 +79,46 @@ export class ConversationFlowEngine {
           }
         }
 
-        conversationState = await this.processStateTransition(conversationState, message);
+        // Check if user is selecting a help submenu option - send WhatsApp Flow
+        if (conversationState && conversationState.currentStep === "help_submenu" && message.selectedButtonId) {
+          const helpFlowMapping: Record<string, string> = {
+            "maintenance": "service",
+            "callback": "callback",
+          };
+
+          const flowType = helpFlowMapping[message.selectedButtonId];
+
+          if (flowType) {
+            const flowResult = await this.sendWhatsAppFlow(
+              message.customerPhone,
+              flowType,
+              conversationState.language || "en"
+            );
+
+            if (flowResult.success) {
+              // Delete conversation state as flow will handle the rest
+              await storage.deleteConversationState(message.customerPhone);
+
+              return {
+                template: null,
+                shouldSend: false,
+                isFlow: true,
+                flowSent: true,
+              };
+            } else {
+              return {
+                template: null,
+                shouldSend: false,
+                error: flowResult.error || "Failed to send WhatsApp Flow",
+              };
+            }
+          }
+          // other_issue button will fall through to old conversation system
+        }
+
+        if (conversationState) {
+          conversationState = await this.processStateTransition(conversationState, message);
+        }
       }
 
       if (!conversationState) {
@@ -214,12 +255,10 @@ export class ConversationFlowEngine {
         }
       } else if (currentState.currentStep === "main_menu" && message.selectedButtonId) {
         // Main menu button handling
-        if (message.selectedButtonId === "site_survey") {
-          // This is handled earlier in the flow (WhatsApp Flow)
+        if (message.selectedButtonId === "site_survey" || message.selectedButtonId === "price_estimate") {
+          // These are handled earlier in the flow (WhatsApp Flows)
           nextStep = currentState.currentStep;
-        } else if (message.selectedButtonId === "price_info") {
-          nextStep = "price_submenu";
-        } else if (message.selectedButtonId === "service_support") {
+        } else if (message.selectedButtonId === "help") {
           nextStep = "help_submenu";
         } else {
           console.log(`Unrecognized main menu button ${message.selectedButtonId}, restarting flow`);

@@ -44,17 +44,17 @@ const campaignEntryTemplates: MetaTemplate[] = [
       },
       {
         type: "body",
-        text: "Welcome to Sunshine Power."
+        text: "Hello, We are a PM Surya Ghar registered Solar Vendor.\nFrom application to net-metering and installation-we handle it all.\nTo Continue, Choose:"
       },
       {
         type: "footer",
-        text: "PM Surya Ghar Registered Solar Vendor."
+        text: "Licensed PM Surya Ghar Solar Vendor"
       },
       {
         type: "buttons",
         buttons: [
+          { type: "QUICK_REPLY", text: "हिंदी" },
           { type: "QUICK_REPLY", text: "English" },
-          { type: "QUICK_REPLY", text: "Hindi" },
           { type: "URL", text: "Visit Website", url: "https://sunshinepower.net.in" }
         ]
       }
@@ -87,8 +87,7 @@ const mainMenuTemplates: MetaTemplate[] = [
         buttons: [
           { type: "QUICK_REPLY", text: "Book Site Survey" },
           { type: "QUICK_REPLY", text: "Price Estimate" },
-          { type: "QUICK_REPLY", text: "Maintenance / Service Request" },
-          { type: "QUICK_REPLY", text: "Request Callback" }
+          { type: "QUICK_REPLY", text: "Service & Support" }
         ]
       }
     ]
@@ -116,8 +115,7 @@ const mainMenuTemplates: MetaTemplate[] = [
         buttons: [
           { type: "QUICK_REPLY", text: "साइट सर्वे बुक करें" },
           { type: "QUICK_REPLY", text: "मूल्य अनुमान" },
-          { type: "QUICK_REPLY", text: "रखरखाव / सेवा अनुरोध" },
-          { type: "QUICK_REPLY", text: "कॉलबैक का अनुरोध" }
+          { type: "QUICK_REPLY", text: "सेवा और सहायता" }
         ]
       }
     ]

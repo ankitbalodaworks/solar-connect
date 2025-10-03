@@ -42,12 +42,15 @@ Preferred communication style: Simple, everyday language.
 ### External Dependencies
 
 - **WhatsApp Integration**: Production-ready WhatsApp Business API for interactive messages and automated conversation flows.
-    - Supports button and list messages, image headers.
+    - Supports button and list messages, image headers. **WhatsApp Limit**: Maximum 3 buttons per message.
     - Two-way conversation tracking with state machine for automated responses.
     - Language selection (Hindi/English).
     - Secure webhook handling with HMAC-SHA256 signature verification.
     - Automated record creation (Lead, Service Request, Callback Request, Other Issue) upon conversation completion.
-    - **Conversation Flow Engine**: Manages multi-step conversations, resolves templates, preserves context, extracts data, and automatically creates database records.
+    - **Campaign Entry Template**: Professional welcome message with image header, 3 buttons (हिंदी, English, Visit Website). Body: "Hello, We are a PM Surya Ghar registered Solar Vendor. From application to net-metering and installation-we handle it all. To Continue, Choose:" Footer: "Licensed PM Surya Ghar Solar Vendor"
+    - **Main Menu Structure** (3 buttons): "Book Site Survey", "Price Estimate", "Service & Support". Service & Support routes to help submenu.
+    - **Help Submenu** (3 buttons): "Maintenance Request" (→service flow), "Request Callback" (→callback flow), "Register Other Issue" (→old conversation system).
+    - **Conversation Flow Engine**: Manages multi-step conversations, resolves templates, preserves context, extracts data, and automatically creates database records. Flow mapping: site_survey→survey flow, price_estimate→price flow, help→help_submenu→(maintenance→service flow OR callback→callback flow).
     - **WhatsApp Service**: Handles sending text, button, list messages and webhook processing.
     - **WhatsApp Flow Encryption**: Full end-to-end encryption implementation for WhatsApp Flows using RSA-OAEP (2048-bit) for AES key exchange and AES-128-GCM for payload encryption/decryption. Supports encrypted PING, INIT, and DATA_EXCHANGE actions with automatic response encryption. **Critical parameters**: RSA-OAEP with SHA-256 hash **WITHOUT oaepLabel** (WhatsApp does NOT use a label for session key encryption), AES-128-GCM (16-byte key, NOT AES-256), **IV FLIPPING for responses** (each byte XOR'd with 0xFF), plain text base64 response format (Content-Type: text/plain), and automatic PEM key reformatting to handle improperly stored multi-line keys (converts space-separated single-line format to proper PEM with newlines). Public key upload script available at `scripts/upload-public-key.ts` (run with `tsx scripts/upload-public-key.ts`). **IMPORTANT**: WhatsApp clients cache public keys for ~30 minutes. After uploading a new public key, the code returns HTTP 421 error to force clients to refresh their cached key. Wait 30 minutes after first 421 error before testing again.
     - **WhatsApp Flow Field Mappings**: All four flow handlers (survey, price, service, callback) correctly map `formData.full_name` (from Flow JSON) to `customerName` (database field). Survey handler uses `formData.interested_in || "site_survey"` with fallback. Service handler uses `formData.description || \`${formData.issue_type} issue\`` with fallback. These defensive mappings preserve current functionality while honoring future payload fields if added to Flow JSON definitions.

@@ -14,12 +14,12 @@ async function seedTemplates() {
       stepKey: "campaign_entry",
       messageType: "button",
       language: "en",
-      bodyText: "Welcome to Sunshine Power.",
+      bodyText: "Hello, We are a PM Surya Ghar registered Solar Vendor.\nFrom application to net-metering and installation-we handle it all.\nTo Continue, Choose:",
       headerMediaId: "4245254242364293",
-      footerText: "PM Surya Ghar Registered Solar Vendor.",
+      footerText: "Licensed PM Surya Ghar Solar Vendor",
       buttons: [
+        { id: "hindi", title: "हिंदी", nextStep: "main_menu" },
         { id: "english", title: "English", nextStep: "main_menu" },
-        { id: "hindi", title: "Hindi", nextStep: "main_menu" },
         { id: "visit_website", title: "Visit Website", nextStep: null }
       ],
       metaStatus: "approved"
@@ -46,8 +46,7 @@ async function seedTemplates() {
       buttons: [
         { id: "site_survey", title: "Book Site Survey", nextStep: null },
         { id: "price_estimate", title: "Price Estimate", nextStep: null },
-        { id: "service", title: "Maintenance / Service Request", nextStep: null },
-        { id: "callback", title: "Request Callback", nextStep: null }
+        { id: "help", title: "Service & Support", nextStep: "help_submenu" }
       ],
       metaStatus: "approved"
     };
@@ -73,8 +72,7 @@ async function seedTemplates() {
       buttons: [
         { id: "site_survey", title: "साइट सर्वे बुक करें", nextStep: null },
         { id: "price_estimate", title: "मूल्य अनुमान", nextStep: null },
-        { id: "service", title: "रखरखाव / सेवा अनुरोध", nextStep: null },
-        { id: "callback", title: "कॉलबैक का अनुरोध", nextStep: null }
+        { id: "help", title: "सेवा और सहायता", nextStep: "help_submenu" }
       ],
       metaStatus: "approved"
     };
@@ -89,9 +87,9 @@ async function seedTemplates() {
 
     console.log("✅ Template seed completed successfully!");
     console.log("\nTemplates loaded:");
-    console.log("  - Campaign Entry (with image header)");
-    console.log("  - Main Menu English (4 buttons)");
-    console.log("  - Main Menu Hindi (4 buttons)");
+    console.log("  - Campaign Entry (with image header, 3 buttons)");
+    console.log("  - Main Menu English (3 buttons)");
+    console.log("  - Main Menu Hindi (3 buttons)");
 
     process.exit(0);
   } catch (error) {
