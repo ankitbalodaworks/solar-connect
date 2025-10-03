@@ -490,10 +490,486 @@ export const CALLBACK_FLOW: WhatsAppFlow = {
   ]
 };
 
+// Hindi Site Survey Flow
+export const SURVEY_FLOW_HI: WhatsAppFlow = {
+  version: "7.2",
+  data_api_version: "3.0",
+  routing_model: {
+    SURVEY_FORM: ["SURVEY_SUCCESS"],
+    SURVEY_SUCCESS: []
+  },
+  screens: [
+    {
+      id: "SURVEY_FORM",
+      title: "साइट सर्वे बुक करें",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Form",
+            name: "form",
+            children: [
+              {
+                type: "TextInput",
+                name: "full_name",
+                label: "पूरा नाम",
+                required: true,
+                "input-type": "text",
+                "max-length": 120,
+                "error-message": "कृपया अपना नाम दर्ज करें"
+              },
+              {
+                type: "PhoneNumber",
+                name: "mobile",
+                label: "मोबाइल",
+                required: true,
+                "error-message": "वैध मोबाइल नंबर दर्ज करें"
+              },
+              {
+                type: "TextArea",
+                name: "address",
+                label: "पता",
+                required: true,
+                "max-length": 400
+              },
+              {
+                type: "TextInput",
+                name: "village",
+                label: "गांव/शहर",
+                required: true,
+                "input-type": "text"
+              },
+              {
+                type: "NumberInput",
+                name: "avg_bill",
+                label: "औसत मासिक बिल (₹)",
+                required: true
+              },
+              {
+                type: "SingleSelect",
+                name: "phase",
+                label: "फेज",
+                required: true,
+                "data-source": {
+                  type: "STATIC",
+                  data: [
+                    { id: "1p", title: "1φ" },
+                    { id: "3p", title: "3φ" }
+                  ]
+                }
+              },
+              {
+                type: "SingleSelect",
+                name: "roof_type",
+                label: "छत का प्रकार",
+                required: true,
+                "data-source": {
+                  type: "STATIC",
+                  data: [
+                    { id: "rcc", title: "RCC" },
+                    { id: "tin", title: "टिन/शीट" },
+                    { id: "other", title: "अन्य" }
+                  ]
+                }
+              },
+              {
+                type: "DatePicker",
+                name: "preferred_date",
+                label: "पसंदीदा तारीख",
+                required: true
+              },
+              {
+                type: "TimePicker",
+                name: "preferred_time",
+                label: "पसंदीदा समय",
+                required: true
+              }
+            ],
+            actions: {
+              submit: {
+                label: "जमा करें",
+                "on-click-action": {
+                  name: "data_exchange",
+                  payload: {
+                    op: "submit_survey_form"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "SURVEY_SUCCESS",
+      title: "धन्यवाद!",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Description",
+            text: "आपका सर्वे अनुरोध दर्ज किया गया है। हमारी टीम जल्द ही आपसे संपर्क करेगी।"
+          }
+        ]
+      }
+    }
+  ]
+};
+
+// Hindi Price Estimate Flow
+export const PRICE_FLOW_HI: WhatsAppFlow = {
+  version: "7.2",
+  data_api_version: "3.0",
+  routing_model: {
+    PRICE_FORM: ["PRICE_SUCCESS"],
+    PRICE_SUCCESS: []
+  },
+  screens: [
+    {
+      id: "PRICE_FORM",
+      title: "मूल्य अनुमान",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Form",
+            name: "form",
+            children: [
+              {
+                type: "TextInput",
+                name: "full_name",
+                label: "पूरा नाम",
+                required: true,
+                "input-type": "text",
+                "max-length": 120,
+                "error-message": "कृपया अपना नाम दर्ज करें"
+              },
+              {
+                type: "PhoneNumber",
+                name: "mobile",
+                label: "मोबाइल",
+                required: true,
+                "error-message": "वैध मोबाइल नंबर दर्ज करें"
+              },
+              {
+                type: "TextArea",
+                name: "address",
+                label: "पता",
+                required: true,
+                "max-length": 400
+              },
+              {
+                type: "TextInput",
+                name: "village",
+                label: "गांव/शहर",
+                required: true,
+                "input-type": "text"
+              },
+              {
+                type: "NumberInput",
+                name: "avg_bill",
+                label: "औसत मासिक बिल (₹)",
+                required: true
+              },
+              {
+                type: "NumberInput",
+                name: "monthly_units",
+                label: "औसत मासिक यूनिट (kWh)",
+                required: true
+              },
+              {
+                type: "SingleSelect",
+                name: "phase",
+                label: "फेज",
+                required: true,
+                "data-source": {
+                  type: "STATIC",
+                  data: [
+                    { id: "1p", title: "1φ" },
+                    { id: "3p", title: "3φ" }
+                  ]
+                }
+              },
+              {
+                type: "SingleSelect",
+                name: "roof_type",
+                label: "छत का प्रकार",
+                required: true,
+                "data-source": {
+                  type: "STATIC",
+                  data: [
+                    { id: "rcc", title: "RCC" },
+                    { id: "tin", title: "टिन/शीट" },
+                    { id: "other", title: "अन्य" }
+                  ]
+                }
+              }
+            ],
+            actions: {
+              submit: {
+                label: "जमा करें",
+                "on-click-action": {
+                  name: "data_exchange",
+                  payload: {
+                    op: "submit_price_form"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "PRICE_SUCCESS",
+      title: "धन्यवाद!",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Description",
+            text: "आपका विवरण सहेजा गया है। हम जल्द ही अनुमान भेजेंगे।"
+          }
+        ]
+      }
+    }
+  ]
+};
+
+// Hindi Service Request Flow
+export const SERVICE_FLOW_HI: WhatsAppFlow = {
+  version: "7.2",
+  data_api_version: "3.0",
+  routing_model: {
+    SERVICE_FORM: ["SERVICE_SUCCESS"],
+    SERVICE_SUCCESS: []
+  },
+  screens: [
+    {
+      id: "SERVICE_FORM",
+      title: "रखरखाव / सेवा",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Form",
+            name: "form",
+            children: [
+              {
+                type: "TextInput",
+                name: "full_name",
+                label: "पूरा नाम",
+                required: true,
+                "input-type": "text",
+                "max-length": 120,
+                "error-message": "कृपया अपना नाम दर्ज करें"
+              },
+              {
+                type: "PhoneNumber",
+                name: "mobile",
+                label: "मोबाइल",
+                required: true,
+                "error-message": "वैध मोबाइल नंबर दर्ज करें"
+              },
+              {
+                type: "TextArea",
+                name: "address",
+                label: "पता",
+                required: true,
+                "max-length": 400
+              },
+              {
+                type: "TextInput",
+                name: "village",
+                label: "गांव/शहर",
+                required: true,
+                "input-type": "text"
+              },
+              {
+                type: "SingleSelect",
+                name: "issue_type",
+                label: "समस्या का प्रकार",
+                required: true,
+                "data-source": {
+                  type: "STATIC",
+                  data: [
+                    { id: "inverter", title: "इन्वर्टर" },
+                    { id: "panels", title: "पैनल" },
+                    { id: "wiring", title: "वायरिंग" },
+                    { id: "meter", title: "मीटर/नेट-मीटर" },
+                    { id: "other", title: "अन्य" }
+                  ]
+                }
+              },
+              {
+                type: "SingleSelect",
+                name: "urgency",
+                label: "तात्कालिकता",
+                required: true,
+                "data-source": {
+                  type: "STATIC",
+                  data: [
+                    { id: "low", title: "कम" },
+                    { id: "normal", title: "सामान्य" },
+                    { id: "high", title: "उच्च" }
+                  ]
+                }
+              },
+              {
+                type: "DatePicker",
+                name: "preferred_date",
+                label: "पसंदीदा तारीख",
+                required: true
+              },
+              {
+                type: "TimePicker",
+                name: "preferred_time",
+                label: "पसंदीदा समय",
+                required: true
+              }
+            ],
+            actions: {
+              submit: {
+                label: "जमा करें",
+                "on-click-action": {
+                  name: "data_exchange",
+                  payload: {
+                    op: "submit_service_form"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "SERVICE_SUCCESS",
+      title: "धन्यवाद!",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Description",
+            text: "आपका सेवा अनुरोध लॉग किया गया है। हम संपर्क करेंगे।"
+          }
+        ]
+      }
+    }
+  ]
+};
+
+// Hindi Callback Request Flow
+export const CALLBACK_FLOW_HI: WhatsAppFlow = {
+  version: "7.2",
+  data_api_version: "3.0",
+  routing_model: {
+    CALLBACK_FORM: ["CALLBACK_SUCCESS"],
+    CALLBACK_SUCCESS: []
+  },
+  screens: [
+    {
+      id: "CALLBACK_FORM",
+      title: "कॉलबैक का अनुरोध",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Form",
+            name: "form",
+            children: [
+              {
+                type: "TextInput",
+                name: "full_name",
+                label: "पूरा नाम",
+                required: true,
+                "input-type": "text",
+                "max-length": 120,
+                "error-message": "कृपया अपना नाम दर्ज करें"
+              },
+              {
+                type: "PhoneNumber",
+                name: "mobile",
+                label: "मोबाइल",
+                required: true,
+                "error-message": "वैध मोबाइल नंबर दर्ज करें"
+              },
+              {
+                type: "SingleSelect",
+                name: "best_time",
+                label: "कॉल करने का सबसे अच्छा समय",
+                required: true,
+                "data-source": {
+                  type: "STATIC",
+                  data: [
+                    { id: "morning", title: "सुबह" },
+                    { id: "afternoon", title: "दोपहर" },
+                    { id: "evening", title: "शाम" }
+                  ]
+                }
+              },
+              {
+                type: "SingleSelect",
+                name: "topic",
+                label: "विषय",
+                required: true,
+                "data-source": {
+                  type: "STATIC",
+                  data: [
+                    { id: "site_survey", title: "साइट सर्वे" },
+                    { id: "price_estimate", title: "मूल्य अनुमान" },
+                    { id: "maintenance", title: "रखरखाव/सेवा" },
+                    { id: "other", title: "अन्य" }
+                  ]
+                }
+              },
+              {
+                type: "TextArea",
+                name: "notes",
+                label: "नोट्स (वैकल्पिक)",
+                required: false,
+                "max-length": 400
+              }
+            ],
+            actions: {
+              submit: {
+                label: "जमा करें",
+                "on-click-action": {
+                  name: "data_exchange",
+                  payload: {
+                    op: "submit_callback_form"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "CALLBACK_SUCCESS",
+      title: "धन्यवाद!",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Description",
+            text: "हम आपके पसंदीदा समय पर आपको कॉल करेंगे।"
+          }
+        ]
+      }
+    }
+  ]
+};
+
 // Export all flows
 export const ALL_FLOWS = {
   SURVEY: SURVEY_FLOW,
   PRICE: PRICE_FLOW,
   SERVICE: SERVICE_FLOW,
-  CALLBACK: CALLBACK_FLOW
+  CALLBACK: CALLBACK_FLOW,
+  SURVEY_HI: SURVEY_FLOW_HI,
+  PRICE_HI: PRICE_FLOW_HI,
+  SERVICE_HI: SERVICE_FLOW_HI,
+  CALLBACK_HI: CALLBACK_FLOW_HI
 };
