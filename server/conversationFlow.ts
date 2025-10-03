@@ -270,9 +270,6 @@ export class ConversationFlowEngine {
           (message.content.trim().toLowerCase() === "w" || 
            message.content.trim().toLowerCase() === "website" ||
            message.content.trim().toLowerCase() === "वेबसाइट")) {
-        // Delete conversation and return website info
-        await storage.deleteConversationState(message.customerPhone);
-
         // Create event for website visit
         await storage.createEvent({
           customerPhone: message.customerPhone,
@@ -280,25 +277,10 @@ export class ConversationFlowEngine {
           meta: { source: "campaign_entry" },
         });
 
-        return {
-          template: {
-            id: 0,
-            flowType: "campaign",
-            stepKey: "website_link",
-            stepName: "Website Link",
-            language: null,
-            messageType: "text",
-            bodyText: "🌐 Visit our website:\nhttps://www.sunshinepower.in\n\n🌐 हमारी वेबसाइट पर जाएं:\nhttps://www.sunshinepower.in\n\nThank you for your interest! 🌞\nआपकी रुचि के लिए धन्यवाद! 🌞",
-            headerText: null,
-            footerText: null,
-            buttons: null,
-            listSections: null,
-            headerMediaId: null,
-            name: "Website Link",
-            createdAt: new Date(),
-          },
-          shouldSend: true,
-        };
+        // Move to a special website_complete step that will send the link and end conversation
+        return await storage.updateConversationState(message.customerPhone, {
+          currentStep: "website_complete",
+        });
       }
 
       // Store text input in context
@@ -465,7 +447,7 @@ export class ConversationFlowEngine {
   }
 
   private isCompletionStep(step: string): boolean {
-    return ["survey_complete", "callback_complete", "service_complete", "issue_complete"].includes(step);
+    return ["survey_complete", "callback_complete", "service_complete", "issue_complete", "website_complete"].includes(step);
   }
 
   private getNextStepForTextInput(currentStep: string): string | null {
