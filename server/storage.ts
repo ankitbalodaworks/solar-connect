@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type MessageTemplate, type InsertMessageTemplate, type ConversationState, type InsertConversationState, type WhatsappLog, type InsertWhatsappLog, type Lead, type InsertLead, type ServiceRequest, type InsertServiceRequest, type CallbackRequest, type InsertCallbackRequest, type PriceEstimate, type InsertPriceEstimate, type OtherIssue, type InsertOtherIssue, type Event, type InsertEvent, type Form, type InsertForm } from "@shared/schema";
+import { type User, type InsertUser, type Customer, type InsertCustomer, type MessageTemplate, type InsertMessageTemplate, type ConversationState, type InsertConversationState, type WhatsappLog, type InsertWhatsappLog, type Lead, type InsertLead, type ServiceRequest, type InsertServiceRequest, type CallbackRequest, type InsertCallbackRequest, type PriceEstimate, type InsertPriceEstimate, type OtherIssue, type InsertOtherIssue, type Event, type InsertEvent, type Form, type InsertForm } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
 import { messageTemplates, conversationStates, whatsappLogs, leads, serviceRequests, customers, campaigns, callbackRequests, priceEstimates, otherIssues, events, forms } from "@shared/schema";
@@ -11,6 +11,13 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+
+  // Customers
+  getCustomers(): Promise<Customer[]>;
+  getCustomer(id: string): Promise<Customer | undefined>;
+  createCustomer(customer: InsertCustomer): Promise<Customer>;
+  updateCustomer(id: string, customer: Partial<InsertCustomer>): Promise<Customer | undefined>;
+  deleteCustomer(id: string): Promise<boolean>;
 
   // Message Templates
   getMessageTemplates(flowType?: string, language?: string, stepKey?: string): Promise<MessageTemplate[]>;
@@ -211,6 +218,34 @@ export class MemStorage implements IStorage {
     return await db.select().from(whatsappLogs)
       .orderBy(desc(whatsappLogs.createdAt))
       .limit(limit);
+  }
+
+  // Customers - Database-backed
+  async getCustomers(): Promise<Customer[]> {
+    return await db.select().from(customers);
+  }
+
+  async getCustomer(id: string): Promise<Customer | undefined> {
+    const result = await db.select().from(customers).where(eq(customers.id, id));
+    return result[0];
+  }
+
+  async createCustomer(customer: InsertCustomer): Promise<Customer> {
+    const result = await db.insert(customers).values(customer).returning();
+    return result[0];
+  }
+
+  async updateCustomer(id: string, customer: Partial<InsertCustomer>): Promise<Customer | undefined> {
+    const result = await db.update(customers)
+      .set(customer)
+      .where(eq(customers.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteCustomer(id: string): Promise<boolean> {
+    const result = await db.delete(customers).where(eq(customers.id, id)).returning();
+    return result.length > 0;
   }
 
   // Leads - Database-backed

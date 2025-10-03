@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { CustomerUpload } from "@/components/CustomerUpload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,11 +36,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function Customers() {
-  const [customers, setCustomers] = useState<any[]>([]);
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
+
+  // Fetch customers from API
+  const { data: customers = [], isLoading } = useQuery<any[]>({
+    queryKey: ['/api/customers'],
+  });
 
   const handleUpload = (data: any[]) => {
     const formattedCustomers = data.map((row: any, index) => ({
@@ -49,12 +54,13 @@ export default function Customers() {
       address: row.Address || row.address || '',
       electricityConsumption: parseInt(row['Electricity Consumption'] || row.electricityConsumption || '0'),
     }));
-    setCustomers(formattedCustomers);
+    // Note: This currently only affects local state
+    // TODO: Implement POST /api/customers/bulk to persist uploaded customers
     console.log('Customers uploaded:', formattedCustomers.length);
   };
 
   const handleDelete = (id: string) => {
-    setCustomers(customers.filter(c => c.id !== id));
+    // TODO: Implement DELETE /api/customers/:id API call
     console.log('Customer deleted:', id);
   };
 
@@ -109,7 +115,13 @@ export default function Customers() {
 
       <CustomerUpload onUpload={handleUpload} />
 
-      {customers.length > 0 && (
+      {isLoading ? (
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-center text-muted-foreground">Loading customers...</p>
+          </CardContent>
+        </Card>
+      ) : customers.length > 0 && (
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between gap-4 flex-wrap mb-6">
@@ -246,6 +258,14 @@ export default function Customers() {
                 </Button>
               </div>
             </div>
+          </CardContent>
+        </Card>
+      )}
+      
+      {!isLoading && customers.length === 0 && (
+        <Card>
+          <CardContent className="p-6 text-center text-muted-foreground">
+            <p>No customers found. Upload an Excel file to add customers to your database.</p>
           </CardContent>
         </Card>
       )}

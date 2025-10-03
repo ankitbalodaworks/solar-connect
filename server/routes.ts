@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertMessageTemplateSchema, insertLeadSchema, insertServiceRequestSchema } from "@shared/schema";
+import { insertMessageTemplateSchema, insertCustomerSchema, insertLeadSchema, insertServiceRequestSchema } from "@shared/schema";
 import { conversationFlowEngine } from "./conversationFlow";
 import { whatsappService } from "./whatsapp";
 import { notificationService } from "./notifications";
@@ -974,6 +974,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error submitting templates:", error);
       res.status(500).json({ error: "Failed to submit templates" });
+    }
+  });
+
+  // Customers API
+  app.get("/api/customers", async (req, res) => {
+    try {
+      const customers = await storage.getCustomers();
+      res.json(customers);
+    } catch (error) {
+      console.error("Error fetching customers:", error);
+      res.status(500).json({ error: "Failed to fetch customers" });
+    }
+  });
+
+  app.get("/api/customers/:id", async (req, res) => {
+    try {
+      const customer = await storage.getCustomer(req.params.id);
+      if (!customer) {
+        return res.status(404).json({ error: "Customer not found" });
+      }
+      res.json(customer);
+    } catch (error) {
+      console.error("Error fetching customer:", error);
+      res.status(500).json({ error: "Failed to fetch customer" });
+    }
+  });
+
+  app.post("/api/customers", async (req, res) => {
+    try {
+      const validatedData = insertCustomerSchema.parse(req.body);
+      const customer = await storage.createCustomer(validatedData);
+      res.status(201).json(customer);
+    } catch (error) {
+      console.error("Error creating customer:", error);
+      res.status(400).json({ error: "Failed to create customer" });
+    }
+  });
+
+  app.put("/api/customers/:id", async (req, res) => {
+    try {
+      const validatedData = insertCustomerSchema.partial().parse(req.body);
+      const customer = await storage.updateCustomer(req.params.id, validatedData);
+      if (!customer) {
+        return res.status(404).json({ error: "Customer not found" });
+      }
+      res.json(customer);
+    } catch (error) {
+      console.error("Error updating customer:", error);
+      res.status(400).json({ error: "Failed to update customer" });
+    }
+  });
+
+  app.delete("/api/customers/:id", async (req, res) => {
+    try {
+      const success = await storage.deleteCustomer(req.params.id);
+      if (!success) {
+        return res.status(404).json({ error: "Customer not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting customer:", error);
+      res.status(500).json({ error: "Failed to delete customer" });
     }
   });
 
