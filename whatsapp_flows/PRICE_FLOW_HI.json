@@ -87,7 +87,8 @@
                 "on-click-action": {
                   "name": "data_exchange",
                   "payload": {
-                    "op": "submit_price_form"
+                    "op": "submit_price_form",
+                    "form": "${form}"
                   }
                 }
               }

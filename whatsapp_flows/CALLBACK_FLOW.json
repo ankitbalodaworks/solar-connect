@@ -67,7 +67,8 @@
                 "on-click-action": {
                   "name": "data_exchange",
                   "payload": {
-                    "op": "submit_callback_form"
+                    "op": "submit_callback_form",
+                    "form": "${form}"
                   }
                 }
               }
