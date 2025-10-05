@@ -1,0 +1,134 @@
+5:49:00 AM [express] POST /api/flows/survey 200 in 3ms
+[CRYPTO DEBUG] Encrypted request received
+[CRYPTO DEBUG] Encrypted AES key length: 344
+[CRYPTO DEBUG] Encrypted AES key (first 40 chars): ZHTI/rrDdmu3Gx/pWM2GTcVqNdTYL6JS9UwQ4/CU
+[CRYPTO DEBUG] Encrypted flow data length: 268
+[CRYPTO DEBUG] Encrypted flow data (first 40 chars): k2wedeMUmydJKhT08DFMGn4WGAfMZotI0/R0pTDt
+[CRYPTO DEBUG] Initial vector length: 24
+[CRYPTO DEBUG] Initial vector: NwlaH9ZKQYQlxCBNVGngQQ==
+[CRYPTO DEBUG] Private key length: 1703
+[CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+[CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+[CRYPTO DEBUG] Formatted key length: 1703
+[CRYPTO DEBUG] Has PEM headers: true
+[CRYPTO DEBUG] Decrypted AES key length: 16 bytes
+[CRYPTO DEBUG] Decrypted AES key (hex): f8f3543e4e3eb5b0cd08b9623ab5a9b2...
+[CRYPTO DEBUG] Using algorithm: aes-128-gcm
+[FLOW DEBUG] Full decryptedData: {
+  "data": {
+    "op": "submit_survey_form"
+  },
+  "flow_token": "eyJwaG9uZSI6IjkxOTY0NjYyMTk3OSIsInRpbWVzdGFtcCI6MTc1OTY0MzUxNzAyMH0=",
+  "screen": "SURVEY_FORM",
+  "action": "data_exchange",
+  "version": "3.0",
+  "_aesKey": {
+    "type": "Buffer",
+    "data": [
+      248,
+      243,
+      84,
+      62,
+      78,
+      62,
+      181,
+      176,
+      205,
+      8,
+      185,
+      98,
+      58,
+      181,
+      169,
+      178
+    ]
+  },
+  "_initialVector": {
+    "type": "Buffer",
+    "data": [
+      55,
+      9,
+      90,
+      31,
+      214,
+      74,
+      65,
+      132,
+      37,
+      196,
+      32,
+      77,
+      84,
+      105,
+      224,
+      65
+    ]
+  }
+}
+[FLOW DEBUG] decryptedData.data structure: {
+  "op": "submit_survey_form"
+}
+[FLOW DEBUG] Extracted formData: {
+  "op": "submit_survey_form"
+}
+Survey flow error: ZodError: [
+  {
+    "code": "invalid_type",
+    "expected": "string",
+    "received": "undefined",
+    "path": [
+      "customerName"
+    ],
+    "message": "Required"
+  }
+]
+    at get error (file:///opt/render/project/src/node_modules/zod/lib/index.mjs:587:31)
+    at ZodObject.parse (file:///opt/render/project/src/node_modules/zod/lib/index.mjs:663:22)
+    at FlowHandlers.handleSurveyFlow (file:///opt/render/project/src/dist/index.js:2347:48)
+    at file:///opt/render/project/src/dist/index.js:4354:61
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at next (/opt/render/project/src/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/opt/render/project/src/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/opt/render/project/src/node_modules/express/lib/router/layer.js:95:5)
+    at /opt/render/project/src/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/opt/render/project/src/node_modules/express/lib/router/index.js:346:12) {
+  issues: [
+    {
+      code: 'invalid_type',
+      expected: 'string',
+      received: 'undefined',
+      path: [Array],
+      message: 'Required'
+    }
+  ],
+  addIssue: [Function (anonymous)],
+  addIssues: [Function (anonymous)],
+  errors: [
+    {
+      code: 'invalid_type',
+      expected: 'string',
+      received: 'undefined',
+      path: [Array],
+      message: 'Required'
+    }
+  ]
+}
+5:53:13 AM [express] POST /api/flows/survey 400 in 127ms :: {"error":"Validation failed","details":[…
+[CRYPTO DEBUG] Encrypted request received
+[CRYPTO DEBUG] Encrypted AES key length: 344
+[CRYPTO DEBUG] Encrypted AES key (first 40 chars): 15LHLo0I5y9qBniOfmFO4ESAfQ6l5GDrPlSFNFKA
+[CRYPTO DEBUG] Encrypted flow data length: 68
+[CRYPTO DEBUG] Encrypted flow data (first 40 chars): fIXSYGGfpnfMrb6lAgG4sAlA+XNe/P5d+VSv7TkB
+[CRYPTO DEBUG] Initial vector length: 24
+[CRYPTO DEBUG] Initial vector: 0p6ZBOU8ncSros1HlZu4FQ==
+[CRYPTO DEBUG] Private key length: 1703
+[CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+[CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+[CRYPTO DEBUG] Formatted key length: 1703
+[CRYPTO DEBUG] Has PEM headers: true
+[CRYPTO DEBUG] Decrypted AES key length: 16 bytes
+[CRYPTO DEBUG] Decrypted AES key (hex): 11cf4ddf602a22db2972e4f535160d9e...
+[CRYPTO DEBUG] Using algorithm: aes-128-gcm
+[CRYPTO DEBUG] Original IV: 0p6ZBOU8ncSros1HlZu4FQ==
+[CRYPTO DEBUG] Flipped IV: LWFm+xrDYjtUXTK4amRH6g==
+5:54:06 AM [express] POST /api/flows/survey 200 in 3ms
