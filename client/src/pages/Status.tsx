@@ -25,7 +25,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Download, Search, Eye } from "lucide-react";
+import { Download, Search, Eye, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { format } from "date-fns";
 
 interface ContactStatus {
@@ -40,7 +40,7 @@ interface Form {
   customerPhone: string;
   formType: string;
   data: Record<string, any>;
-  createdAt: string;
+  submittedAt: string;
 }
 
 export default function Status() {
@@ -106,6 +106,17 @@ export default function Status() {
     }
   };
 
+  const getSortIcon = (column: typeof sortColumn) => {
+    if (sortColumn !== column) {
+      return <ArrowUpDown className="h-4 w-4 ml-2" />;
+    }
+    return sortDirection === "asc" ? (
+      <ArrowUp className="h-4 w-4 ml-2" />
+    ) : (
+      <ArrowDown className="h-4 w-4 ml-2" />
+    );
+  };
+
   const handleExportCSV = () => {
     window.open("/api/contact-status/export/csv", "_blank");
   };
@@ -169,18 +180,30 @@ export default function Status() {
           <TableHeader>
             <TableRow>
               <TableHead className="cursor-pointer hover-elevate" onClick={() => handleSort("phone")} data-testid="header-phone">
-                Phone Number {sortColumn === "phone" && (sortDirection === "asc" ? "↑" : "↓")}
+                <div className="flex items-center">
+                  Phone Number
+                  {getSortIcon("phone")}
+                </div>
               </TableHead>
               <TableHead className="cursor-pointer hover-elevate" onClick={() => handleSort("event")} data-testid="header-event">
-                Latest Event {sortColumn === "event" && (sortDirection === "asc" ? "↑" : "↓")}
-              </TableHead>
-              <TableHead className="cursor-pointer hover-elevate" onClick={() => handleSort("timestamp")} data-testid="header-timestamp">
-                Last Activity {sortColumn === "timestamp" && (sortDirection === "asc" ? "↑" : "↓")}
-              </TableHead>
-              <TableHead className="cursor-pointer hover-elevate" onClick={() => handleSort("forms")} data-testid="header-forms">
-                Forms {sortColumn === "forms" && (sortDirection === "asc" ? "↑" : "↓")}
+                <div className="flex items-center">
+                  Latest Event
+                  {getSortIcon("event")}
+                </div>
               </TableHead>
               <TableHead>Actions</TableHead>
+              <TableHead className="cursor-pointer hover-elevate" onClick={() => handleSort("forms")} data-testid="header-forms">
+                <div className="flex items-center">
+                  Forms
+                  {getSortIcon("forms")}
+                </div>
+              </TableHead>
+              <TableHead className="cursor-pointer hover-elevate" onClick={() => handleSort("timestamp")} data-testid="header-timestamp">
+                <div className="flex items-center">
+                  Last Activity
+                  {getSortIcon("timestamp")}
+                </div>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -207,16 +230,6 @@ export default function Status() {
                       <span className="text-muted-foreground">No events</span>
                     )}
                   </TableCell>
-                  <TableCell data-testid={`text-timestamp-${contact.customerPhone}`}>
-                    {contact.latestEventTimestamp
-                      ? format(new Date(contact.latestEventTimestamp), "MMM d, yyyy h:mm a")
-                      : "-"}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline" data-testid={`badge-form-count-${contact.customerPhone}`}>
-                      {contact.formCount}
-                    </Badge>
-                  </TableCell>
                   <TableCell>
                     <Button
                       variant="ghost"
@@ -228,6 +241,16 @@ export default function Status() {
                       <Eye className="h-4 w-4 mr-2" />
                       View Forms
                     </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline" data-testid={`badge-form-count-${contact.customerPhone}`}>
+                      {contact.formCount}
+                    </Badge>
+                  </TableCell>
+                  <TableCell data-testid={`text-timestamp-${contact.customerPhone}`}>
+                    {contact.latestEventTimestamp
+                      ? format(new Date(contact.latestEventTimestamp), "MMM d, yyyy h:mm a")
+                      : "-"}
                   </TableCell>
                 </TableRow>
               ))
@@ -250,7 +273,7 @@ export default function Status() {
                 <div className="flex items-center justify-between">
                   <Badge>{form.formType}</Badge>
                   <span className="text-sm text-muted-foreground">
-                    {format(new Date(form.createdAt), "MMM d, yyyy h:mm a")}
+                    {format(new Date(form.submittedAt), "MMM d, yyyy h:mm a")}
                   </span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-sm">

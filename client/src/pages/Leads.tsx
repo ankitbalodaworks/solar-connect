@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search, Trash2, Calendar, Phone, User, Edit } from "lucide-react";
+import { Plus, Search, Trash2, Calendar, Phone, User, Edit, MapPin, Zap, Home, IndianRupee } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -323,6 +323,62 @@ export default function Leads() {
               {editingLead ? "Edit Lead" : "Create New Lead"}
             </DialogTitle>
           </DialogHeader>
+          
+          {editingLead && (
+            <Card className="mb-4">
+              <CardContent className="pt-6">
+                <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Lead Details</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  {editingLead.address && (
+                    <div className="flex items-start gap-2">
+                      <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
+                      <div>
+                        <p className="font-medium">Address</p>
+                        <p className="text-muted-foreground">{editingLead.address}</p>
+                      </div>
+                    </div>
+                  )}
+                  {editingLead.village && (
+                    <div className="flex items-start gap-2">
+                      <Home className="h-4 w-4 text-muted-foreground mt-0.5" />
+                      <div>
+                        <p className="font-medium">Village/Town</p>
+                        <p className="text-muted-foreground">{editingLead.village}</p>
+                      </div>
+                    </div>
+                  )}
+                  {editingLead.avgBill != null && (
+                    <div className="flex items-start gap-2">
+                      <IndianRupee className="h-4 w-4 text-muted-foreground mt-0.5" />
+                      <div>
+                        <p className="font-medium">Avg Monthly Bill</p>
+                        <p className="text-muted-foreground">₹{editingLead.avgBill}</p>
+                      </div>
+                    </div>
+                  )}
+                  {editingLead.phase && (
+                    <div className="flex items-start gap-2">
+                      <Zap className="h-4 w-4 text-muted-foreground mt-0.5" />
+                      <div>
+                        <p className="font-medium">Phase</p>
+                        <Badge variant="outline">{editingLead.phase}</Badge>
+                      </div>
+                    </div>
+                  )}
+                  {editingLead.roofType && (
+                    <div className="flex items-start gap-2">
+                      <Home className="h-4 w-4 text-muted-foreground mt-0.5" />
+                      <div>
+                        <p className="font-medium">Roof Type</p>
+                        <Badge variant="outline">{editingLead.roofType}</Badge>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
