@@ -327,7 +327,101 @@ export class WhatsAppService {
     }
   }
 
+  async sendApprovedTemplateMessage(
+    to: string,
+    templateName: string,
+    languageCode: string = "en_US",
+    components?: Array<any>
+  ): Promise<SendMessageResponse> {
+    try {
+      if (!this.isConfigured()) {
+        return { success: false, error: "WhatsApp not configured" };
+      }
+
+      const payload: any = {
+        messaging_product: "whatsapp",
+        to,
+        type: "template",
+        template: {
+          name: templateName,
+          language: {
+            code: languageCode,
+          },
+        },
+      };
+
+      if (components && components.length > 0) {
+        payload.template.components = components;
+      }
+
+      const response = await axios.post(
+        `${this.baseUrl}/${this.config.phoneNumberId}/messages`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${this.config.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      return {
+        success: true,
+        messageId: response.data.messages[0].id,
+      };
+    } catch (error: any) {
+      console.error("Error sending WhatsApp approved template message:", error.response?.data || error.message);
+      return {
+        success: false,
+        error: error.response?.data?.error?.message || error.message,
+      };
+    }
+  }
+
   async sendTemplateMessage(to: string, template: MessageTemplate): Promise<SendMessageResponse> {
+    // Check if this is a Meta-approved template that should be sent via Template API
+    if (template.metaStatus === "approved" && template.name) {
+      // This is a Meta-approved template - use Template Messages API
+      // Map template language to WhatsApp language code
+      const languageCode = template.language === "hi" ? "hi" : "en_US";
+      
+      // Build components array for template
+      const components: Array<any> = [];
+      
+      // Add header component if present
+      if (template.headerMediaId) {
+        components.push({
+          type: "header",
+          parameters: [
+            {
+              type: "image",
+              image: {
+                id: template.headerMediaId,
+              },
+            },
+          ],
+        });
+      } else if (template.headerText) {
+        components.push({
+          type: "header",
+          parameters: [
+            {
+              type: "text",
+              text: template.headerText,
+            },
+          ],
+        });
+      }
+      
+      return this.sendApprovedTemplateMessage(
+        to,
+        template.name,
+        languageCode,
+        components.length > 0 ? components : undefined
+      );
+    }
+    
+    // Otherwise, send as interactive message
     if (template.messageType === "button" && template.buttons) {
       const buttons = template.buttons as Array<{ id: string; title: string }>;
       return this.sendButtonMessage(
