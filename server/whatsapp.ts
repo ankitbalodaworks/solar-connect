@@ -388,7 +388,8 @@ export class WhatsAppService {
       // Build components array for template
       const components: Array<any> = [];
       
-      // Add header component if present
+      // Add header component ONLY for image headers (media headers always need parameters)
+      // Static text headers in approved templates should NOT have parameters
       if (template.headerMediaId) {
         components.push({
           type: "header",
@@ -398,16 +399,6 @@ export class WhatsAppService {
               image: {
                 id: template.headerMediaId,
               },
-            },
-          ],
-        });
-      } else if (template.headerText) {
-        components.push({
-          type: "header",
-          parameters: [
-            {
-              type: "text",
-              text: template.headerText,
             },
           ],
         });
