@@ -119,7 +119,8 @@ export const SURVEY_FLOW: WhatsAppFlow = {
                 "on-click-action": {
                   name: "data_exchange",
                   payload: {
-                    op: "submit_survey_form"
+                    op: "submit_survey_form",
+                    form: "${form}"
                   }
                 }
               }
@@ -239,7 +240,8 @@ export const PRICE_FLOW: WhatsAppFlow = {
                 "on-click-action": {
                   name: "data_exchange",
                   payload: {
-                    op: "submit_price_form"
+                    op: "submit_price_form",
+                    form: "${form}"
                   }
                 }
               }
@@ -362,7 +364,8 @@ export const SERVICE_FLOW: WhatsAppFlow = {
                 "on-click-action": {
                   name: "data_exchange",
                   payload: {
-                    op: "submit_service_form"
+                    op: "submit_service_form",
+                    form: "${form}"
                   }
                 }
               }
@@ -465,7 +468,8 @@ export const CALLBACK_FLOW: WhatsAppFlow = {
                 "on-click-action": {
                   name: "data_exchange",
                   payload: {
-                    op: "submit_callback_form"
+                    op: "submit_callback_form",
+                    form: "${form}"
                   }
                 }
               }
@@ -591,7 +595,8 @@ export const SURVEY_FLOW_HI: WhatsAppFlow = {
                 "on-click-action": {
                   name: "data_exchange",
                   payload: {
-                    op: "submit_survey_form"
+                    op: "submit_survey_form",
+                    form: "${form}"
                   }
                 }
               }
@@ -711,7 +716,8 @@ export const PRICE_FLOW_HI: WhatsAppFlow = {
                 "on-click-action": {
                   name: "data_exchange",
                   payload: {
-                    op: "submit_price_form"
+                    op: "submit_price_form",
+                    form: "${form}"
                   }
                 }
               }
@@ -834,7 +840,8 @@ export const SERVICE_FLOW_HI: WhatsAppFlow = {
                 "on-click-action": {
                   name: "data_exchange",
                   payload: {
-                    op: "submit_service_form"
+                    op: "submit_service_form",
+                    form: "${form}"
                   }
                 }
               }
@@ -937,7 +944,8 @@ export const CALLBACK_FLOW_HI: WhatsAppFlow = {
                 "on-click-action": {
                   name: "data_exchange",
                   payload: {
-                    op: "submit_callback_form"
+                    op: "submit_callback_form",
+                    form: "${form}"
                   }
                 }
               }
