@@ -571,6 +571,45 @@ export class WhatsAppService {
           messageType: "text",
           content: message.text.body,
         };
+      } else if (message.type === "button") {
+        const buttonText = message.button.text;
+        const buttonPayload = message.button.payload || buttonText;
+        
+        const buttonMapping: Record<string, string> = {
+          "हिंदी": "hindi",
+          "English": "english",
+          "Book Site Survey": "site_survey",
+          "Book site survey": "site_survey",
+          "Price Estimate": "price_estimate",
+          "Service & Support": "help",
+          "साइट सर्वे बुक करें": "site_survey",
+          "मूल्य अनुमान": "price_estimate",
+          "सेवा और सहायता": "help",
+          "Request callback": "callback",
+          "कॉलबैक का अनुरोध": "callback",
+          "Other help": "other_issue",
+          "अन्य सहायता": "other_issue",
+          "Maintenance request": "maintenance",
+          "रखरखाव अनुरोध": "maintenance",
+          "Register issue": "other_issue",
+          "समस्या दर्ज करें": "other_issue",
+          "Low": "low",
+          "कम": "low",
+          "Medium": "medium",
+          "मध्यम": "medium",
+          "High": "high",
+          "उच्च": "high",
+        };
+        
+        const normalizedId = buttonMapping[buttonText] || buttonPayload.toLowerCase().replace(/[^a-z0-9_]/g, "_");
+        
+        return {
+          customerPhone,
+          customerName,
+          messageType: "button",
+          content: buttonText,
+          selectedButtonId: normalizedId,
+        };
       } else if (message.type === "interactive") {
         if (message.interactive.type === "button_reply") {
           return {
