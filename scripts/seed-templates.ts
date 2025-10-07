@@ -98,7 +98,7 @@ async function seedTemplates() {
       buttons: [
         { id: "maintenance", title: "Maintenance request", nextStep: null },
         { id: "callback", title: "Request callback", nextStep: null },
-        { id: "other_issue", title: "Register issue", nextStep: null }
+        { id: "other_issue", title: "Register issue", nextStep: "issue_name" }
       ],
       metaStatus: "approved"
     };
@@ -124,7 +124,7 @@ async function seedTemplates() {
       buttons: [
         { id: "maintenance", title: "रखरखाव अनुरोध", nextStep: null },
         { id: "callback", title: "कॉलबैक का अनुरोध", nextStep: null },
-        { id: "other_issue", title: "समस्या दर्ज करें", nextStep: null }
+        { id: "other_issue", title: "समस्या दर्ज करें", nextStep: "issue_name" }
       ],
       metaStatus: "approved"
     };
