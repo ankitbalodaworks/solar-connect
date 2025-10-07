@@ -1,0 +1,77 @@
+2:20:20 PM [express] GET /api/whatsapp/status 200 in 2ms :: {"configured":true,"message":"WhatsApp i…
+2:20:21 PM [express] GET /api/conversation-states 304 in 823ms :: [{"id":"2afca714-b609-436f-aa71-61…
+2:20:21 PM [express] GET /api/whatsapp-logs 304 in 1026ms :: [{"id":"eed55fdb-9d9a-4be5-8ec2-412f80e…
+2:20:22 PM [express] GET /api/statistics 304 in 1637ms :: {"totalCustomers":2,"totalCampaigns":0,"to…
+[CRYPTO DEBUG] Encrypted request received
+[CRYPTO DEBUG] Encrypted AES key length: 344
+[CRYPTO DEBUG] Encrypted AES key (first 40 chars): ey+iisdCzLGRlAhtQhkyf5emE3c9je3TP6awybBt
+[CRYPTO DEBUG] Encrypted flow data length: 68
+[CRYPTO DEBUG] Encrypted flow data (first 40 chars): m6+BOKw6+l2kopqPxIJP5ptXYA6U4X0T9FOjNKCB
+[CRYPTO DEBUG] Initial vector length: 24
+[CRYPTO DEBUG] Initial vector: v9QeYtC7CXakwNz7HOye8Q==
+[CRYPTO DEBUG] Private key length: 1703
+[CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+[CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+[CRYPTO DEBUG] Formatted key length: 1703
+[CRYPTO DEBUG] Has PEM headers: true
+[CRYPTO DEBUG] Decrypted AES key length: 16 bytes
+[CRYPTO DEBUG] Decrypted AES key (hex): 343b65938fb6cd4ca7b57f45c794dcf9...
+[CRYPTO DEBUG] Using algorithm: aes-128-gcm
+[CRYPTO DEBUG] Original IV: v9QeYtC7CXakwNz7HOye8Q==
+[CRYPTO DEBUG] Flipped IV: QCvhnS9E9olbPyME4xNhDg==
+2:20:28 PM [express] POST /api/flows/survey 200 in 27ms
+2:20:30 PM [express] GET /api/leads 304 in 203ms :: [{"id":"2c847896-3cd7-45e0-adeb-f2b7a29ae6d2","c…
+Error sending WhatsApp approved template message: {
+2:20:47 PM [express] POST /api/whatsapp/send 500 in 2431ms :: {"error":"(#132001) Template name does…
+  error: {
+    message: '(#132001) Template name does not exist in the translation',
+    type: 'OAuthException',
+    code: 132001,
+    error_data: {
+      messaging_product: 'whatsapp',
+      details: 'template name (sunshine_campaign_entry) does not exist in en_US'
+    },
+    fbtrace_id: 'AtqSMxsa00NrLQwTeaiCQsZ'
+  }
+}
+2:20:50 PM [express] GET /api/whatsapp/status 304 in 1ms :: {"configured":true,"message":"WhatsApp i…
+Error sending WhatsApp approved template message: {
+  error: {
+    message: '(#132001) Template name does not exist in the translation',
+    type: 'OAuthException',
+    code: 132001,
+    error_data: {
+      messaging_product: 'whatsapp',
+      details: 'template name (sunshine_campaign_entry) does not exist in en_US'
+    },
+    fbtrace_id: 'A7sC_ZSUZhcbD1xDC9s7uLx'
+  }
+}
+2:20:55 PM [express] POST /api/whatsapp/send 500 in 1364ms :: {"error":"(#132001) Template name does…
+Error sending WhatsApp approved template message: {
+  error: {
+    message: '(#132001) Template name does not exist in the translation',
+    type: 'OAuthException',
+    code: 132001,
+    error_data: {
+      messaging_product: 'whatsapp',
+      details: 'template name (sunshine_campaign_entry) does not exist in en_US'
+    },
+    fbtrace_id: 'Am-50zvkdW0M9qL1D5WVF8I'
+  }
+}
+2:21:05 PM [express] POST /api/whatsapp/send 500 in 1442ms :: {"error":"(#132001) Template name does…
+Error sending WhatsApp approved template message: {
+  error: {
+    message: '(#132001) Template name does not exist in the translation',
+    type: 'OAuthException',
+    code: 132001,
+    error_data: {
+      messaging_product: 'whatsapp',
+      details: 'template name (sunshine_campaign_entry) does not exist in en_US'
+    },
+    fbtrace_id: 'AC90_wcoGBmr4cVOcu9NYWP'
+  }
+}
+2:21:15 PM [express] POST /api/whatsapp/send 500 in 1806ms :: {"error":"(#132001) Template name does…
+2:21:20 PM [express] GET /api/whatsapp/status 304 in 0ms :: {"configured":true,"message":"WhatsApp i…
