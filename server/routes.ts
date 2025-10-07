@@ -179,21 +179,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const result = await whatsappService.submitSingleTemplate(metaTemplate);
       
       if (result.success) {
-        // Check if this is a "template already exists" case (has both success and error message)
-        if (result.error && result.error.includes("already exists")) {
-          // Template already exists in Meta - sync the status
-          const syncResult = await whatsappService.syncTemplateStatus(metaTemplate.name);
-          
+        // Check if this is a "template already exists" case
+        if (result.alreadyExists && result.status) {
+          // Template already exists in Meta - map the synced status
           let dbStatus: "draft" | "pending" | "approved" | "rejected" = "draft";
-          if (syncResult.success && syncResult.status) {
-            const metaStatus = syncResult.status.toUpperCase();
-            if (metaStatus === "APPROVED") {
-              dbStatus = "approved";
-            } else if (metaStatus === "PENDING" || metaStatus === "IN_APPEAL") {
-              dbStatus = "pending";
-            } else if (metaStatus === "REJECTED" || metaStatus === "DISABLED") {
-              dbStatus = "rejected";
-            }
+          const metaStatus = result.status.toUpperCase();
+          
+          if (metaStatus === "APPROVED") {
+            dbStatus = "approved";
+          } else if (metaStatus === "PENDING" || metaStatus === "IN_APPEAL") {
+            dbStatus = "pending";
+          } else if (metaStatus === "REJECTED" || metaStatus === "DISABLED") {
+            dbStatus = "rejected";
           }
           
           const updated = await storage.updateMessageTemplate(req.params.id, {

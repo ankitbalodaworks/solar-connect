@@ -779,6 +779,8 @@ export class WhatsAppService {
     success: boolean;
     id?: string;
     error?: string;
+    status?: string;
+    alreadyExists?: boolean;
   }> {
     const wabaId = process.env.WHATSAPP_WABA_ID;
     
@@ -831,18 +833,20 @@ export class WhatsAppService {
         console.log(`Template ${template.name} already exists in Meta. Syncing status...`);
         const syncResult = await this.syncTemplateStatus(template.name);
         
-        if (syncResult.success) {
+        if (syncResult.success && syncResult.status && syncResult.id) {
           console.log(`✅ Template ${template.name} found in Meta with status: ${syncResult.status}`);
           return {
             success: true,
             id: syncResult.id,
-            error: `Template already exists in Meta with status: ${syncResult.status}. To make changes, you need to delete the existing template first or create a new template with a different name.`,
+            status: syncResult.status,
+            alreadyExists: true,
           };
         } else {
-          // Sync failed, return original error
+          // Sync failed, return error
+          console.error(`Failed to sync status for existing template ${template.name}: ${syncResult.error}`);
           return {
             success: false,
-            error: `Template already exists in Meta, but failed to sync status: ${syncResult.error}`,
+            error: `Template already exists in Meta, but failed to sync status. Please try using the "Sync Status" button to get the current template status.`,
           };
         }
       }
