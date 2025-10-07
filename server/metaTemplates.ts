@@ -39,7 +39,7 @@ const campaignEntryTemplates: MetaTemplate[] = [
         type: "HEADER",
         format: "IMAGE",
         example: {
-          header_handle: ["1682960869038727"]
+          header_handle: ["4:Q29tcGxldGUtTG9nby1Db3B5XzE3NTk4NDc5MzkwODMuanBn:aW1hZ2UvanBlZw==:ARaSZ0TDIoWdXdJynOD6Bcq2qLn482jX2vJEZt75xsSFic6MubxYW8O_-YkT6DtraGuK-Ada7L22NVbKv2EYc9mRdiOxAiclJYx5w9J_M2a_7g:e:1760194376:1294266919049711:61579705302857:ARZQtWIg0xcD9BQUEhM"]
         }
       },
       {
