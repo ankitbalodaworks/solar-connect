@@ -39,16 +39,16 @@ const campaignEntryTemplates: MetaTemplate[] = [
         type: "HEADER",
         format: "IMAGE",
         example: {
-          header_handle: ["4:Q29tcGxldGUtTG9nby1Db3B5XzE3NTk4NDc5MzkwODMuanBn:aW1hZ2UvanBlZw==:ARaSZ0TDIoWdXdJynOD6Bcq2qLn482jX2vJEZt75xsSFic6MubxYW8O_-YkT6DtraGuK-Ada7L22NVbKv2EYc9mRdiOxAiclJYx5w9J_M2a_7g:e:1760194376:1294266919049711:61579705302857:ARZQtWIg0xcD9BQUEhM"]
+          header_handle: ["4:TG9nbyAxXzE3NTk4NTQ4OTI5ODIuanBlZw==:aW1hZ2UvanBlZw==:ARbKrAjiGFtpMFf9gvz4tzGGAjzTEf7svRAKJPTQv5dNtWK8ywdQv5PXKdrhDE0FFqu9Z2dqXJSZ2p5qB21YIJekPhG7G5QYv-Ya7wHxNG9Vew:e:1760200621:1294266919049711:61579705302857:ARZz9M0TQE63V0q55BA"]
         }
       },
       {
         type: "BODY",
-        text: "Hello, We are a PM Surya Ghar registered Solar Vendor.\nFrom application to net-metering and installation-we handle it all.\nTo Continue, Choose:"
+        text: "Welcome to Sunshine Power.\nWe handle everything: application → subsidy → installation → net-metering.\nChoose your language to continue."
       },
       {
         type: "FOOTER",
-        text: "Licensed PM Surya Ghar Solar Vendor"
+        text: "Save upto Rs. 40,000/- Per Year for a 3kW System"
       },
       {
         type: "BUTTONS",
