@@ -1,0 +1,89 @@
+2:33:13 PM [express] GET /api/whatsapp/status 304 in 2ms :: {"configured":true,"message":"WhatsApp i…
+2:33:14 PM [express] GET /api/message-templates 304 in 1050ms :: [{"id":"03aeb9da-f723-4711-b0ea-a73…
+✓ Matched DB template "f0b8469b-be61-4dfb-86e8-07d2b735ae1e" (sunshine_campaign_entry) to Meta template "sunshine_campaign_entry"
+Submitting template: sunshine_campaign_entry (MARKETING - en_US)
+Full template payload: {
+  "name": "sunshine_campaign_entry",
+  "category": "MARKETING",
+  "language": "en_US",
+  "components": [
+    {
+      "type": "HEADER",
+      "format": "IMAGE",
+      "example": {
+        "header_handle": [
+          "4245254242364293"
+        ]
+      }
+    },
+    {
+      "type": "BODY",
+      "text": "Hello, We are a PM Surya Ghar registered Solar Vendor.\nFrom application to net-metering and installation-we handle it all.\nTo Continue, Choose:"
+    },
+    {
+      "type": "FOOTER",
+      "text": "Licensed PM Surya Ghar Solar Vendor"
+    },
+    {
+      "type": "BUTTONS",
+      "buttons": [
+        {
+          "type": "QUICK_REPLY",
+          "text": "हिंदी"
+        },
+        {
+          "type": "QUICK_REPLY",
+          "text": "English"
+        },
+        {
+          "type": "URL",
+          "text": "Visit Website",
+          "url": "https://sunshinepower.net.in"
+        }
+      ]
+    }
+  ]
+}
+❌ Failed to submit sunshine_campaign_entry: Parameter value is not valid
+Full error response: {
+  "error": {
+    "message": "Parameter value is not valid",
+    "type": "OAuthException",
+    "code": 131009,
+    "error_subcode": 2494102,
+    "is_transient": false,
+    "error_user_title": "Uploaded media handle is invalid",
+    "error_user_msg": "Check the handle provided for the uploaded media in the request.",
+    "fbtrace_id": "AMDgCa2LbAvDjoJeOsGVl3k"
+  }
+}
+Error details: {
+  "message": "Parameter value is not valid",
+  "type": "OAuthException",
+  "code": 131009,
+  "error_subcode": 2494102,
+  "is_transient": false,
+  "error_user_title": "Uploaded media handle is invalid",
+  "error_user_msg": "Check the handle provided for the uploaded media in the request.",
+  "fbtrace_id": "AMDgCa2LbAvDjoJeOsGVl3k"
+}
+2:33:19 PM [express] POST /api/message-templates/f0b8469b-be61-4dfb-86e8-07d2b735ae1e/submit 500 in …
+2:33:24 PM [express] POST /api/message-templates/f0b8469b-be61-4dfb-86e8-07d2b735ae1e/sync-status 40…
+[CRYPTO DEBUG] Encrypted request received
+[CRYPTO DEBUG] Encrypted AES key length: 344
+[CRYPTO DEBUG] Encrypted AES key (first 40 chars): gniIWVj3vZi6FlS7KVdrJkYpM+QBMf888XA6YPyH
+[CRYPTO DEBUG] Encrypted flow data length: 68
+[CRYPTO DEBUG] Encrypted flow data (first 40 chars): w4SoZZssbxsHqJhAwx8vQIotVQxsYAI010XKFIpL
+[CRYPTO DEBUG] Initial vector length: 24
+[CRYPTO DEBUG] Initial vector: R5yh2jlfXNexsGPffoPoSw==
+[CRYPTO DEBUG] Private key length: 1703
+[CRYPTO DEBUG] Key starts with: -----BEGIN PRIVATE KEY-----
+[CRYPTO DEBUG] Key ends with: -----END PRIVATE KEY-----
+[CRYPTO DEBUG] Formatted key length: 1703
+[CRYPTO DEBUG] Has PEM headers: true
+[CRYPTO DEBUG] Decrypted AES key length: 16 bytes
+[CRYPTO DEBUG] Decrypted AES key (hex): 3cd6b335c8159753c308745fea459f3b...
+[CRYPTO DEBUG] Using algorithm: aes-128-gcm
+[CRYPTO DEBUG] Original IV: R5yh2jlfXNexsGPffoPoSw==
+[CRYPTO DEBUG] Flipped IV: uGNeJcagoyhOT5wggXwXtA==
+2:34:02 PM [express] POST /api/flows/survey 200 in 5ms
