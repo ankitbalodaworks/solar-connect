@@ -37,8 +37,10 @@ const campaignEntryTemplates: MetaTemplate[] = [
     components: [
       {
         type: "HEADER",
-        format: "TEXT",
-        text: "Sunshine Power - Solar Solutions"
+        format: "IMAGE",
+        example: {
+          header_handle: ["1682960869038727"]
+        }
       },
       {
         type: "BODY",
