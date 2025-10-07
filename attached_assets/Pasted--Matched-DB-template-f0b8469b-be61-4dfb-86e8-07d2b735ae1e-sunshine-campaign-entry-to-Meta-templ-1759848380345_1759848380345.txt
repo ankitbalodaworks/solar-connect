@@ -1,0 +1,68 @@
+✓ Matched DB template "f0b8469b-be61-4dfb-86e8-07d2b735ae1e" (sunshine_campaign_entry) to Meta template "sunshine_campaign_entry"
+Submitting template: sunshine_campaign_entry (MARKETING - en_US)
+Full template payload: {
+  "name": "sunshine_campaign_entry",
+  "category": "MARKETING",
+  "language": "en_US",
+  "components": [
+    {
+      "type": "HEADER",
+      "format": "IMAGE",
+      "example": {
+        "header_handle": [
+          "1682960869038727"
+        ]
+      }
+    },
+    {
+      "type": "BODY",
+      "text": "Hello, We are a PM Surya Ghar registered Solar Vendor.\nFrom application to net-metering and installation-we handle it all.\nTo Continue, Choose:"
+    },
+    {
+      "type": "FOOTER",
+      "text": "Licensed PM Surya Ghar Solar Vendor"
+    },
+    {
+      "type": "BUTTONS",
+      "buttons": [
+        {
+          "type": "QUICK_REPLY",
+          "text": "हिंदी"
+        },
+        {
+          "type": "QUICK_REPLY",
+          "text": "English"
+        },
+        {
+          "type": "URL",
+          "text": "Visit Website",
+          "url": "https://sunshinepower.net.in"
+        }
+      ]
+    }
+  ]
+}
+❌ Failed to submit sunshine_campaign_entry: Parameter value is not valid
+Full error response: {
+  "error": {
+    "message": "Parameter value is not valid",
+    "type": "OAuthException",
+    "code": 131009,
+    "error_subcode": 2494102,
+    "is_transient": false,
+    "error_user_title": "Uploaded media handle is invalid",
+    "error_user_msg": "Check the handle provided for the uploaded media in the request.",
+    "fbtrace_id": "Adu_xDQ6hgSWI91v5TJ8WjT"
+  }
+}
+Error details: {
+  "message": "Parameter value is not valid",
+  "type": "OAuthException",
+  "code": 131009,
+  "error_subcode": 2494102,
+  "is_transient": false,
+  "error_user_title": "Uploaded media handle is invalid",
+  "error_user_msg": "Check the handle provided for the uploaded media in the request.",
+  "fbtrace_id": "Adu_xDQ6hgSWI91v5TJ8WjT"
+}
+2:45:43 PM [express] POST /api/message-templates/f0b8469b-be61-4dfb-86e8-07d2b735ae1e/submit 500 in …

@@ -11,6 +11,8 @@ interface WhatsAppConfig {
   accessToken: string;
   verifyToken: string;
   appSecret: string;
+  wabaId: string;
+  appId: string;
 }
 
 interface SendMessageResponse {
@@ -35,6 +37,8 @@ export class WhatsAppService {
       accessToken: process.env.WHATSAPP_ACCESS_TOKEN || "",
       verifyToken: process.env.WHATSAPP_VERIFY_TOKEN || "",
       appSecret: process.env.WHATSAPP_APP_SECRET || "",
+      wabaId: process.env.WHATSAPP_WABA_ID || "",
+      appId: process.env.WHATSAPP_APP_ID || "",
     };
   }
 
@@ -72,6 +76,69 @@ export class WhatsAppService {
       };
     } catch (error: any) {
       console.error("Error uploading media to WhatsApp:", error.response?.data || error.message);
+      return {
+        success: false,
+        error: error.response?.data?.error?.message || error.message,
+      };
+    }
+  }
+
+  async uploadTemplateMedia(filePath: string, mimeType: string): Promise<UploadMediaResponse> {
+    try {
+      if (!this.isConfigured() || !this.config.appId) {
+        return { success: false, error: "WhatsApp App ID not configured. Please set WHATSAPP_APP_ID environment variable." };
+      }
+
+      // Step 1: Create upload session
+      const fileStats = fs.statSync(filePath);
+      const fileSize = fileStats.size;
+      const fileName = path.basename(filePath);
+
+      console.log(`Creating upload session for ${fileName} (${fileSize} bytes)...`);
+      
+      const sessionResponse = await axios.post(
+        `${this.baseUrl}/${this.config.appId}/uploads`,
+        null,
+        {
+          params: {
+            file_name: fileName,
+            file_length: fileSize,
+            file_type: mimeType,
+          },
+          headers: {
+            Authorization: `Bearer ${this.config.accessToken}`,
+          },
+        }
+      );
+
+      const sessionId = sessionResponse.data.id;
+      console.log(`Upload session created: ${sessionId}`);
+
+      // Step 2: Upload binary file data
+      console.log("Uploading file binary data...");
+      const fileBuffer = fs.readFileSync(filePath);
+
+      const uploadResponse = await axios.post(
+        `${this.baseUrl}/${sessionId}`,
+        fileBuffer,
+        {
+          headers: {
+            Authorization: `OAuth ${this.config.accessToken}`,
+            "Content-Type": "application/octet-stream",
+            file_offset: "0",
+          },
+        }
+      );
+
+      const fileHandle = uploadResponse.data.h;
+      console.log(`File uploaded successfully. Handle: ${fileHandle}`);
+
+      return {
+        success: true,
+        mediaId: fileHandle,
+      };
+    } catch (error: any) {
+      console.error("Error uploading template media to WhatsApp:", error.response?.data || error.message);
       return {
         success: false,
         error: error.response?.data?.error?.message || error.message,
