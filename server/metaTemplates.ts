@@ -11,8 +11,8 @@ export interface MetaTemplate {
 }
 
 export interface MetaTemplateComponent {
-  type: "header" | "body" | "footer" | "buttons";
-  format?: "text" | "image" | "video" | "document";
+  type: "HEADER" | "BODY" | "FOOTER" | "BUTTONS";
+  format?: "TEXT" | "IMAGE" | "VIDEO" | "DOCUMENT";
   text?: string;
   buttons?: MetaButton[];
   example?: {
@@ -36,22 +36,22 @@ const campaignEntryTemplates: MetaTemplate[] = [
     language: "en_US",
     components: [
       {
-        type: "header",
-        format: "image",
+        type: "HEADER",
+        format: "IMAGE",
         example: {
           header_handle: ["4245254242364293"]
         }
       },
       {
-        type: "body",
+        type: "BODY",
         text: "Hello, We are a PM Surya Ghar registered Solar Vendor.\nFrom application to net-metering and installation-we handle it all.\nTo Continue, Choose:"
       },
       {
-        type: "footer",
+        type: "FOOTER",
         text: "Licensed PM Surya Ghar Solar Vendor"
       },
       {
-        type: "buttons",
+        type: "BUTTONS",
         buttons: [
           { type: "QUICK_REPLY", text: "हिंदी" },
           { type: "QUICK_REPLY", text: "English" },
@@ -70,20 +70,20 @@ const mainMenuTemplates: MetaTemplate[] = [
     language: "en_US",
     components: [
       {
-        type: "header",
-        format: "text",
+        type: "HEADER",
+        format: "TEXT",
         text: "Main Menu"
       },
       {
-        type: "body",
+        type: "BODY",
         text: "Thank you for choosing Sunshine Power!\n\nHow can we help you today?"
       },
       {
-        type: "footer",
+        type: "FOOTER",
         text: "PM Surya Ghar Registered Vendor"
       },
       {
-        type: "buttons",
+        type: "BUTTONS",
         buttons: [
           { type: "QUICK_REPLY", text: "Book Site Survey" },
           { type: "QUICK_REPLY", text: "Price Estimate" },
@@ -98,20 +98,20 @@ const mainMenuTemplates: MetaTemplate[] = [
     language: "hi",
     components: [
       {
-        type: "header",
-        format: "text",
+        type: "HEADER",
+        format: "TEXT",
         text: "मुख्य मेनू"
       },
       {
-        type: "body",
+        type: "BODY",
         text: "Sunshine Power चुनने के लिए धन्यवाद!\n\nआज हम आपकी कैसे मदद कर सकते हैं?"
       },
       {
-        type: "footer",
+        type: "FOOTER",
         text: "PM Surya Ghar पंजीकृत विक्रेता"
       },
       {
-        type: "buttons",
+        type: "BUTTONS",
         buttons: [
           { type: "QUICK_REPLY", text: "साइट सर्वे बुक करें" },
           { type: "QUICK_REPLY", text: "मूल्य अनुमान" },
@@ -130,20 +130,20 @@ const priceSubmenuTemplates: MetaTemplate[] = [
     language: "en_US",
     components: [
       {
-        type: "header",
-        format: "text",
+        type: "HEADER",
+        format: "TEXT",
         text: "Price & Expenditure Information"
       },
       {
-        type: "body",
+        type: "BODY",
         text: "Would you like to know about our pricing and packages?\n\nPlease select an option:"
       },
       {
-        type: "footer",
+        type: "FOOTER",
         text: "Sunshine Power"
       },
       {
-        type: "buttons",
+        type: "BUTTONS",
         buttons: [
           { type: "QUICK_REPLY", text: "Book site survey" },
           { type: "QUICK_REPLY", text: "Request callback" },
@@ -158,20 +158,20 @@ const priceSubmenuTemplates: MetaTemplate[] = [
     language: "hi",
     components: [
       {
-        type: "header",
-        format: "text",
+        type: "HEADER",
+        format: "TEXT",
         text: "मूल्य और व्यय जानकारी"
       },
       {
-        type: "body",
+        type: "BODY",
         text: "क्या आप हमारी कीमतों और पैकेजों के बारे में जानना चाहते हैं?\n\nकृपया एक विकल्प चुनें:"
       },
       {
-        type: "footer",
+        type: "FOOTER",
         text: "Sunshine Power"
       },
       {
-        type: "buttons",
+        type: "BUTTONS",
         buttons: [
           { type: "QUICK_REPLY", text: "साइट सर्वे बुक करें" },
           { type: "QUICK_REPLY", text: "कॉलबैक का अनुरोध" },
@@ -190,20 +190,20 @@ const helpSubmenuTemplates: MetaTemplate[] = [
     language: "en_US",
     components: [
       {
-        type: "header",
-        format: "text",
+        type: "HEADER",
+        format: "TEXT",
         text: "Help & Support"
       },
       {
-        type: "body",
+        type: "BODY",
         text: "We are here to help you!\n\nPlease select what you need:"
       },
       {
-        type: "footer",
+        type: "FOOTER",
         text: "Sunshine Power"
       },
       {
-        type: "buttons",
+        type: "BUTTONS",
         buttons: [
           { type: "QUICK_REPLY", text: "Maintenance request" },
           { type: "QUICK_REPLY", text: "Request callback" },
@@ -218,20 +218,20 @@ const helpSubmenuTemplates: MetaTemplate[] = [
     language: "hi",
     components: [
       {
-        type: "header",
-        format: "text",
+        type: "HEADER",
+        format: "TEXT",
         text: "सहायता और समर्थन"
       },
       {
-        type: "body",
+        type: "BODY",
         text: "हम आपकी मदद के लिए यहां हैं!\n\nकृपया चुनें आपको क्या चाहिए:"
       },
       {
-        type: "footer",
+        type: "FOOTER",
         text: "Sunshine Power"
       },
       {
-        type: "buttons",
+        type: "BUTTONS",
         buttons: [
           { type: "QUICK_REPLY", text: "रखरखाव अनुरोध" },
           { type: "QUICK_REPLY", text: "कॉलबैक का अनुरोध" },
@@ -250,15 +250,15 @@ const serviceUrgencyTemplates: MetaTemplate[] = [
     language: "en_US",
     components: [
       {
-        type: "body",
+        type: "BODY",
         text: "Please select the issue urgency level:"
       },
       {
-        type: "footer",
+        type: "FOOTER",
         text: "Sunshine Power"
       },
       {
-        type: "buttons",
+        type: "BUTTONS",
         buttons: [
           { type: "QUICK_REPLY", text: "Low" },
           { type: "QUICK_REPLY", text: "Medium" },
@@ -273,15 +273,15 @@ const serviceUrgencyTemplates: MetaTemplate[] = [
     language: "hi",
     components: [
       {
-        type: "body",
+        type: "BODY",
         text: "कृपया समस्या की तात्कालिकता का स्तर चुनें:"
       },
       {
-        type: "footer",
+        type: "FOOTER",
         text: "Sunshine Power"
       },
       {
-        type: "buttons",
+        type: "BUTTONS",
         buttons: [
           { type: "QUICK_REPLY", text: "कम" },
           { type: "QUICK_REPLY", text: "मध्यम" },
@@ -301,11 +301,11 @@ const completionTemplates: MetaTemplate[] = [
     language: "en_US",
     components: [
       {
-        type: "body",
+        type: "BODY",
         text: "✅ Thank you! Your site survey request has been registered.\n\nOur team will contact you soon to confirm the appointment.\n\nFor any queries, visit: https://sunshinepower.net.in/"
       },
       {
-        type: "footer",
+        type: "FOOTER",
         text: "Sunshine Power"
       }
     ]
@@ -316,11 +316,11 @@ const completionTemplates: MetaTemplate[] = [
     language: "hi",
     components: [
       {
-        type: "body",
+        type: "BODY",
         text: "✅ धन्यवाद! आपका साइट सर्वे अनुरोध पंजीकृत हो गया है।\n\nहमारी टीम जल्द ही आपसे संपर्क करेगी।\n\nकिसी भी प्रश्न के लिए: https://sunshinepower.net.in/"
       },
       {
-        type: "footer",
+        type: "FOOTER",
         text: "Sunshine Power"
       }
     ]
@@ -332,11 +332,11 @@ const completionTemplates: MetaTemplate[] = [
     language: "en_US",
     components: [
       {
-        type: "body",
+        type: "BODY",
         text: "✅ Thank you! Your callback request has been registered.\n\nOur team will call you soon.\n\nWebsite: https://sunshinepower.net.in/"
       },
       {
-        type: "footer",
+        type: "FOOTER",
         text: "Sunshine Power"
       }
     ]
@@ -347,11 +347,11 @@ const completionTemplates: MetaTemplate[] = [
     language: "hi",
     components: [
       {
-        type: "body",
+        type: "BODY",
         text: "✅ धन्यवाद! आपका कॉलबैक अनुरोध पंजीकृत हो गया है।\n\nहमारी टीम जल्द ही आपको कॉल करेगी।\n\nवेबसाइट: https://sunshinepower.net.in/"
       },
       {
-        type: "footer",
+        type: "FOOTER",
         text: "Sunshine Power"
       }
     ]
@@ -363,11 +363,11 @@ const completionTemplates: MetaTemplate[] = [
     language: "en_US",
     components: [
       {
-        type: "body",
+        type: "BODY",
         text: "✅ Thank you! Your service request has been registered.\n\nOur technician will visit you soon.\n\nWebsite: https://sunshinepower.net.in/"
       },
       {
-        type: "footer",
+        type: "FOOTER",
         text: "Sunshine Power"
       }
     ]
@@ -378,11 +378,11 @@ const completionTemplates: MetaTemplate[] = [
     language: "hi",
     components: [
       {
-        type: "body",
+        type: "BODY",
         text: "✅ धन्यवाद! आपका सेवा अनुरोध पंजीकृत हो गया है।\n\nहमारा तकनीशियन जल्द ही आपसे मिलेगा।\n\nवेबसाइट: https://sunshinepower.net.in/"
       },
       {
-        type: "footer",
+        type: "FOOTER",
         text: "Sunshine Power"
       }
     ]
@@ -394,11 +394,11 @@ const completionTemplates: MetaTemplate[] = [
     language: "en_US",
     components: [
       {
-        type: "body",
+        type: "BODY",
         text: "✅ Thank you! Your issue has been registered.\n\nOur team will review and contact you soon.\n\nWebsite: https://sunshinepower.net.in/"
       },
       {
-        type: "footer",
+        type: "FOOTER",
         text: "Sunshine Power"
       }
     ]
@@ -409,11 +409,11 @@ const completionTemplates: MetaTemplate[] = [
     language: "hi",
     components: [
       {
-        type: "body",
+        type: "BODY",
         text: "✅ धन्यवाद! आपकी समस्या पंजीकृत हो गई है।\n\nहमारी टीम समीक्षा करेगी और जल्द ही संपर्क करेगी।\n\nवेबसाइट: https://sunshinepower.net.in/"
       },
       {
-        type: "footer",
+        type: "FOOTER",
         text: "Sunshine Power"
       }
     ]
