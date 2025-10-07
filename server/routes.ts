@@ -179,14 +179,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const result = await whatsappService.submitSingleTemplate(metaTemplate);
       
       if (result.success) {
-        // Update template status in database
-        const updated = await storage.updateMessageTemplate(req.params.id, {
-          metaTemplateId: result.id,
-          metaStatus: "pending",
-          metaStatusUpdatedAt: new Date(),
-          submissionError: null,
-        });
-        res.json({ success: true, template: updated });
+        // Check if this is a "template already exists" case (has both success and error message)
+        if (result.error && result.error.includes("already exists")) {
+          // Template already exists in Meta - sync the status
+          const syncResult = await whatsappService.syncTemplateStatus(metaTemplate.name);
+          
+          let dbStatus: "draft" | "pending" | "approved" | "rejected" = "draft";
+          if (syncResult.success && syncResult.status) {
+            const metaStatus = syncResult.status.toUpperCase();
+            if (metaStatus === "APPROVED") {
+              dbStatus = "approved";
+            } else if (metaStatus === "PENDING" || metaStatus === "IN_APPEAL") {
+              dbStatus = "pending";
+            } else if (metaStatus === "REJECTED" || metaStatus === "DISABLED") {
+              dbStatus = "rejected";
+            }
+          }
+          
+          const updated = await storage.updateMessageTemplate(req.params.id, {
+            metaTemplateId: result.id,
+            metaStatus: dbStatus,
+            metaStatusUpdatedAt: new Date(),
+            submissionError: null,
+          });
+          
+          res.json({ 
+            success: true, 
+            template: updated,
+            message: `Template already exists in Meta with status: ${dbStatus}. To make changes, please delete the existing template in Meta first or create a new template with a different name.`
+          });
+        } else {
+          // Normal success - new template submitted
+          const updated = await storage.updateMessageTemplate(req.params.id, {
+            metaTemplateId: result.id,
+            metaStatus: "pending",
+            metaStatusUpdatedAt: new Date(),
+            submissionError: null,
+          });
+          res.json({ success: true, template: updated });
+        }
       } else {
         // Update template with error but NOT the status timestamp
         await storage.updateMessageTemplate(req.params.id, {

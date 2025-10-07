@@ -819,11 +819,33 @@ export class WhatsAppService {
     } catch (error: any) {
       const errorMessage = error.response?.data?.error?.message || error.message;
       const errorCode = error.response?.data?.error?.code;
+      const errorSubcode = error.response?.data?.error?.error_subcode;
       const errorDetails = error.response?.data?.error?.error_data || error.response?.data?.error || {};
       
       console.error(`❌ Failed to submit ${template.name}: ${errorMessage}`);
       console.error("Full error response:", JSON.stringify(error.response?.data, null, 2));
       console.error("Error details:", JSON.stringify(errorDetails, null, 2));
+      
+      // Handle specific error: Template already exists (error_subcode 2388024)
+      if (errorSubcode === 2388024) {
+        console.log(`Template ${template.name} already exists in Meta. Syncing status...`);
+        const syncResult = await this.syncTemplateStatus(template.name);
+        
+        if (syncResult.success) {
+          console.log(`✅ Template ${template.name} found in Meta with status: ${syncResult.status}`);
+          return {
+            success: true,
+            id: syncResult.id,
+            error: `Template already exists in Meta with status: ${syncResult.status}. To make changes, you need to delete the existing template first or create a new template with a different name.`,
+          };
+        } else {
+          // Sync failed, return original error
+          return {
+            success: false,
+            error: `Template already exists in Meta, but failed to sync status: ${syncResult.error}`,
+          };
+        }
+      }
       
       return {
         success: false,
