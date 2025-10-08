@@ -433,7 +433,7 @@ export const allMetaTemplates: MetaTemplate[] = [
 // Template name to database step key mapping
 // This helps map Meta template names to our database template step keys
 export const metaToStepKeyMapping: Record<string, { flowType: string, stepKey: string, language: string }> = {
-  "sunshine_campaign_entry": { flowType: "campaign", stepKey: "campaign_entry", language: "en" },
+  "sunshine_welcome": { flowType: "campaign", stepKey: "campaign_entry", language: "en" },
   "sunshine_main_menu_en": { flowType: "campaign", stepKey: "main_menu", language: "en" },
   "sunshine_main_menu_hi": { flowType: "campaign", stepKey: "main_menu", language: "hi" },
   "sunshine_price_submenu_en": { flowType: "campaign", stepKey: "price_submenu", language: "en" },
