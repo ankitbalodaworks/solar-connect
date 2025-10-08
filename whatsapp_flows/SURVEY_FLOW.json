@@ -21,23 +21,20 @@
                 "name": "full_name",
                 "label": "Full Name",
                 "required": true,
-                "input-type": "text",
-                "max-length": 120,
-                "error-message": "Please enter your name"
+                "input-type": "text"
               },
               {
-                "type": "PhoneNumber",
+                "type": "TextInput",
                 "name": "mobile",
                 "label": "Mobile",
                 "required": true,
-                "error-message": "Enter a valid mobile number"
+                "input-type": "phone"
               },
               {
                 "type": "TextArea",
                 "name": "address",
                 "label": "Address",
-                "required": true,
-                "max-length": 400
+                "required": true
               },
               {
                 "type": "TextInput",
@@ -53,14 +50,14 @@
                 "required": true
               },
               {
-                "type": "TimePicker",
+                "type": "TextInput",
                 "name": "preferred_time",
-                "label": "Preferred Time",
-                "required": true
-              }
-            ],
-            "actions": {
-              "submit": {
+                "label": "Preferred Time (e.g. 10:00 AM)",
+                "required": true,
+                "input-type": "text"
+              },
+              {
+                "type": "Footer",
                 "label": "Submit",
                 "on-click-action": {
                   "name": "data_exchange",
@@ -70,7 +67,7 @@
                   }
                 }
               }
-            }
+            ]
           }
         ]
       }
@@ -82,7 +79,7 @@
         "type": "SingleColumnLayout",
         "children": [
           {
-            "type": "Description",
+            "type": "TextBody",
             "text": "Your survey request has been recorded. Our team will contact you shortly."
           }
         ]

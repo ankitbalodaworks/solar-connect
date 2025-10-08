@@ -21,56 +21,46 @@
                 "name": "full_name",
                 "label": "पूरा नाम",
                 "required": true,
-                "input-type": "text",
-                "max-length": 120,
-                "error-message": "कृपया अपना नाम दर्ज करें"
+                "input-type": "text"
               },
               {
-                "type": "PhoneNumber",
+                "type": "TextInput",
                 "name": "mobile",
                 "label": "मोबाइल",
                 "required": true,
-                "error-message": "वैध मोबाइल नंबर दर्ज करें"
+                "input-type": "phone"
               },
               {
-                "type": "SingleSelect",
+                "type": "RadioButtonsGroup",
                 "name": "best_time",
                 "label": "कॉल करने का सबसे अच्छा समय",
                 "required": true,
-                "data-source": {
-                  "type": "STATIC",
-                  "data": [
-                    { "id": "morning", "title": "सुबह" },
-                    { "id": "afternoon", "title": "दोपहर" },
-                    { "id": "evening", "title": "शाम" }
-                  ]
-                }
+                "data-source": [
+                  { "id": "morning", "title": "सुबह" },
+                  { "id": "afternoon", "title": "दोपहर" },
+                  { "id": "evening", "title": "शाम" }
+                ]
               },
               {
-                "type": "SingleSelect",
+                "type": "Dropdown",
                 "name": "topic",
                 "label": "विषय",
                 "required": true,
-                "data-source": {
-                  "type": "STATIC",
-                  "data": [
-                    { "id": "site_survey", "title": "साइट सर्वे" },
-                    { "id": "price_estimate", "title": "मूल्य अनुमान" },
-                    { "id": "maintenance", "title": "रखरखाव/सेवा" },
-                    { "id": "other", "title": "अन्य" }
-                  ]
-                }
+                "data-source": [
+                  { "id": "site_survey", "title": "साइट सर्वे" },
+                  { "id": "price_estimate", "title": "मूल्य अनुमान" },
+                  { "id": "maintenance", "title": "रखरखाव/सेवा" },
+                  { "id": "other", "title": "अन्य" }
+                ]
               },
               {
                 "type": "TextArea",
                 "name": "notes",
                 "label": "टिप्पणियां (वैकल्पिक)",
-                "required": false,
-                "max-length": 400
-              }
-            ],
-            "actions": {
-              "submit": {
+                "required": false
+              },
+              {
+                "type": "Footer",
                 "label": "जमा करें",
                 "on-click-action": {
                   "name": "data_exchange",
@@ -80,7 +70,7 @@
                   }
                 }
               }
-            }
+            ]
           }
         ]
       }
@@ -92,7 +82,7 @@
         "type": "SingleColumnLayout",
         "children": [
           {
-            "type": "Description",
+            "type": "TextBody",
             "text": "हम आपके पसंदीदा समय पर आपको कॉल करेंगे।"
           }
         ]

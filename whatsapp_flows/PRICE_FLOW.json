@@ -21,23 +21,20 @@
                 "name": "full_name",
                 "label": "Full Name",
                 "required": true,
-                "input-type": "text",
-                "max-length": 120,
-                "error-message": "Please enter your name"
+                "input-type": "text"
               },
               {
-                "type": "PhoneNumber",
+                "type": "TextInput",
                 "name": "mobile",
                 "label": "Mobile",
                 "required": true,
-                "error-message": "Enter a valid mobile number"
+                "input-type": "phone"
               },
               {
                 "type": "TextArea",
                 "name": "address",
                 "label": "Address",
-                "required": true,
-                "max-length": 400
+                "required": true
               },
               {
                 "type": "TextInput",
@@ -47,47 +44,42 @@
                 "input-type": "text"
               },
               {
-                "type": "NumberInput",
+                "type": "TextInput",
                 "name": "avg_bill",
                 "label": "Avg Monthly Bill (₹)",
-                "required": true
+                "required": true,
+                "input-type": "number"
               },
               {
-                "type": "NumberInput",
+                "type": "TextInput",
                 "name": "monthly_units",
                 "label": "Avg Monthly Units (kWh)",
-                "required": true
+                "required": true,
+                "input-type": "number"
               },
               {
-                "type": "SingleSelect",
+                "type": "Dropdown",
                 "name": "phase",
                 "label": "Phase",
                 "required": true,
-                "data-source": {
-                  "type": "STATIC",
-                  "data": [
-                    { "id": "1p", "title": "1φ" },
-                    { "id": "3p", "title": "3φ" }
-                  ]
-                }
+                "data-source": [
+                  { "id": "1p", "title": "1φ" },
+                  { "id": "3p", "title": "3φ" }
+                ]
               },
               {
-                "type": "SingleSelect",
+                "type": "Dropdown",
                 "name": "roof_type",
                 "label": "Roof Type",
                 "required": true,
-                "data-source": {
-                  "type": "STATIC",
-                  "data": [
-                    { "id": "rcc", "title": "RCC" },
-                    { "id": "tin", "title": "Tin/Sheet" },
-                    { "id": "other", "title": "Other" }
-                  ]
-                }
-              }
-            ],
-            "actions": {
-              "submit": {
+                "data-source": [
+                  { "id": "rcc", "title": "RCC" },
+                  { "id": "tin", "title": "Tin/Sheet" },
+                  { "id": "other", "title": "Other" }
+                ]
+              },
+              {
+                "type": "Footer",
                 "label": "Submit",
                 "on-click-action": {
                   "name": "data_exchange",
@@ -97,7 +89,7 @@
                   }
                 }
               }
-            }
+            ]
           }
         ]
       }
@@ -109,7 +101,7 @@
         "type": "SingleColumnLayout",
         "children": [
           {
-            "type": "Description",
+            "type": "TextBody",
             "text": "Your details are saved. We'll send an estimate soon."
           }
         ]

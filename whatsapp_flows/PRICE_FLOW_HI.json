@@ -21,23 +21,20 @@
                 "name": "full_name",
                 "label": "पूरा नाम",
                 "required": true,
-                "input-type": "text",
-                "max-length": 120,
-                "error-message": "कृपया अपना नाम दर्ज करें"
+                "input-type": "text"
               },
               {
-                "type": "PhoneNumber",
+                "type": "TextInput",
                 "name": "mobile",
                 "label": "मोबाइल",
                 "required": true,
-                "error-message": "वैध मोबाइल नंबर दर्ज करें"
+                "input-type": "phone"
               },
               {
                 "type": "TextArea",
                 "name": "address",
                 "label": "पता",
-                "required": true,
-                "max-length": 400
+                "required": true
               },
               {
                 "type": "TextInput",
@@ -47,47 +44,42 @@
                 "input-type": "text"
               },
               {
-                "type": "NumberInput",
+                "type": "TextInput",
                 "name": "avg_bill",
                 "label": "औसत मासिक बिल (₹)",
-                "required": true
+                "required": true,
+                "input-type": "number"
               },
               {
-                "type": "NumberInput",
+                "type": "TextInput",
                 "name": "monthly_units",
                 "label": "औसत मासिक यूनिट (kWh)",
-                "required": true
+                "required": true,
+                "input-type": "number"
               },
               {
-                "type": "SingleSelect",
+                "type": "Dropdown",
                 "name": "phase",
                 "label": "फेज",
                 "required": true,
-                "data-source": {
-                  "type": "STATIC",
-                  "data": [
-                    { "id": "1p", "title": "1φ" },
-                    { "id": "3p", "title": "3φ" }
-                  ]
-                }
+                "data-source": [
+                  { "id": "1p", "title": "1φ" },
+                  { "id": "3p", "title": "3φ" }
+                ]
               },
               {
-                "type": "SingleSelect",
+                "type": "Dropdown",
                 "name": "roof_type",
                 "label": "छत का प्रकार",
                 "required": true,
-                "data-source": {
-                  "type": "STATIC",
-                  "data": [
-                    { "id": "rcc", "title": "RCC" },
-                    { "id": "tin", "title": "टिन/शीट" },
-                    { "id": "other", "title": "अन्य" }
-                  ]
-                }
-              }
-            ],
-            "actions": {
-              "submit": {
+                "data-source": [
+                  { "id": "rcc", "title": "RCC" },
+                  { "id": "tin", "title": "टिन/शीट" },
+                  { "id": "other", "title": "अन्य" }
+                ]
+              },
+              {
+                "type": "Footer",
                 "label": "जमा करें",
                 "on-click-action": {
                   "name": "data_exchange",
@@ -97,7 +89,7 @@
                   }
                 }
               }
-            }
+            ]
           }
         ]
       }
@@ -109,7 +101,7 @@
         "type": "SingleColumnLayout",
         "children": [
           {
-            "type": "Description",
+            "type": "TextBody",
             "text": "आपका विवरण सहेजा गया है। हम जल्द ही अनुमान भेजेंगे।"
           }
         ]

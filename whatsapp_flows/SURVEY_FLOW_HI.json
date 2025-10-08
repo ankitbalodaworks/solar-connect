@@ -21,23 +21,20 @@
                 "name": "full_name",
                 "label": "पूरा नाम",
                 "required": true,
-                "input-type": "text",
-                "max-length": 120,
-                "error-message": "कृपया अपना नाम दर्ज करें"
+                "input-type": "text"
               },
               {
-                "type": "PhoneNumber",
+                "type": "TextInput",
                 "name": "mobile",
                 "label": "मोबाइल",
                 "required": true,
-                "error-message": "वैध मोबाइल नंबर दर्ज करें"
+                "input-type": "phone"
               },
               {
                 "type": "TextArea",
                 "name": "address",
                 "label": "पता",
-                "required": true,
-                "max-length": 400
+                "required": true
               },
               {
                 "type": "TextInput",
@@ -53,14 +50,14 @@
                 "required": true
               },
               {
-                "type": "TimePicker",
+                "type": "TextInput",
                 "name": "preferred_time",
-                "label": "पसंदीदा समय",
-                "required": true
-              }
-            ],
-            "actions": {
-              "submit": {
+                "label": "पसंदीदा समय (जैसे 10:00 AM)",
+                "required": true,
+                "input-type": "text"
+              },
+              {
+                "type": "Footer",
                 "label": "जमा करें",
                 "on-click-action": {
                   "name": "data_exchange",
@@ -70,7 +67,7 @@
                   }
                 }
               }
-            }
+            ]
           }
         ]
       }
@@ -82,7 +79,7 @@
         "type": "SingleColumnLayout",
         "children": [
           {
-            "type": "Description",
+            "type": "TextBody",
             "text": "आपका सर्वे अनुरोध दर्ज किया गया है। हमारी टीम जल्द ही आपसे संपर्क करेगी।"
           }
         ]

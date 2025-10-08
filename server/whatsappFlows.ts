@@ -42,23 +42,20 @@ export const SURVEY_FLOW: WhatsAppFlow = {
                 name: "full_name",
                 label: "Full Name",
                 required: true,
-                "input-type": "text",
-                "max-length": 120,
-                "error-message": "Please enter your name"
+                "input-type": "text"
               },
               {
-                type: "PhoneNumber",
+                type: "TextInput",
                 name: "mobile",
                 label: "Mobile",
                 required: true,
-                "error-message": "Enter a valid mobile number"
+                "input-type": "phone"
               },
               {
                 type: "TextArea",
                 name: "address",
                 label: "Address",
-                required: true,
-                "max-length": 400
+                required: true
               },
               {
                 type: "TextInput",
@@ -74,14 +71,14 @@ export const SURVEY_FLOW: WhatsAppFlow = {
                 required: true
               },
               {
-                type: "TimePicker",
+                type: "TextInput",
                 name: "preferred_time",
-                label: "Preferred Time",
-                required: true
-              }
-            ],
-            actions: {
-              submit: {
+                label: "Preferred Time (e.g. 10:00 AM)",
+                required: true,
+                "input-type": "text"
+              },
+              {
+                type: "Footer",
                 label: "Submit",
                 "on-click-action": {
                   name: "data_exchange",
@@ -91,7 +88,7 @@ export const SURVEY_FLOW: WhatsAppFlow = {
                   }
                 }
               }
-            }
+            ]
           }
         ]
       }
@@ -103,7 +100,7 @@ export const SURVEY_FLOW: WhatsAppFlow = {
         type: "SingleColumnLayout",
         children: [
           {
-            type: "Description",
+            type: "TextBody",
             text: "Your survey request has been recorded. Our team will contact you shortly."
           }
         ]
@@ -136,23 +133,20 @@ export const PRICE_FLOW: WhatsAppFlow = {
                 name: "full_name",
                 label: "Full Name",
                 required: true,
-                "input-type": "text",
-                "max-length": 120,
-                "error-message": "Please enter your name"
+                "input-type": "text"
               },
               {
-                type: "PhoneNumber",
+                type: "TextInput",
                 name: "mobile",
                 label: "Mobile",
                 required: true,
-                "error-message": "Enter a valid mobile number"
+                "input-type": "phone"
               },
               {
                 type: "TextArea",
                 name: "address",
                 label: "Address",
-                required: true,
-                "max-length": 400
+                required: true
               },
               {
                 type: "TextInput",
@@ -162,47 +156,42 @@ export const PRICE_FLOW: WhatsAppFlow = {
                 "input-type": "text"
               },
               {
-                type: "NumberInput",
+                type: "TextInput",
                 name: "avg_bill",
                 label: "Avg Monthly Bill (₹)",
-                required: true
+                required: true,
+                "input-type": "number"
               },
               {
-                type: "NumberInput",
+                type: "TextInput",
                 name: "monthly_units",
                 label: "Avg Monthly Units (kWh)",
-                required: true
+                required: true,
+                "input-type": "number"
               },
               {
-                type: "SingleSelect",
+                type: "Dropdown",
                 name: "phase",
                 label: "Phase",
                 required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "1p", title: "1φ" },
-                    { id: "3p", title: "3φ" }
-                  ]
-                }
+                "data-source": [
+                  { id: "1p", title: "1φ" },
+                  { id: "3p", title: "3φ" }
+                ]
               },
               {
-                type: "SingleSelect",
+                type: "Dropdown",
                 name: "roof_type",
                 label: "Roof Type",
                 required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "rcc", title: "RCC" },
-                    { id: "tin", title: "Tin/Sheet" },
-                    { id: "other", title: "Other" }
-                  ]
-                }
-              }
-            ],
-            actions: {
-              submit: {
+                "data-source": [
+                  { id: "rcc", title: "RCC" },
+                  { id: "tin", title: "Tin/Sheet" },
+                  { id: "other", title: "Other" }
+                ]
+              },
+              {
+                type: "Footer",
                 label: "Submit",
                 "on-click-action": {
                   name: "data_exchange",
@@ -212,7 +201,7 @@ export const PRICE_FLOW: WhatsAppFlow = {
                   }
                 }
               }
-            }
+            ]
           }
         ]
       }
@@ -224,7 +213,7 @@ export const PRICE_FLOW: WhatsAppFlow = {
         type: "SingleColumnLayout",
         children: [
           {
-            type: "Description",
+            type: "TextBody",
             text: "Your details are saved. We'll send an estimate soon."
           }
         ]
@@ -257,23 +246,20 @@ export const SERVICE_FLOW: WhatsAppFlow = {
                 name: "full_name",
                 label: "Full Name",
                 required: true,
-                "input-type": "text",
-                "max-length": 120,
-                "error-message": "Please enter your name"
+                "input-type": "text"
               },
               {
-                type: "PhoneNumber",
+                type: "TextInput",
                 name: "mobile",
                 label: "Mobile",
                 required: true,
-                "error-message": "Enter a valid mobile number"
+                "input-type": "phone"
               },
               {
                 type: "TextArea",
                 name: "address",
                 label: "Address",
-                required: true,
-                "max-length": 400
+                required: true
               },
               {
                 type: "TextInput",
@@ -283,34 +269,28 @@ export const SERVICE_FLOW: WhatsAppFlow = {
                 "input-type": "text"
               },
               {
-                type: "SingleSelect",
+                type: "Dropdown",
                 name: "issue_type",
                 label: "Issue Type",
                 required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "inverter", title: "Inverter" },
-                    { id: "panels", title: "Panels" },
-                    { id: "wiring", title: "Wiring" },
-                    { id: "meter", title: "Meter/Net-Meter" },
-                    { id: "other", title: "Other" }
-                  ]
-                }
+                "data-source": [
+                  { id: "inverter", title: "Inverter" },
+                  { id: "panels", title: "Panels" },
+                  { id: "wiring", title: "Wiring" },
+                  { id: "meter", title: "Meter/Net-Meter" },
+                  { id: "other", title: "Other" }
+                ]
               },
               {
-                type: "SingleSelect",
+                type: "RadioButtonsGroup",
                 name: "urgency",
                 label: "Urgency",
                 required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "low", title: "Low" },
-                    { id: "normal", title: "Normal" },
-                    { id: "high", title: "High" }
-                  ]
-                }
+                "data-source": [
+                  { id: "low", title: "Low" },
+                  { id: "normal", title: "Normal" },
+                  { id: "high", title: "High" }
+                ]
               },
               {
                 type: "DatePicker",
@@ -319,14 +299,14 @@ export const SERVICE_FLOW: WhatsAppFlow = {
                 required: true
               },
               {
-                type: "TimePicker",
+                type: "TextInput",
                 name: "preferred_time",
-                label: "Preferred Time",
-                required: true
-              }
-            ],
-            actions: {
-              submit: {
+                label: "Preferred Time (e.g. 10:00 AM)",
+                required: true,
+                "input-type": "text"
+              },
+              {
+                type: "Footer",
                 label: "Submit",
                 "on-click-action": {
                   name: "data_exchange",
@@ -336,7 +316,7 @@ export const SERVICE_FLOW: WhatsAppFlow = {
                   }
                 }
               }
-            }
+            ]
           }
         ]
       }
@@ -348,7 +328,7 @@ export const SERVICE_FLOW: WhatsAppFlow = {
         type: "SingleColumnLayout",
         children: [
           {
-            type: "Description",
+            type: "TextBody",
             text: "Your service request has been logged. We'll reach out."
           }
         ]
@@ -381,56 +361,46 @@ export const CALLBACK_FLOW: WhatsAppFlow = {
                 name: "full_name",
                 label: "Full Name",
                 required: true,
-                "input-type": "text",
-                "max-length": 120,
-                "error-message": "Please enter your name"
+                "input-type": "text"
               },
               {
-                type: "PhoneNumber",
+                type: "TextInput",
                 name: "mobile",
                 label: "Mobile",
                 required: true,
-                "error-message": "Enter a valid mobile number"
+                "input-type": "phone"
               },
               {
-                type: "SingleSelect",
+                type: "RadioButtonsGroup",
                 name: "best_time",
                 label: "Best Time to Call",
                 required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "morning", title: "Morning" },
-                    { id: "afternoon", title: "Afternoon" },
-                    { id: "evening", title: "Evening" }
-                  ]
-                }
+                "data-source": [
+                  { id: "morning", title: "Morning" },
+                  { id: "afternoon", title: "Afternoon" },
+                  { id: "evening", title: "Evening" }
+                ]
               },
               {
-                type: "SingleSelect",
+                type: "Dropdown",
                 name: "topic",
                 label: "Topic",
                 required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "site_survey", title: "Site Survey" },
-                    { id: "price_estimate", title: "Price Estimate" },
-                    { id: "maintenance", title: "Maintenance/Service" },
-                    { id: "other", title: "Other" }
-                  ]
-                }
+                "data-source": [
+                  { id: "site_survey", title: "Site Survey" },
+                  { id: "price_estimate", title: "Price Estimate" },
+                  { id: "maintenance", title: "Maintenance/Service" },
+                  { id: "other", title: "Other" }
+                ]
               },
               {
                 type: "TextArea",
                 name: "notes",
                 label: "Notes (Optional)",
-                required: false,
-                "max-length": 400
-              }
-            ],
-            actions: {
-              submit: {
+                required: false
+              },
+              {
+                type: "Footer",
                 label: "Submit",
                 "on-click-action": {
                   name: "data_exchange",
@@ -440,7 +410,7 @@ export const CALLBACK_FLOW: WhatsAppFlow = {
                   }
                 }
               }
-            }
+            ]
           }
         ]
       }
@@ -452,7 +422,7 @@ export const CALLBACK_FLOW: WhatsAppFlow = {
         type: "SingleColumnLayout",
         children: [
           {
-            type: "Description",
+            type: "TextBody",
             text: "We'll call you at your preferred time."
           }
         ]
@@ -485,23 +455,20 @@ export const SURVEY_FLOW_HI: WhatsAppFlow = {
                 name: "full_name",
                 label: "पूरा नाम",
                 required: true,
-                "input-type": "text",
-                "max-length": 120,
-                "error-message": "कृपया अपना नाम दर्ज करें"
+                "input-type": "text"
               },
               {
-                type: "PhoneNumber",
+                type: "TextInput",
                 name: "mobile",
                 label: "मोबाइल",
                 required: true,
-                "error-message": "वैध मोबाइल नंबर दर्ज करें"
+                "input-type": "phone"
               },
               {
                 type: "TextArea",
                 name: "address",
                 label: "पता",
-                required: true,
-                "max-length": 400
+                required: true
               },
               {
                 type: "TextInput",
@@ -517,14 +484,14 @@ export const SURVEY_FLOW_HI: WhatsAppFlow = {
                 required: true
               },
               {
-                type: "TimePicker",
+                type: "TextInput",
                 name: "preferred_time",
-                label: "पसंदीदा समय",
-                required: true
-              }
-            ],
-            actions: {
-              submit: {
+                label: "पसंदीदा समय (जैसे 10:00 AM)",
+                required: true,
+                "input-type": "text"
+              },
+              {
+                type: "Footer",
                 label: "जमा करें",
                 "on-click-action": {
                   name: "data_exchange",
@@ -534,7 +501,7 @@ export const SURVEY_FLOW_HI: WhatsAppFlow = {
                   }
                 }
               }
-            }
+            ]
           }
         ]
       }
@@ -546,7 +513,7 @@ export const SURVEY_FLOW_HI: WhatsAppFlow = {
         type: "SingleColumnLayout",
         children: [
           {
-            type: "Description",
+            type: "TextBody",
             text: "आपका सर्वे अनुरोध दर्ज किया गया है। हमारी टीम जल्द ही आपसे संपर्क करेगी।"
           }
         ]
@@ -579,23 +546,20 @@ export const PRICE_FLOW_HI: WhatsAppFlow = {
                 name: "full_name",
                 label: "पूरा नाम",
                 required: true,
-                "input-type": "text",
-                "max-length": 120,
-                "error-message": "कृपया अपना नाम दर्ज करें"
+                "input-type": "text"
               },
               {
-                type: "PhoneNumber",
+                type: "TextInput",
                 name: "mobile",
                 label: "मोबाइल",
                 required: true,
-                "error-message": "वैध मोबाइल नंबर दर्ज करें"
+                "input-type": "phone"
               },
               {
                 type: "TextArea",
                 name: "address",
                 label: "पता",
-                required: true,
-                "max-length": 400
+                required: true
               },
               {
                 type: "TextInput",
@@ -605,47 +569,42 @@ export const PRICE_FLOW_HI: WhatsAppFlow = {
                 "input-type": "text"
               },
               {
-                type: "NumberInput",
+                type: "TextInput",
                 name: "avg_bill",
                 label: "औसत मासिक बिल (₹)",
-                required: true
+                required: true,
+                "input-type": "number"
               },
               {
-                type: "NumberInput",
+                type: "TextInput",
                 name: "monthly_units",
                 label: "औसत मासिक यूनिट (kWh)",
-                required: true
+                required: true,
+                "input-type": "number"
               },
               {
-                type: "SingleSelect",
+                type: "Dropdown",
                 name: "phase",
                 label: "फेज",
                 required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "1p", title: "1φ" },
-                    { id: "3p", title: "3φ" }
-                  ]
-                }
+                "data-source": [
+                  { id: "1p", title: "1φ" },
+                  { id: "3p", title: "3φ" }
+                ]
               },
               {
-                type: "SingleSelect",
+                type: "Dropdown",
                 name: "roof_type",
                 label: "छत का प्रकार",
                 required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "rcc", title: "RCC" },
-                    { id: "tin", title: "टिन/शीट" },
-                    { id: "other", title: "अन्य" }
-                  ]
-                }
-              }
-            ],
-            actions: {
-              submit: {
+                "data-source": [
+                  { id: "rcc", title: "RCC" },
+                  { id: "tin", title: "टिन/शीट" },
+                  { id: "other", title: "अन्य" }
+                ]
+              },
+              {
+                type: "Footer",
                 label: "जमा करें",
                 "on-click-action": {
                   name: "data_exchange",
@@ -655,7 +614,7 @@ export const PRICE_FLOW_HI: WhatsAppFlow = {
                   }
                 }
               }
-            }
+            ]
           }
         ]
       }
@@ -667,7 +626,7 @@ export const PRICE_FLOW_HI: WhatsAppFlow = {
         type: "SingleColumnLayout",
         children: [
           {
-            type: "Description",
+            type: "TextBody",
             text: "आपका विवरण सहेजा गया है। हम जल्द ही अनुमान भेजेंगे।"
           }
         ]
@@ -700,23 +659,20 @@ export const SERVICE_FLOW_HI: WhatsAppFlow = {
                 name: "full_name",
                 label: "पूरा नाम",
                 required: true,
-                "input-type": "text",
-                "max-length": 120,
-                "error-message": "कृपया अपना नाम दर्ज करें"
+                "input-type": "text"
               },
               {
-                type: "PhoneNumber",
+                type: "TextInput",
                 name: "mobile",
                 label: "मोबाइल",
                 required: true,
-                "error-message": "वैध मोबाइल नंबर दर्ज करें"
+                "input-type": "phone"
               },
               {
                 type: "TextArea",
                 name: "address",
                 label: "पता",
-                required: true,
-                "max-length": 400
+                required: true
               },
               {
                 type: "TextInput",
@@ -726,34 +682,28 @@ export const SERVICE_FLOW_HI: WhatsAppFlow = {
                 "input-type": "text"
               },
               {
-                type: "SingleSelect",
+                type: "Dropdown",
                 name: "issue_type",
                 label: "समस्या का प्रकार",
                 required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "inverter", title: "इन्वर्टर" },
-                    { id: "panels", title: "पैनल" },
-                    { id: "wiring", title: "वायरिंग" },
-                    { id: "meter", title: "मीटर/नेट-मीटर" },
-                    { id: "other", title: "अन्य" }
-                  ]
-                }
+                "data-source": [
+                  { id: "inverter", title: "इन्वर्टर" },
+                  { id: "panels", title: "पैनल" },
+                  { id: "wiring", title: "वायरिंग" },
+                  { id: "meter", title: "मीटर/नेट-मीटर" },
+                  { id: "other", title: "अन्य" }
+                ]
               },
               {
-                type: "SingleSelect",
+                type: "RadioButtonsGroup",
                 name: "urgency",
                 label: "तात्कालिकता",
                 required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "low", title: "कम" },
-                    { id: "normal", title: "सामान्य" },
-                    { id: "high", title: "उच्च" }
-                  ]
-                }
+                "data-source": [
+                  { id: "low", title: "कम" },
+                  { id: "normal", title: "सामान्य" },
+                  { id: "high", title: "उच्च" }
+                ]
               },
               {
                 type: "DatePicker",
@@ -762,14 +712,14 @@ export const SERVICE_FLOW_HI: WhatsAppFlow = {
                 required: true
               },
               {
-                type: "TimePicker",
+                type: "TextInput",
                 name: "preferred_time",
-                label: "पसंदीदा समय",
-                required: true
-              }
-            ],
-            actions: {
-              submit: {
+                label: "पसंदीदा समय (जैसे 10:00 AM)",
+                required: true,
+                "input-type": "text"
+              },
+              {
+                type: "Footer",
                 label: "जमा करें",
                 "on-click-action": {
                   name: "data_exchange",
@@ -779,7 +729,7 @@ export const SERVICE_FLOW_HI: WhatsAppFlow = {
                   }
                 }
               }
-            }
+            ]
           }
         ]
       }
@@ -791,7 +741,7 @@ export const SERVICE_FLOW_HI: WhatsAppFlow = {
         type: "SingleColumnLayout",
         children: [
           {
-            type: "Description",
+            type: "TextBody",
             text: "आपका सेवा अनुरोध लॉग किया गया है। हम संपर्क करेंगे।"
           }
         ]
@@ -824,56 +774,46 @@ export const CALLBACK_FLOW_HI: WhatsAppFlow = {
                 name: "full_name",
                 label: "पूरा नाम",
                 required: true,
-                "input-type": "text",
-                "max-length": 120,
-                "error-message": "कृपया अपना नाम दर्ज करें"
+                "input-type": "text"
               },
               {
-                type: "PhoneNumber",
+                type: "TextInput",
                 name: "mobile",
                 label: "मोबाइल",
                 required: true,
-                "error-message": "वैध मोबाइल नंबर दर्ज करें"
+                "input-type": "phone"
               },
               {
-                type: "SingleSelect",
+                type: "RadioButtonsGroup",
                 name: "best_time",
                 label: "कॉल करने का सबसे अच्छा समय",
                 required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "morning", title: "सुबह" },
-                    { id: "afternoon", title: "दोपहर" },
-                    { id: "evening", title: "शाम" }
-                  ]
-                }
+                "data-source": [
+                  { id: "morning", title: "सुबह" },
+                  { id: "afternoon", title: "दोपहर" },
+                  { id: "evening", title: "शाम" }
+                ]
               },
               {
-                type: "SingleSelect",
+                type: "Dropdown",
                 name: "topic",
                 label: "विषय",
                 required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "site_survey", title: "साइट सर्वे" },
-                    { id: "price_estimate", title: "मूल्य अनुमान" },
-                    { id: "maintenance", title: "रखरखाव/सेवा" },
-                    { id: "other", title: "अन्य" }
-                  ]
-                }
+                "data-source": [
+                  { id: "site_survey", title: "साइट सर्वे" },
+                  { id: "price_estimate", title: "मूल्य अनुमान" },
+                  { id: "maintenance", title: "रखरखाव/सेवा" },
+                  { id: "other", title: "अन्य" }
+                ]
               },
               {
                 type: "TextArea",
                 name: "notes",
-                label: "नोट्स (वैकल्पिक)",
-                required: false,
-                "max-length": 400
-              }
-            ],
-            actions: {
-              submit: {
+                label: "टिप्पणियां (वैकल्पिक)",
+                required: false
+              },
+              {
+                type: "Footer",
                 label: "जमा करें",
                 "on-click-action": {
                   name: "data_exchange",
@@ -883,7 +823,7 @@ export const CALLBACK_FLOW_HI: WhatsAppFlow = {
                   }
                 }
               }
-            }
+            ]
           }
         ]
       }
@@ -895,7 +835,7 @@ export const CALLBACK_FLOW_HI: WhatsAppFlow = {
         type: "SingleColumnLayout",
         children: [
           {
-            type: "Description",
+            type: "TextBody",
             text: "हम आपके पसंदीदा समय पर आपको कॉल करेंगे।"
           }
         ]

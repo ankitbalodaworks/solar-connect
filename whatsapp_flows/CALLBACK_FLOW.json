@@ -21,56 +21,46 @@
                 "name": "full_name",
                 "label": "Full Name",
                 "required": true,
-                "input-type": "text",
-                "max-length": 120,
-                "error-message": "Please enter your name"
+                "input-type": "text"
               },
               {
-                "type": "PhoneNumber",
+                "type": "TextInput",
                 "name": "mobile",
                 "label": "Mobile",
                 "required": true,
-                "error-message": "Enter a valid mobile number"
+                "input-type": "phone"
               },
               {
-                "type": "SingleSelect",
+                "type": "RadioButtonsGroup",
                 "name": "best_time",
                 "label": "Best Time to Call",
                 "required": true,
-                "data-source": {
-                  "type": "STATIC",
-                  "data": [
-                    { "id": "morning", "title": "Morning" },
-                    { "id": "afternoon", "title": "Afternoon" },
-                    { "id": "evening", "title": "Evening" }
-                  ]
-                }
+                "data-source": [
+                  { "id": "morning", "title": "Morning" },
+                  { "id": "afternoon", "title": "Afternoon" },
+                  { "id": "evening", "title": "Evening" }
+                ]
               },
               {
-                "type": "SingleSelect",
+                "type": "Dropdown",
                 "name": "topic",
                 "label": "Topic",
                 "required": true,
-                "data-source": {
-                  "type": "STATIC",
-                  "data": [
-                    { "id": "site_survey", "title": "Site Survey" },
-                    { "id": "price_estimate", "title": "Price Estimate" },
-                    { "id": "maintenance", "title": "Maintenance/Service" },
-                    { "id": "other", "title": "Other" }
-                  ]
-                }
+                "data-source": [
+                  { "id": "site_survey", "title": "Site Survey" },
+                  { "id": "price_estimate", "title": "Price Estimate" },
+                  { "id": "maintenance", "title": "Maintenance/Service" },
+                  { "id": "other", "title": "Other" }
+                ]
               },
               {
                 "type": "TextArea",
                 "name": "notes",
                 "label": "Notes (Optional)",
-                "required": false,
-                "max-length": 400
-              }
-            ],
-            "actions": {
-              "submit": {
+                "required": false
+              },
+              {
+                "type": "Footer",
                 "label": "Submit",
                 "on-click-action": {
                   "name": "data_exchange",
@@ -80,7 +70,7 @@
                   }
                 }
               }
-            }
+            ]
           }
         ]
       }
@@ -92,7 +82,7 @@
         "type": "SingleColumnLayout",
         "children": [
           {
-            "type": "Description",
+            "type": "TextBody",
             "text": "We'll call you at your preferred time."
           }
         ]

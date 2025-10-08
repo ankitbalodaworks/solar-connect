@@ -21,23 +21,20 @@
                 "name": "full_name",
                 "label": "Full Name",
                 "required": true,
-                "input-type": "text",
-                "max-length": 120,
-                "error-message": "Please enter your name"
+                "input-type": "text"
               },
               {
-                "type": "PhoneNumber",
+                "type": "TextInput",
                 "name": "mobile",
                 "label": "Mobile",
                 "required": true,
-                "error-message": "Enter a valid mobile number"
+                "input-type": "phone"
               },
               {
                 "type": "TextArea",
                 "name": "address",
                 "label": "Address",
-                "required": true,
-                "max-length": 400
+                "required": true
               },
               {
                 "type": "TextInput",
@@ -47,34 +44,28 @@
                 "input-type": "text"
               },
               {
-                "type": "SingleSelect",
+                "type": "Dropdown",
                 "name": "issue_type",
                 "label": "Issue Type",
                 "required": true,
-                "data-source": {
-                  "type": "STATIC",
-                  "data": [
-                    { "id": "inverter", "title": "Inverter" },
-                    { "id": "panels", "title": "Panels" },
-                    { "id": "wiring", "title": "Wiring" },
-                    { "id": "meter", "title": "Meter/Net-Meter" },
-                    { "id": "other", "title": "Other" }
-                  ]
-                }
+                "data-source": [
+                  { "id": "inverter", "title": "Inverter" },
+                  { "id": "panels", "title": "Panels" },
+                  { "id": "wiring", "title": "Wiring" },
+                  { "id": "meter", "title": "Meter/Net-Meter" },
+                  { "id": "other", "title": "Other" }
+                ]
               },
               {
-                "type": "SingleSelect",
+                "type": "RadioButtonsGroup",
                 "name": "urgency",
                 "label": "Urgency",
                 "required": true,
-                "data-source": {
-                  "type": "STATIC",
-                  "data": [
-                    { "id": "low", "title": "Low" },
-                    { "id": "normal", "title": "Normal" },
-                    { "id": "high", "title": "High" }
-                  ]
-                }
+                "data-source": [
+                  { "id": "low", "title": "Low" },
+                  { "id": "normal", "title": "Normal" },
+                  { "id": "high", "title": "High" }
+                ]
               },
               {
                 "type": "DatePicker",
@@ -83,14 +74,14 @@
                 "required": true
               },
               {
-                "type": "TimePicker",
+                "type": "TextInput",
                 "name": "preferred_time",
-                "label": "Preferred Time",
-                "required": true
-              }
-            ],
-            "actions": {
-              "submit": {
+                "label": "Preferred Time (e.g. 10:00 AM)",
+                "required": true,
+                "input-type": "text"
+              },
+              {
+                "type": "Footer",
                 "label": "Submit",
                 "on-click-action": {
                   "name": "data_exchange",
@@ -100,7 +91,7 @@
                   }
                 }
               }
-            }
+            ]
           }
         ]
       }
@@ -112,7 +103,7 @@
         "type": "SingleColumnLayout",
         "children": [
           {
-            "type": "Description",
+            "type": "TextBody",
             "text": "Your service request has been logged. We'll reach out."
           }
         ]
