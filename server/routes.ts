@@ -108,10 +108,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const getMetaTemplateName = (flowType: string, stepKey: string, language: string): string => {
     // Construct Meta template name based on stepKey and language
     // Pattern: sunshine_{stepKey}_{language} (e.g., sunshine_main_menu_en)
-    // Exception: campaign_entry is English only (sunshine_campaign_entry)
+    // Exception: campaign_entry is English only (sunshine_welcome)
     
     if (stepKey === "campaign_entry") {
-      return "sunshine_campaign_entry";
+      return "sunshine_welcome";
     }
     
     // Construct template name with language suffix
