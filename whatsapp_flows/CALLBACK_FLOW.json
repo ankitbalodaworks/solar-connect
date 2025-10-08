@@ -1,5 +1,5 @@
 {
-  "version": "7.3",
+  "version": "7.2",
   "data_api_version": "3.0",
   "routing_model": {
     "CALLBACK_FORM": ["CALLBACK_SUCCESS"],
@@ -9,7 +9,6 @@
     {
       "id": "CALLBACK_FORM",
       "title": "Request Callback",
-      "terminal": true,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
@@ -23,46 +22,55 @@
                 "label": "Full Name",
                 "required": true,
                 "input-type": "text",
-                "max-chars": 120
+                "max-length": 120,
+                "error-message": "Please enter your name"
               },
               {
-                "type": "TextInput",
+                "type": "PhoneNumber",
                 "name": "mobile",
                 "label": "Mobile",
                 "required": true,
-                "input-type": "phone"
+                "error-message": "Enter a valid mobile number"
               },
               {
-                "type": "RadioButtonsGroup",
+                "type": "SingleSelect",
                 "name": "best_time",
                 "label": "Best Time to Call",
                 "required": true,
-                "data-source": [
-                  { "id": "morning", "title": "Morning" },
-                  { "id": "afternoon", "title": "Afternoon" },
-                  { "id": "evening", "title": "Evening" }
-                ]
+                "data-source": {
+                  "type": "STATIC",
+                  "data": [
+                    { "id": "morning", "title": "Morning" },
+                    { "id": "afternoon", "title": "Afternoon" },
+                    { "id": "evening", "title": "Evening" }
+                  ]
+                }
               },
               {
-                "type": "Dropdown",
+                "type": "SingleSelect",
                 "name": "topic",
                 "label": "Topic",
                 "required": true,
-                "data-source": [
-                  { "id": "site_survey", "title": "Site Survey" },
-                  { "id": "price_estimate", "title": "Price Estimate" },
-                  { "id": "maintenance", "title": "Maintenance/Service" },
-                  { "id": "other", "title": "Other" }
-                ]
+                "data-source": {
+                  "type": "STATIC",
+                  "data": [
+                    { "id": "site_survey", "title": "Site Survey" },
+                    { "id": "price_estimate", "title": "Price Estimate" },
+                    { "id": "maintenance", "title": "Maintenance/Service" },
+                    { "id": "other", "title": "Other" }
+                  ]
+                }
               },
               {
                 "type": "TextArea",
                 "name": "notes",
                 "label": "Notes (Optional)",
-                "required": false
-              },
-              {
-                "type": "Footer",
+                "required": false,
+                "max-length": 400
+              }
+            ],
+            "actions": {
+              "submit": {
                 "label": "Submit",
                 "on-click-action": {
                   "name": "data_exchange",
@@ -72,7 +80,7 @@
                   }
                 }
               }
-            ]
+            }
           }
         ]
       }
@@ -80,20 +88,12 @@
     {
       "id": "CALLBACK_SUCCESS",
       "title": "Thank you!",
-      "terminal": true,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
           {
-            "type": "TextBody",
+            "type": "Description",
             "text": "We'll call you at your preferred time."
-          },
-          {
-            "type": "Footer",
-            "label": "Done",
-            "on-click-action": {
-              "name": "complete"
-            }
           }
         ]
       }
