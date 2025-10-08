@@ -415,8 +415,8 @@ export class ConversationFlowEngine {
         };
       }
 
-      // Generate flow token with customer phone
-      const flowToken = whatsappService.generateFlowToken(customerPhone);
+      // Generate flow token with customer phone and flow type
+      const flowToken = whatsappService.generateFlowToken(customerPhone, flowType);
 
       // Get flow text based on language
       const flowTexts: Record<string, Record<string, { body: string; button: string }>> = {

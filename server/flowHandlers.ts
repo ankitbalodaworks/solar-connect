@@ -564,7 +564,8 @@ export class FlowHandlers {
     }
   }
 
-  private decryptFlowData(body: any): FlowDataExchangeRequest {
+  // Public method to decrypt flow data (used for routing in data_exchange endpoint)
+  public decryptFlowData(body: any): FlowDataExchangeRequest {
     // Check if the request is encrypted (has the 3 encryption fields)
     if (body.encrypted_flow_data && body.encrypted_aes_key && body.initial_vector) {
       // Validate that the encrypted fields are valid base64 strings
@@ -724,6 +725,17 @@ export class FlowHandlers {
     } catch (error) {
       console.error("Failed to extract phone from flow token:", error);
       return "unknown";
+    }
+  }
+
+  public extractFlowTypeFromToken(flowToken: string): string {
+    try {
+      const decoded = Buffer.from(flowToken, 'base64').toString('utf-8');
+      const data = JSON.parse(decoded);
+      return data.flowType || "survey";
+    } catch (error) {
+      console.error("Failed to extract flow type from flow token:", error);
+      return "survey";
     }
   }
 }

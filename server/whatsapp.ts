@@ -510,10 +510,11 @@ export class WhatsAppService {
     }
   }
 
-  generateFlowToken(customerPhone: string): string {
+  generateFlowToken(customerPhone: string, flowType?: string): string {
     const payload = {
       phone: customerPhone,
       timestamp: Date.now(),
+      flowType: flowType || "survey", // Include flow type for routing
     };
     const payloadBase64 = Buffer.from(JSON.stringify(payload)).toString('base64');
     return payloadBase64;

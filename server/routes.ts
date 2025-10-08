@@ -743,29 +743,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/whatsapp/data-exchange", async (req, res) => {
     try {
       const body = req.body;
-      const op = body.data?.op || body.screen;
       
-      // Route to appropriate flow handler based on operation
-      if (op === "submit_survey_form" || body.screen === "SURVEY_FORM") {
+      // Decrypt the payload first if it's encrypted
+      let decryptedData;
+      try {
+        decryptedData = flowHandlers.decryptFlowData(body);
+      } catch (decryptError) {
+        console.error("Error decrypting data_exchange payload:", decryptError);
+        return res.status(400).json({ error: "Failed to decrypt payload" });
+      }
+      
+      // Extract operation from decrypted data
+      const op = decryptedData.data?.op;
+      const screen = decryptedData.screen;
+      const action = decryptedData.action?.toUpperCase();
+      
+      console.log('[DATA_EXCHANGE] Routing - op:', op, 'screen:', screen, 'action:', action);
+      
+      // Handle PING and INIT actions - need to determine flow type from flow_token
+      if (action === "PING" || action === "INIT") {
+        const flowToken = decryptedData.flow_token;
+        const flowType = flowToken ? flowHandlers.extractFlowTypeFromToken(flowToken) : "survey";
+        console.log('[DATA_EXCHANGE] INIT/PING - flowType from token:', flowType);
+        
+        if (flowType === "price") {
+          return flowHandlers.handlePriceFlow(req, res);
+        } else if (flowType === "service") {
+          return flowHandlers.handleServiceFlow(req, res);
+        } else if (flowType === "callback") {
+          return flowHandlers.handleCallbackFlow(req, res);
+        } else {
+          return flowHandlers.handleSurveyFlow(req, res);
+        }
+      }
+      
+      // Route to appropriate flow handler based on operation or screen
+      if (op === "submit_survey_form" || screen === "SURVEY_FORM") {
+        console.log('[DATA_EXCHANGE] Routing to Survey handler');
         return flowHandlers.handleSurveyFlow(req, res);
-      } else if (op === "submit_price_form" || body.screen === "PRICE_FORM") {
+      } else if (op === "submit_price_form" || screen === "PRICE_FORM") {
+        console.log('[DATA_EXCHANGE] Routing to Price handler');
         return flowHandlers.handlePriceFlow(req, res);
-      } else if (op === "submit_service_form" || body.screen === "SERVICE_FORM") {
+      } else if (op === "submit_service_form" || screen === "SERVICE_FORM") {
+        console.log('[DATA_EXCHANGE] Routing to Service handler');
         return flowHandlers.handleServiceFlow(req, res);
-      } else if (op === "submit_callback_form" || body.screen === "CALLBACK_FORM") {
+      } else if (op === "submit_callback_form" || screen === "CALLBACK_FORM") {
+        console.log('[DATA_EXCHANGE] Routing to Callback handler');
         return flowHandlers.handleCallbackFlow(req, res);
       } else {
-        // Handle PING and INIT actions
-        const action = body.action?.toUpperCase();
-        if (action === "PING") {
-          return res.json({
-            version: "3.0",
-            data: { status: "active" }
-          });
-        }
+        console.error('[DATA_EXCHANGE] Unknown operation - op:', op, 'screen:', screen);
         return res.status(400).json({ 
           error: "Unknown operation or screen",
-          received: { op, screen: body.screen, action: body.action }
+          received: { op, screen, action }
         });
       }
     } catch (error) {

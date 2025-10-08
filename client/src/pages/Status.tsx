@@ -268,24 +268,34 @@ export default function Status() {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 max-h-[60vh] overflow-y-auto">
-            {forms?.map((form) => (
-              <div key={form.id} className="border rounded-md p-4 space-y-2" data-testid={`form-${form.id}`}>
-                <div className="flex items-center justify-between">
-                  <Badge>{form.formType}</Badge>
-                  <span className="text-sm text-muted-foreground">
-                    {format(new Date(form.submittedAt), "MMM d, yyyy h:mm a")}
-                  </span>
+            {forms?.map((form) => {
+              // Format formType for display
+              const formTypeDisplay = form.formType === "site_survey" ? "Site Survey" :
+                                     form.formType === "price_estimate" ? "Price Estimate" :
+                                     form.formType === "service_request" ? "Service Request" :
+                                     form.formType === "callback" ? "Callback Request" :
+                                     form.formType === "other_issue" ? "Other Issue" :
+                                     form.formType;
+              
+              return (
+                <div key={form.id} className="border rounded-md p-4 space-y-2" data-testid={`form-${form.id}`}>
+                  <div className="flex items-center justify-between">
+                    <Badge>{formTypeDisplay}</Badge>
+                    <span className="text-sm text-muted-foreground">
+                      {format(new Date(form.submittedAt), "MMM d, yyyy h:mm a")}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    {Object.entries(form.data).map(([key, value]) => (
+                      <div key={key}>
+                        <span className="font-medium">{key}: </span>
+                        <span className="text-muted-foreground">{String(value)}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  {Object.entries(form.data).map(([key, value]) => (
-                    <div key={key}>
-                      <span className="font-medium">{key}: </span>
-                      <span className="text-muted-foreground">{String(value)}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+              );
+            })}
             {forms?.length === 0 && (
               <p className="text-center text-muted-foreground">No forms submitted yet</p>
             )}
