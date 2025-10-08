@@ -828,6 +828,16 @@ export class WhatsAppService {
       console.error("Full error response:", JSON.stringify(error.response?.data, null, 2));
       console.error("Error details:", JSON.stringify(errorDetails, null, 2));
       
+      // Handle specific error: Template language being deleted (error_subcode 2388023)
+      if (errorSubcode === 2388023) {
+        const userMessage = error.response?.data?.error?.error_user_msg || errorMessage;
+        console.error(`Template ${template.name} language is being deleted: ${userMessage}`);
+        return {
+          success: false,
+          error: `Meta is currently deleting this template language. ${userMessage}`,
+        };
+      }
+      
       // Handle specific error: Template already exists (error_subcode 2388024)
       if (errorSubcode === 2388024) {
         console.log(`Template ${template.name} already exists in Meta. Syncing status...`);
