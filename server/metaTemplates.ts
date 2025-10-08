@@ -31,7 +31,7 @@ export interface MetaButton {
 // Campaign Entry Template (Entry point - MUST be approved by Meta)
 const campaignEntryTemplates: MetaTemplate[] = [
   {
-    name: "sunshine_campaign_entry",
+    name: "sunshine_welcome",
     category: "MARKETING",
     language: "en_US",
     components: [
