@@ -68,39 +68,6 @@ export const SURVEY_FLOW: WhatsAppFlow = {
                 "input-type": "text"
               },
               {
-                type: "NumberInput",
-                name: "avg_bill",
-                label: "Avg Monthly Bill (₹)",
-                required: true
-              },
-              {
-                type: "SingleSelect",
-                name: "phase",
-                label: "Phase",
-                required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "1p", title: "1φ" },
-                    { id: "3p", title: "3φ" }
-                  ]
-                }
-              },
-              {
-                type: "SingleSelect",
-                name: "roof_type",
-                label: "Roof Type",
-                required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "rcc", title: "RCC" },
-                    { id: "tin", title: "Tin/Sheet" },
-                    { id: "other", title: "Other" }
-                  ]
-                }
-              },
-              {
                 type: "DatePicker",
                 name: "preferred_date",
                 label: "Preferred Date",
@@ -542,39 +509,6 @@ export const SURVEY_FLOW_HI: WhatsAppFlow = {
                 label: "गांव/शहर",
                 required: true,
                 "input-type": "text"
-              },
-              {
-                type: "NumberInput",
-                name: "avg_bill",
-                label: "औसत मासिक बिल (₹)",
-                required: true
-              },
-              {
-                type: "SingleSelect",
-                name: "phase",
-                label: "फेज",
-                required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "1p", title: "1φ" },
-                    { id: "3p", title: "3φ" }
-                  ]
-                }
-              },
-              {
-                type: "SingleSelect",
-                name: "roof_type",
-                label: "छत का प्रकार",
-                required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "rcc", title: "RCC" },
-                    { id: "tin", title: "टिन/शीट" },
-                    { id: "other", title: "अन्य" }
-                  ]
-                }
               },
               {
                 type: "DatePicker",
