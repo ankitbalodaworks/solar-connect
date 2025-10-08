@@ -44,15 +44,12 @@ export class ConversationFlowEngine {
           const flowMapping: Record<string, string> = {
             "site_survey": "survey",
             "price_estimate": "price",
-            "help": "help_submenu", // Route to help submenu instead of direct flow
+            "request_callback": "callback",
           };
 
           const flowType = flowMapping[message.selectedButtonId];
 
-          if (flowType === "help_submenu") {
-            // Transition to help_submenu step instead of sending flow
-            conversationState = await this.processStateTransition(conversationState, message);
-          } else if (flowType) {
+          if (flowType) {
             const flowResult = await this.sendWhatsAppFlow(
               message.customerPhone,
               flowType,
