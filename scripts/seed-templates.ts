@@ -41,14 +41,14 @@ async function seedTemplates() {
       messageType: "button",
       language: "en",
       headerText: "Main Menu",
-      bodyText: "Thank you for choosing Sunshine Power!\n\nHow can we help you today?",
-      footerText: "PM Surya Ghar Registered Vendor",
+      bodyText: "Go solar with Sunshine Power. Get a quick estimate or book a site survey in 60 seconds.",
+      footerText: null,
       buttons: [
-        { id: "site_survey", title: "Book Site Survey", nextStep: null },
         { id: "price_estimate", title: "Price Estimate", nextStep: null },
-        { id: "help", title: "Service & Support", nextStep: "help_submenu" }
+        { id: "site_survey", title: "Book Site Survey", nextStep: null },
+        { id: "request_callback", title: "Request Callback", nextStep: null }
       ],
-      metaStatus: "approved"
+      metaStatus: "draft"
     };
 
     console.log("📝 Inserting main_menu_en template...");
@@ -67,14 +67,14 @@ async function seedTemplates() {
       messageType: "button",
       language: "hi",
       headerText: "मुख्य मेनू",
-      bodyText: "Sunshine Power चुनने के लिए धन्यवाद!\n\nआज हम आपकी कैसे मदद कर सकते हैं?",
-      footerText: "PM Surya Ghar पंजीकृत विक्रेता",
+      bodyText: "Sunshine Power के साथ सोलर लगाएं। 60 सेकंड में तुरंत अनुमान प्राप्त करें या साइट सर्वे बुक करें।",
+      footerText: null,
       buttons: [
-        { id: "site_survey", title: "साइट सर्वे बुक करें", nextStep: null },
         { id: "price_estimate", title: "मूल्य अनुमान", nextStep: null },
-        { id: "help", title: "सेवा और सहायता", nextStep: "help_submenu" }
+        { id: "site_survey", title: "साइट सर्वे बुक करें", nextStep: null },
+        { id: "request_callback", title: "कॉलबैक का अनुरोध करें", nextStep: null }
       ],
-      metaStatus: "approved"
+      metaStatus: "draft"
     };
 
     console.log("📝 Inserting main_menu_hi template...");
