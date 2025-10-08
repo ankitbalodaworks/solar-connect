@@ -76,12 +76,11 @@ const mainMenuTemplates: MetaTemplate[] = [
       },
       {
         type: "BODY",
-        text: "Go solar with Sunshine Power. Get a quick estimate or book a site survey in 60 seconds."
+        text: "Go solar with Sunshine Power. Book a site survey in 60 seconds."
       },
       {
         type: "BUTTONS",
         buttons: [
-          { type: "QUICK_REPLY", text: "Price Estimate" },
           { type: "QUICK_REPLY", text: "Book Site Survey" },
           { type: "QUICK_REPLY", text: "Request Callback" }
         ]
@@ -100,12 +99,11 @@ const mainMenuTemplates: MetaTemplate[] = [
       },
       {
         type: "BODY",
-        text: "Sunshine Power के साथ सोलर लगाएं। 60 सेकंड में तुरंत अनुमान प्राप्त करें या साइट सर्वे बुक करें।"
+        text: "Sunshine Power के साथ सोलर लगाएं। 60 सेकंड में साइट सर्वे बुक करें।"
       },
       {
         type: "BUTTONS",
         buttons: [
-          { type: "QUICK_REPLY", text: "मूल्य अनुमान" },
           { type: "QUICK_REPLY", text: "साइट सर्वे बुक करें" },
           { type: "QUICK_REPLY", text: "कॉलबैक का अनुरोध करें" }
         ]
