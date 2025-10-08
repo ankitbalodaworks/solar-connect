@@ -34,85 +34,91 @@ export class ConversationFlowEngine {
         status: "received",
       });
 
+      // Check for main menu button IDs FIRST - these should trigger flows regardless of conversation state
+      // This prevents timing issues where conversation state might be missing after a flow is sent
+      if (message.selectedButtonId) {
+        const flowMapping: Record<string, string> = {
+          "site_survey": "survey",
+          "price_estimate": "price",
+          "request_callback": "callback",
+        };
+
+        const flowType = flowMapping[message.selectedButtonId];
+
+        if (flowType) {
+          // Get or create conversation state to determine language
+          let conversationState = await storage.getConversationState(message.customerPhone);
+          const language = conversationState?.language || "en";
+
+          const flowResult = await this.sendWhatsAppFlow(
+            message.customerPhone,
+            flowType,
+            language
+          );
+
+          if (flowResult.success) {
+            // Delete conversation state as flow will handle the rest
+            await storage.deleteConversationState(message.customerPhone);
+
+            return {
+              template: null,
+              shouldSend: false,
+              isFlow: true,
+              flowSent: true,
+            };
+          } else {
+            return {
+              template: null,
+              shouldSend: false,
+              error: flowResult.error || "Failed to send WhatsApp Flow",
+            };
+          }
+        }
+
+        // Check for help submenu button IDs
+        const helpFlowMapping: Record<string, string> = {
+          "maintenance": "service",
+          "callback": "callback",
+        };
+
+        const helpFlowType = helpFlowMapping[message.selectedButtonId];
+
+        if (helpFlowType) {
+          let conversationState = await storage.getConversationState(message.customerPhone);
+          const language = conversationState?.language || "en";
+
+          const flowResult = await this.sendWhatsAppFlow(
+            message.customerPhone,
+            helpFlowType,
+            language
+          );
+
+          if (flowResult.success) {
+            // Delete conversation state as flow will handle the rest
+            await storage.deleteConversationState(message.customerPhone);
+
+            return {
+              template: null,
+              shouldSend: false,
+              isFlow: true,
+              flowSent: true,
+            };
+          } else {
+            return {
+              template: null,
+              shouldSend: false,
+              error: flowResult.error || "Failed to send WhatsApp Flow",
+            };
+          }
+        }
+      }
+
+      // Now proceed with normal conversation state handling
       let conversationState = await storage.getConversationState(message.customerPhone);
 
       if (!conversationState) {
         conversationState = await this.initializeConversation(message);
       } else {
-        // Check if user is selecting a main menu option - send WhatsApp Flow
-        if (conversationState.currentStep === "main_menu" && message.selectedButtonId) {
-          const flowMapping: Record<string, string> = {
-            "site_survey": "survey",
-            "price_estimate": "price",
-            "request_callback": "callback",
-          };
-
-          const flowType = flowMapping[message.selectedButtonId];
-
-          if (flowType) {
-            const flowResult = await this.sendWhatsAppFlow(
-              message.customerPhone,
-              flowType,
-              conversationState.language || "en"
-            );
-
-            if (flowResult.success) {
-              // Delete conversation state as flow will handle the rest
-              await storage.deleteConversationState(message.customerPhone);
-
-              return {
-                template: null,
-                shouldSend: false,
-                isFlow: true,
-                flowSent: true,
-              };
-            } else {
-              return {
-                template: null,
-                shouldSend: false,
-                error: flowResult.error || "Failed to send WhatsApp Flow",
-              };
-            }
-          }
-        }
-
-        // Check if user is selecting a help submenu option - send WhatsApp Flow
-        if (conversationState && conversationState.currentStep === "help_submenu" && message.selectedButtonId) {
-          const helpFlowMapping: Record<string, string> = {
-            "maintenance": "service",
-            "callback": "callback",
-          };
-
-          const flowType = helpFlowMapping[message.selectedButtonId];
-
-          if (flowType) {
-            const flowResult = await this.sendWhatsAppFlow(
-              message.customerPhone,
-              flowType,
-              conversationState.language || "en"
-            );
-
-            if (flowResult.success) {
-              // Delete conversation state as flow will handle the rest
-              await storage.deleteConversationState(message.customerPhone);
-
-              return {
-                template: null,
-                shouldSend: false,
-                isFlow: true,
-                flowSent: true,
-              };
-            } else {
-              return {
-                template: null,
-                shouldSend: false,
-                error: flowResult.error || "Failed to send WhatsApp Flow",
-              };
-            }
-          }
-          // other_issue button will fall through to old conversation system
-        }
-
         if (conversationState) {
           conversationState = await this.processStateTransition(conversationState, message);
         }
