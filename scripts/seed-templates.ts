@@ -9,20 +9,20 @@ async function seedTemplates() {
   try {
     // Campaign Entry Template (First message with language selection)
     const campaignEntry = {
-      name: "sunshine_campaign_entry",
+      name: "sunshine_welcome",
       flowType: "campaign",
       stepKey: "campaign_entry",
       messageType: "button",
       language: "en",
-      bodyText: "Hello, We are a PM Surya Ghar registered Solar Vendor.\nFrom application to net-metering and installation-we handle it all.\nTo Continue, Choose:",
+      bodyText: "Welcome to Sunshine Power.\nWe handle everything: application → subsidy → installation → net-metering.\nChoose your language to continue.",
       headerMediaId: "4245254242364293",
-      footerText: "Licensed PM Surya Ghar Solar Vendor",
+      footerText: "Save upto Rs. 40,000/- Per Year for a 3kW System",
       buttons: [
         { id: "hindi", title: "हिंदी", nextStep: "main_menu" },
         { id: "english", title: "English", nextStep: "main_menu" },
         { id: "visit_website", title: "Visit Website", nextStep: null }
       ],
-      metaStatus: "approved"
+      metaStatus: "draft"
     };
 
     console.log("📝 Inserting campaign_entry template...");
