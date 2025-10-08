@@ -604,12 +604,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
             type: "menu_site_survey",
             meta: { menuChoice: "site_survey" },
           });
-        } else if (buttonOrListId === "price_estimate") {
-          await storage.createEvent({
-            customerPhone: incomingMessage.customerPhone,
-            type: "menu_price_estimate",
-            meta: { menuChoice: "price_estimate" },
-          });
         } else if (buttonOrListId === "help") {
           await storage.createEvent({
             customerPhone: incomingMessage.customerPhone,

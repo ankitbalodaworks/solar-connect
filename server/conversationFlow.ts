@@ -39,7 +39,6 @@ export class ConversationFlowEngine {
       if (message.selectedButtonId) {
         const flowMapping: Record<string, string> = {
           "site_survey": "survey",
-          "price_estimate": "price",
           "request_callback": "callback",
         };
 
@@ -258,8 +257,8 @@ export class ConversationFlowEngine {
         }
       } else if (currentState.currentStep === "main_menu" && message.selectedButtonId) {
         // Main menu button handling
-        if (message.selectedButtonId === "site_survey" || message.selectedButtonId === "price_estimate") {
-          // These are handled earlier in the flow (WhatsApp Flows)
+        if (message.selectedButtonId === "site_survey") {
+          // This is handled earlier in the flow (WhatsApp Flow)
           nextStep = currentState.currentStep;
         } else if (message.selectedButtonId === "help") {
           nextStep = "help_submenu";
