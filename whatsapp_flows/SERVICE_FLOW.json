@@ -99,6 +99,7 @@
     {
       "id": "SERVICE_SUCCESS",
       "title": "Thank you!",
+      "terminal": true,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [

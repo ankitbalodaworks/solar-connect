@@ -75,6 +75,7 @@
     {
       "id": "SURVEY_SUCCESS",
       "title": "धन्यवाद!",
+      "terminal": true,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [

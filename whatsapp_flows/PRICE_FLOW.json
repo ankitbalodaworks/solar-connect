@@ -97,6 +97,7 @@
     {
       "id": "PRICE_SUCCESS",
       "title": "Thank you!",
+      "terminal": true,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [

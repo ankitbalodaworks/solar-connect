@@ -12,6 +12,7 @@ export interface WhatsAppFlow {
 export interface FlowScreen {
   id: string;
   title: string;
+  terminal?: boolean;
   layout: {
     type: string;
     children: any[];
@@ -96,6 +97,7 @@ export const SURVEY_FLOW: WhatsAppFlow = {
     {
       id: "SURVEY_SUCCESS",
       title: "Thank you!",
+      terminal: true,
       layout: {
         type: "SingleColumnLayout",
         children: [
@@ -209,6 +211,7 @@ export const PRICE_FLOW: WhatsAppFlow = {
     {
       id: "PRICE_SUCCESS",
       title: "Thank you!",
+      terminal: true,
       layout: {
         type: "SingleColumnLayout",
         children: [
@@ -324,6 +327,7 @@ export const SERVICE_FLOW: WhatsAppFlow = {
     {
       id: "SERVICE_SUCCESS",
       title: "Thank you!",
+      terminal: true,
       layout: {
         type: "SingleColumnLayout",
         children: [
@@ -418,6 +422,7 @@ export const CALLBACK_FLOW: WhatsAppFlow = {
     {
       id: "CALLBACK_SUCCESS",
       title: "Thank you!",
+      terminal: true,
       layout: {
         type: "SingleColumnLayout",
         children: [
@@ -509,6 +514,7 @@ export const SURVEY_FLOW_HI: WhatsAppFlow = {
     {
       id: "SURVEY_SUCCESS",
       title: "धन्यवाद!",
+      terminal: true,
       layout: {
         type: "SingleColumnLayout",
         children: [
@@ -622,6 +628,7 @@ export const PRICE_FLOW_HI: WhatsAppFlow = {
     {
       id: "PRICE_SUCCESS",
       title: "धन्यवाद!",
+      terminal: true,
       layout: {
         type: "SingleColumnLayout",
         children: [
@@ -737,6 +744,7 @@ export const SERVICE_FLOW_HI: WhatsAppFlow = {
     {
       id: "SERVICE_SUCCESS",
       title: "धन्यवाद!",
+      terminal: true,
       layout: {
         type: "SingleColumnLayout",
         children: [
@@ -831,6 +839,7 @@ export const CALLBACK_FLOW_HI: WhatsAppFlow = {
     {
       id: "CALLBACK_SUCCESS",
       title: "धन्यवाद!",
+      terminal: true,
       layout: {
         type: "SingleColumnLayout",
         children: [

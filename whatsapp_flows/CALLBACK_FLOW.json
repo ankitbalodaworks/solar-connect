@@ -78,6 +78,7 @@
     {
       "id": "CALLBACK_SUCCESS",
       "title": "Thank you!",
+      "terminal": true,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
