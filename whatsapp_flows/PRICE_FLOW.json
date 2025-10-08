@@ -1,5 +1,5 @@
 {
-  "version": "7.2",
+  "version": "7.3",
   "data_api_version": "3.0",
   "routing_model": {
     "PRICE_FORM": ["PRICE_SUCCESS"],
@@ -9,6 +9,7 @@
     {
       "id": "PRICE_FORM",
       "title": "Price Estimate",
+      "terminal": true,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
@@ -21,7 +22,8 @@
                 "name": "full_name",
                 "label": "Full Name",
                 "required": true,
-                "input-type": "text"
+                "input-type": "text",
+                "max-chars": 120
               },
               {
                 "type": "TextInput",
@@ -58,7 +60,7 @@
                 "input-type": "number"
               },
               {
-                "type": "Dropdown",
+                "type": "RadioButtonsGroup",
                 "name": "phase",
                 "label": "Phase",
                 "required": true,
@@ -104,6 +106,13 @@
           {
             "type": "TextBody",
             "text": "Your details are saved. We'll send an estimate soon."
+          },
+          {
+            "type": "Footer",
+            "label": "Done",
+            "on-click-action": {
+              "name": "complete"
+            }
           }
         ]
       }

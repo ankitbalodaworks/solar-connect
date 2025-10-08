@@ -1,5 +1,6 @@
+
 {
-  "version": "7.2",
+  "version": "7.3",
   "data_api_version": "3.0",
   "routing_model": {
     "SERVICE_FORM": ["SERVICE_SUCCESS"],
@@ -9,6 +10,7 @@
     {
       "id": "SERVICE_FORM",
       "title": "रखरखाव / सेवा",
+      "terminal": true,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
@@ -21,7 +23,8 @@
                 "name": "full_name",
                 "label": "पूरा नाम",
                 "required": true,
-                "input-type": "text"
+                "input-type": "text",
+                "max-chars": 120
               },
               {
                 "type": "TextInput",
@@ -106,6 +109,13 @@
           {
             "type": "TextBody",
             "text": "आपका सेवा अनुरोध लॉग किया गया है। हम संपर्क करेंगे।"
+          },
+          {
+            "type": "Footer",
+            "label": "पूर्ण",
+            "on-click-action": {
+              "name": "complete"
+            }
           }
         ]
       }

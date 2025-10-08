@@ -1,5 +1,6 @@
+
 {
-  "version": "7.2",
+  "version": "7.3",
   "data_api_version": "3.0",
   "routing_model": {
     "PRICE_FORM": ["PRICE_SUCCESS"],
@@ -9,6 +10,7 @@
     {
       "id": "PRICE_FORM",
       "title": "मूल्य अनुमान",
+      "terminal": true,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
@@ -21,7 +23,8 @@
                 "name": "full_name",
                 "label": "पूरा नाम",
                 "required": true,
-                "input-type": "text"
+                "input-type": "text",
+                "max-chars": 120
               },
               {
                 "type": "TextInput",
@@ -58,7 +61,7 @@
                 "input-type": "number"
               },
               {
-                "type": "Dropdown",
+                "type": "RadioButtonsGroup",
                 "name": "phase",
                 "label": "फेज",
                 "required": true,
@@ -104,6 +107,13 @@
           {
             "type": "TextBody",
             "text": "आपका विवरण सहेजा गया है। हम जल्द ही अनुमान भेजेंगे।"
+          },
+          {
+            "type": "Footer",
+            "label": "पूर्ण",
+            "on-click-action": {
+              "name": "complete"
+            }
           }
         ]
       }

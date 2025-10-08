@@ -1,5 +1,5 @@
 {
-  "version": "7.2",
+  "version": "7.3",
   "data_api_version": "3.0",
   "routing_model": {
     "CALLBACK_FORM": ["CALLBACK_SUCCESS"],
@@ -9,6 +9,7 @@
     {
       "id": "CALLBACK_FORM",
       "title": "Request Callback",
+      "terminal": true,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
@@ -21,7 +22,8 @@
                 "name": "full_name",
                 "label": "Full Name",
                 "required": true,
-                "input-type": "text"
+                "input-type": "text",
+                "max-chars": 120
               },
               {
                 "type": "TextInput",
@@ -85,6 +87,13 @@
           {
             "type": "TextBody",
             "text": "We'll call you at your preferred time."
+          },
+          {
+            "type": "Footer",
+            "label": "Done",
+            "on-click-action": {
+              "name": "complete"
+            }
           }
         ]
       }

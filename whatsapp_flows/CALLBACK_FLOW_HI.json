@@ -1,5 +1,6 @@
+
 {
-  "version": "7.2",
+  "version": "7.3",
   "data_api_version": "3.0",
   "routing_model": {
     "CALLBACK_FORM": ["CALLBACK_SUCCESS"],
@@ -8,7 +9,8 @@
   "screens": [
     {
       "id": "CALLBACK_FORM",
-      "title": "कॉलबैक का अनुरोध",
+      "title": "कॉलबैक अनुरोध",
+      "terminal": true,
       "layout": {
         "type": "SingleColumnLayout",
         "children": [
@@ -21,7 +23,8 @@
                 "name": "full_name",
                 "label": "पूरा नाम",
                 "required": true,
-                "input-type": "text"
+                "input-type": "text",
+                "max-chars": 120
               },
               {
                 "type": "TextInput",
@@ -85,6 +88,13 @@
           {
             "type": "TextBody",
             "text": "हम आपके पसंदीदा समय पर आपको कॉल करेंगे।"
+          },
+          {
+            "type": "Footer",
+            "label": "पूर्ण",
+            "on-click-action": {
+              "name": "complete"
+            }
           }
         ]
       }
