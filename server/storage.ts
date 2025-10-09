@@ -1,7 +1,7 @@
-import { type User, type InsertUser, type Customer, type InsertCustomer, type MessageTemplate, type InsertMessageTemplate, type ConversationState, type InsertConversationState, type WhatsappLog, type InsertWhatsappLog, type Lead, type InsertLead, type ServiceRequest, type InsertServiceRequest, type CallbackRequest, type InsertCallbackRequest, type PriceEstimate, type InsertPriceEstimate, type OtherIssue, type InsertOtherIssue, type Event, type InsertEvent, type Form, type InsertForm } from "@shared/schema";
+import { type User, type InsertUser, type Customer, type InsertCustomer, type MessageTemplate, type InsertMessageTemplate, type ConversationState, type InsertConversationState, type WhatsappLog, type InsertWhatsappLog, type Lead, type InsertLead, type ServiceRequest, type InsertServiceRequest, type CallbackRequest, type InsertCallbackRequest, type PriceEstimate, type InsertPriceEstimate, type OtherIssue, type InsertOtherIssue, type Event, type InsertEvent, type Form, type InsertForm, type WhatsappFlow, type InsertWhatsappFlow } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
-import { messageTemplates, conversationStates, whatsappLogs, leads, serviceRequests, customers, campaigns, callbackRequests, priceEstimates, otherIssues, events, forms } from "@shared/schema";
+import { messageTemplates, conversationStates, whatsappLogs, leads, serviceRequests, customers, campaigns, callbackRequests, priceEstimates, otherIssues, events, forms, whatsappFlows } from "@shared/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 
 // modify the interface with any CRUD methods
@@ -81,6 +81,15 @@ export interface IStorage {
   createForm(form: InsertForm): Promise<Form>;
   getForms(customerPhone?: string): Promise<Form[]>;
   getForm(id: string): Promise<Form | undefined>;
+
+  // WhatsApp Flows
+  getWhatsappFlows(): Promise<WhatsappFlow[]>;
+  getWhatsappFlow(flowKey: string): Promise<WhatsappFlow | undefined>;
+  getWhatsappFlowByTypeAndLanguage(flowType: string, language: string): Promise<WhatsappFlow | undefined>;
+  createWhatsappFlow(flow: InsertWhatsappFlow): Promise<WhatsappFlow>;
+  updateWhatsappFlow(flowKey: string, flow: Partial<InsertWhatsappFlow>): Promise<WhatsappFlow | undefined>;
+  updateWhatsappFlowMetaId(flowKey: string, metaFlowId: string): Promise<WhatsappFlow | undefined>;
+  deleteWhatsappFlow(flowKey: string): Promise<boolean>;
 
   // Contact Status Summary (for Status Page)
   getContactStatusSummary(): Promise<Array<{
@@ -480,6 +489,57 @@ export class MemStorage implements IStorage {
   async getForm(id: string): Promise<Form | undefined> {
     const result = await db.select().from(forms).where(eq(forms.id, id));
     return result[0];
+  }
+
+  // WhatsApp Flows - Database-backed
+  async getWhatsappFlows(): Promise<WhatsappFlow[]> {
+    return await db.select().from(whatsappFlows).orderBy(desc(whatsappFlows.updatedAt));
+  }
+
+  async getWhatsappFlow(flowKey: string): Promise<WhatsappFlow | undefined> {
+    const result = await db.select().from(whatsappFlows).where(eq(whatsappFlows.flowKey, flowKey));
+    return result[0];
+  }
+
+  async getWhatsappFlowByTypeAndLanguage(flowType: string, language: string): Promise<WhatsappFlow | undefined> {
+    const result = await db.select()
+      .from(whatsappFlows)
+      .where(and(
+        eq(whatsappFlows.flowType, flowType),
+        eq(whatsappFlows.language, language)
+      ));
+    return result[0];
+  }
+
+  async createWhatsappFlow(flow: InsertWhatsappFlow): Promise<WhatsappFlow> {
+    const result = await db.insert(whatsappFlows).values(flow).returning();
+    return result[0];
+  }
+
+  async updateWhatsappFlow(flowKey: string, flow: Partial<InsertWhatsappFlow>): Promise<WhatsappFlow | undefined> {
+    const result = await db.update(whatsappFlows)
+      .set({ ...flow, updatedAt: new Date() })
+      .where(eq(whatsappFlows.flowKey, flowKey))
+      .returning();
+    return result[0];
+  }
+
+  async updateWhatsappFlowMetaId(flowKey: string, metaFlowId: string): Promise<WhatsappFlow | undefined> {
+    const result = await db.update(whatsappFlows)
+      .set({ 
+        metaFlowId, 
+        status: 'published',
+        lastSyncedAt: new Date(),
+        updatedAt: new Date() 
+      })
+      .where(eq(whatsappFlows.flowKey, flowKey))
+      .returning();
+    return result[0];
+  }
+
+  async deleteWhatsappFlow(flowKey: string): Promise<boolean> {
+    const result = await db.delete(whatsappFlows).where(eq(whatsappFlows.flowKey, flowKey)).returning();
+    return result.length > 0;
   }
 
   // Statistics

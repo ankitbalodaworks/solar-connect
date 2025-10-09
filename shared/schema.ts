@@ -161,6 +161,26 @@ export const forms = pgTable("forms", {
   submittedAt: timestamp("submitted_at").notNull().default(sql`now()`),
 });
 
+// WhatsApp Flow Management Table - Tracks flow IDs and versions from Meta
+export const whatsappFlows = pgTable("whatsapp_flows", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  flowKey: text("flow_key").notNull().unique(), // e.g., "survey_en", "callback_hi"
+  flowType: text("flow_type").notNull(), // 'survey', 'callback', 'trust', 'eligibility', 'price', 'service'
+  language: text("language").notNull(), // 'en' or 'hi'
+  metaFlowId: text("meta_flow_id"), // ID returned by Meta after creation
+  flowName: text("flow_name").notNull(), // Human-readable name for WhatsApp Manager
+  flowJson: jsonb("flow_json").notNull(), // Complete flow JSON definition
+  categories: jsonb("categories"), // Flow categories like APPOINTMENT_BOOKING, LEAD_GENERATION
+  status: text("status").notNull().default("draft"), // 'draft', 'published', 'deprecated', 'error'
+  version: integer("version").notNull().default(1),
+  errorMessage: text("error_message"), // Error details if creation/update failed
+  lastSyncedAt: timestamp("last_synced_at"),
+  createdAt: timestamp("created_at").notNull().default(sql`now()`),
+  updatedAt: timestamp("updated_at").notNull().default(sql`now()`),
+}, (table) => ({
+  uniqueFlowType: unique().on(table.flowType, table.language),
+}));
+
 export const insertUserSchema = createInsertSchema(users).omit({ id: true });
 export const insertCustomerSchema = createInsertSchema(customers).omit({ id: true });
 export const insertLeadSchema = createInsertSchema(leads).omit({ id: true, createdAt: true });
@@ -174,6 +194,7 @@ export const insertPriceEstimateSchema = createInsertSchema(priceEstimates).omit
 export const insertOtherIssueSchema = createInsertSchema(otherIssues).omit({ id: true, createdAt: true });
 export const insertEventSchema = createInsertSchema(events).omit({ id: true, createdAt: true });
 export const insertFormSchema = createInsertSchema(forms).omit({ id: true, submittedAt: true });
+export const insertWhatsappFlowSchema = createInsertSchema(whatsappFlows).omit({ id: true, createdAt: true, updatedAt: true });
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -201,3 +222,5 @@ export type Event = typeof events.$inferSelect;
 export type InsertEvent = z.infer<typeof insertEventSchema>;
 export type Form = typeof forms.$inferSelect;
 export type InsertForm = z.infer<typeof insertFormSchema>;
+export type WhatsappFlow = typeof whatsappFlows.$inferSelect;
+export type InsertWhatsappFlow = z.infer<typeof insertWhatsappFlowSchema>;
