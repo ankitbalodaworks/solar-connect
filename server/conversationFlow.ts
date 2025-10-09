@@ -48,7 +48,9 @@ export class ConversationFlowEngine {
         if (flowType) {
           // Get or create conversation state to determine language
           let conversationState = await storage.getConversationState(message.customerPhone);
+          console.log('[FLOW] Got conversation state:', conversationState);
           const language = conversationState?.language || "en";
+          console.log('[FLOW] Selected language for', flowType, 'flow:', language);
 
           const flowResult = await this.sendWhatsAppFlow(
             message.customerPhone,
@@ -248,9 +250,11 @@ export class ConversationFlowEngine {
         if (message.selectedButtonId === "hindi") {
           language = "hi";
           nextStep = "main_menu";
+          console.log('[LANG] User selected Hindi, setting language to "hi"');
         } else if (message.selectedButtonId === "english") {
           language = "en";
           nextStep = "main_menu";
+          console.log('[LANG] User selected English, setting language to "en"');
         } else {
           // Unrecognized button at entry, restart
           console.log(`Unrecognized button ${message.selectedButtonId} at campaign_entry, restarting flow`);
@@ -352,11 +356,13 @@ export class ConversationFlowEngine {
       await this.createRecordFromConversation(currentState, updatedContext, nextStep);
     }
 
+    console.log('[STATE] Updating conversation state with language:', language, 'step:', nextStep);
     const updatedState = await storage.updateConversationState(currentState.customerPhone, {
       currentStep: nextStep,
       language,
       context: updatedContext,
     });
+    console.log('[STATE] Updated conversation state:', updatedState);
 
     return updatedState;
   }
@@ -405,7 +411,10 @@ export class ConversationFlowEngine {
       };
 
       // Get the flow ID based on language, fallback to English if language-specific ID not found
+      console.log('[FLOW-ID] Selecting flow ID for type:', flowType, 'language:', language);
+      console.log('[FLOW-ID] Available mappings:', flowIdMapping[flowType]);
       const flowId = flowIdMapping[flowType]?.[language] || flowIdMapping[flowType]?.en || "";
+      console.log('[FLOW-ID] Selected flow ID:', flowId);
 
       if (!flowId) {
         const langSuffix = language === "hi" ? "_HI" : "";
