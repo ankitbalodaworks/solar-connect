@@ -18,6 +18,7 @@ import MessageTemplates from "@/pages/MessageTemplates";
 import Conversations from "@/pages/Conversations";
 import ConversationDetails from "@/pages/ConversationDetails";
 import Status from "@/pages/Status";
+import WhatsappFlows from "@/pages/WhatsappFlows";
 
 function Router() {
   return (
@@ -28,6 +29,7 @@ function Router() {
       <Route path="/leads" component={Leads} />
       <Route path="/service-requests" component={ServiceRequests} />
       <Route path="/message-templates" component={MessageTemplates} />
+      <Route path="/whatsapp-flows" component={WhatsappFlows} />
       <Route path="/conversations" component={Conversations} />
       <Route path="/conversations/:phone" component={ConversationDetails} />
       <Route path="/status" component={Status} />

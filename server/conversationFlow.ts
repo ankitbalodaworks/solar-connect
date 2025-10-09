@@ -356,47 +356,57 @@ export class ConversationFlowEngine {
     language: string
   ): Promise<{ success: boolean; error?: string }> {
     try {
-      // Map flow type to flow ID from environment variables (language-specific)
-      // For Hindi, use *_HI flow IDs, for English use standard flow IDs
-      const flowIdMapping: Record<string, Record<string, string>> = {
-        survey: {
-          en: process.env.WHATSAPP_FLOW_ID_SURVEY || "",
-          hi: process.env.WHATSAPP_FLOW_ID_SURVEY_HI || process.env.WHATSAPP_FLOW_ID_SURVEY || "",
-        },
-        callback: {
-          en: process.env.WHATSAPP_FLOW_ID_CALLBACK || "",
-          hi: process.env.WHATSAPP_FLOW_ID_CALLBACK_HI || process.env.WHATSAPP_FLOW_ID_CALLBACK || "",
-        },
-        trust: {
-          en: process.env.WHATSAPP_FLOW_ID_TRUST || "",
-          hi: process.env.WHATSAPP_FLOW_ID_TRUST_HI || process.env.WHATSAPP_FLOW_ID_TRUST || "",
-        },
-        eligibility: {
-          en: process.env.WHATSAPP_FLOW_ID_ELIGIBILITY || "",
-          hi: process.env.WHATSAPP_FLOW_ID_ELIGIBILITY_HI || process.env.WHATSAPP_FLOW_ID_ELIGIBILITY || "",
-        },
-        // Legacy flow types (for backwards compatibility)
-        price: {
-          en: process.env.WHATSAPP_FLOW_ID_PRICE || "",
-          hi: process.env.WHATSAPP_FLOW_ID_PRICE_HI || process.env.WHATSAPP_FLOW_ID_PRICE || "",
-        },
-        service: {
-          en: process.env.WHATSAPP_FLOW_ID_SERVICE || "",
-          hi: process.env.WHATSAPP_FLOW_ID_SERVICE_HI || process.env.WHATSAPP_FLOW_ID_SERVICE || "",
-        },
-      };
+      // First try to get flow ID from database
+      const dbFlow = await storage.getWhatsappFlowByTypeAndLanguage(flowType, language);
+      
+      let flowId: string = "";
+      
+      if (dbFlow && dbFlow.metaFlowId && dbFlow.status === "published") {
+        // Use database-stored flow ID if available and published
+        flowId = dbFlow.metaFlowId;
+        console.log('[FLOW-ID] Using database flow ID for type:', flowType, 'language:', language, 'ID:', flowId);
+      } else {
+        // Fallback to environment variables for backward compatibility
+        // Map flow type to flow ID from environment variables (language-specific)
+        const flowIdMapping: Record<string, Record<string, string>> = {
+          survey: {
+            en: process.env.WHATSAPP_FLOW_ID_SURVEY || "",
+            hi: process.env.WHATSAPP_FLOW_ID_SURVEY_HI || process.env.WHATSAPP_FLOW_ID_SURVEY || "",
+          },
+          callback: {
+            en: process.env.WHATSAPP_FLOW_ID_CALLBACK || "",
+            hi: process.env.WHATSAPP_FLOW_ID_CALLBACK_HI || process.env.WHATSAPP_FLOW_ID_CALLBACK || "",
+          },
+          trust: {
+            en: process.env.WHATSAPP_FLOW_ID_TRUST || "",
+            hi: process.env.WHATSAPP_FLOW_ID_TRUST_HI || process.env.WHATSAPP_FLOW_ID_TRUST || "",
+          },
+          eligibility: {
+            en: process.env.WHATSAPP_FLOW_ID_ELIGIBILITY || "",
+            hi: process.env.WHATSAPP_FLOW_ID_ELIGIBILITY_HI || process.env.WHATSAPP_FLOW_ID_ELIGIBILITY || "",
+          },
+          // Legacy flow types (for backwards compatibility)
+          price: {
+            en: process.env.WHATSAPP_FLOW_ID_PRICE || "",
+            hi: process.env.WHATSAPP_FLOW_ID_PRICE_HI || process.env.WHATSAPP_FLOW_ID_PRICE || "",
+          },
+          service: {
+            en: process.env.WHATSAPP_FLOW_ID_SERVICE || "",
+            hi: process.env.WHATSAPP_FLOW_ID_SERVICE_HI || process.env.WHATSAPP_FLOW_ID_SERVICE || "",
+          },
+        };
 
-      // Get the flow ID based on language, fallback to English if language-specific ID not found
-      console.log('[FLOW-ID] Selecting flow ID for type:', flowType, 'language:', language);
-      console.log('[FLOW-ID] Available mappings:', flowIdMapping[flowType]);
-      const flowId = flowIdMapping[flowType]?.[language] || flowIdMapping[flowType]?.en || "";
-      console.log('[FLOW-ID] Selected flow ID:', flowId);
+        // Get the flow ID based on language, fallback to English if language-specific ID not found
+        console.log('[FLOW-ID] Falling back to environment variables for type:', flowType, 'language:', language);
+        flowId = flowIdMapping[flowType]?.[language] || flowIdMapping[flowType]?.en || "";
+        console.log('[FLOW-ID] Selected env flow ID:', flowId);
+      }
 
       if (!flowId) {
         const langSuffix = language === "hi" ? "_HI" : "";
         return {
           success: false,
-          error: `Flow ID not configured for ${flowType} (${language}). Please set WHATSAPP_FLOW_ID_${flowType.toUpperCase()}${langSuffix} environment variable.`,
+          error: `Flow ID not configured for ${flowType} (${language}). Please run flow sync from WhatsApp Flows page or set WHATSAPP_FLOW_ID_${flowType.toUpperCase()}${langSuffix} environment variable.`,
         };
       }
 

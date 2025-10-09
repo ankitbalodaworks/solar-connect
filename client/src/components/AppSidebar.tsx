@@ -1,4 +1,4 @@
-import { Home, Upload, MessageSquare, Users, FileText, Settings, FileType, MessagesSquare, Activity } from "lucide-react";
+import { Home, Upload, MessageSquare, Users, FileText, Settings, FileType, MessagesSquare, Activity, GitBranch } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -53,6 +53,11 @@ const menuItems = [
     title: "Message Templates",
     url: "/message-templates",
     icon: FileType,
+  },
+  {
+    title: "WhatsApp Flows",
+    url: "/whatsapp-flows",
+    icon: GitBranch,
   },
 ];
 
