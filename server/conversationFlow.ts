@@ -38,13 +38,16 @@ export class ConversationFlowEngine {
       // This prevents timing issues where conversation state might be missing after a flow is sent
       if (message.selectedButtonId) {
         const flowMapping: Record<string, string> = {
-          "site_survey": "survey",
+          // New trust-first flow button mappings
+          "book_site_survey": "survey",
           "request_callback": "callback",
-          "why_sunshine": "trust",
+          "why_sunshine_power": "trust",
+          "check_eligibility": "eligibility",
           // Legacy mappings for backwards compatibility
+          "site_survey": "survey",
+          "why_sunshine": "trust",
           "price_estimate": "price",
           "maintenance": "service",
-          "callback": "callback",
         };
 
         const flowType = flowMapping[message.selectedButtonId];
@@ -229,11 +232,19 @@ export class ConversationFlowEngine {
         }
       } else if (currentState.currentStep === "main_menu" && message.selectedButtonId) {
         // Main menu button handling
-        if (message.selectedButtonId === "site_survey" || message.selectedButtonId === "price_estimate") {
-          // These are handled earlier in the flow (WhatsApp Flows)
-          nextStep = currentState.currentStep;
-        } else if (message.selectedButtonId === "help") {
-          nextStep = "help_submenu";
+        const mainMenuButtons = [
+          "book_site_survey", "request_callback", "why_sunshine_power", "check_eligibility",
+          // Legacy buttons
+          "site_survey", "price_estimate", "why_sunshine", "help"
+        ];
+        
+        if (mainMenuButtons.includes(message.selectedButtonId)) {
+          // These are handled earlier in the flow (WhatsApp Flows) or have specific routing
+          if (message.selectedButtonId === "help") {
+            nextStep = "help_submenu";
+          } else {
+            nextStep = currentState.currentStep;
+          }
         } else {
           console.log(`Unrecognized main menu button ${message.selectedButtonId}, restarting flow`);
           return await this.restartConversation(message.customerPhone);

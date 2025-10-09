@@ -589,25 +589,26 @@ async function seedMessageTemplates() {
   }
 
   await db.insert(messageTemplates).values([
-    // SP_CAMPAIGN_TRUST_V1 - Premium trust-first campaign entry
+    // SP_CAMPAIGN_TRUST_V1 - Premium trust-first campaign entry with image header
     {
       flowType: "campaign",
       stepKey: "campaign_entry",
       stepName: "SP_CAMPAIGN_TRUST_V1",
       language: null,
       messageType: "button",
-      bodyText: "Welcome to Sunshine Power — PM Surya Ghar registered solar vendor.\nWe handle application, subsidy, installation & net-metering. Choose your language to continue.",
+      bodyText: "Welcome to Sunshine Power — PM Surya Ghar registered solar vendor.\nLicensed Class-B Electrical Contractor.\nWe handle application, subsidy, installation & net-metering. Choose your language to continue.",
       headerText: null,
       footerText: null,
       buttons: [
-        { id: "hindi", title: "हिन्दी" },
-        { id: "english", title: "English" }
+        { id: "hindi", title: "हिन्दी", type: "reply" },
+        { id: "english", title: "English", type: "reply" },
+        { id: "visit_website", title: "Visit Website", type: "url", url: "https://sunshinepower.net.in" }
       ],
       listSections: null,
-      headerMediaId: null,
+      headerMediaId: "IMAGE_MEDIA_ID_PLACEHOLDER", // Will be replaced with actual media ID after upload
       name: "SP_CAMPAIGN_TRUST_V1",
     },
-    // SP_MAIN_EN_TRIO_V1 - English Main Menu (3 buttons)
+    // SP_MAIN_EN_TRIO_V1 - English Main Menu (3 buttons, no header)
     {
       flowType: "campaign",
       stepKey: "main_menu",
@@ -618,15 +619,15 @@ async function seedMessageTemplates() {
       headerText: null,
       footerText: null,
       buttons: [
-        { id: "site_survey", title: "Book Site Survey" },
-        { id: "request_callback", title: "Request Callback" },
-        { id: "why_sunshine", title: "Why Sunshine Power?" }
+        { id: "book_site_survey", title: "Book Site Survey", type: "reply" },
+        { id: "request_callback", title: "Request Callback", type: "reply" },
+        { id: "why_sunshine_power", title: "Why Sunshine Power?", type: "reply" }
       ],
       listSections: null,
       headerMediaId: null,
       name: "SP_MAIN_EN_TRIO_V1",
     },
-    // SP_MAIN_HI_TRIO_V1 - Hindi Main Menu (3 buttons)
+    // SP_MAIN_HI_TRIO_V1 - Hindi Main Menu (3 buttons, no header)
     {
       flowType: "campaign",
       stepKey: "main_menu",
@@ -637,9 +638,9 @@ async function seedMessageTemplates() {
       headerText: null,
       footerText: null,
       buttons: [
-        { id: "site_survey", title: "साइट सर्वे बुक करें" },
-        { id: "request_callback", title: "कॉल-बैक अनुरोध" },
-        { id: "why_sunshine", title: "क्यों Sunshine Power?" }
+        { id: "book_site_survey", title: "साइट सर्वे बुक करें", type: "reply" },
+        { id: "request_callback", title: "कॉल-बैक अनुरोध", type: "reply" },
+        { id: "why_sunshine_power", title: "क्यों Sunshine Power?", type: "reply" }
       ],
       listSections: null,
       headerMediaId: null,

@@ -436,7 +436,7 @@ export const TRUST_FLOW: WhatsAppFlow = {
         children: [
           {
             type: "Description",
-            text: "We are a PM Surya Ghar registered vendor. We use ALMM/BIS-compliant modules and follow DISCOM norms. (Subsidy as per portal; subject to eligibility & updates.)"
+            text: "We are a PM Surya Ghar registered vendor and Class-B Electrical Contractor. We use ALMM/BIS-compliant modules. (Subsidy as per portal; subject to eligibility & updates.)"
           },
           {
             type: "Form",
@@ -523,7 +523,7 @@ export const TRUST_FLOW_HI: WhatsAppFlow = {
         children: [
           {
             type: "Description",
-            text: "हम PM सूर्य घर पंजीकृत विक्रेता हैं। हम ALMM/BIS-अनुपालन मॉड्यूल का उपयोग करते हैं और DISCOM मानदंडों का पालन करते हैं। (सब्सिडी पोर्टल के अनुसार; पात्रता और अपडेट के अधीन।)"
+            text: "हम PM सूर्य घर पंजीकृत विक्रेता और Class-B Electrical Contractor हैं। हम ALMM/BIS-अनुपालन मॉड्यूल का उपयोग करते हैं। (सब्सिडी पोर्टल के अनुसार; पात्रता और अपडेट के अधीन।)"
           },
           {
             type: "Form",
