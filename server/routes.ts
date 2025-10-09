@@ -813,6 +813,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // English flow endpoints (serve English flow JSON definitions)
+  app.get("/api/flows/survey", (req, res) => {
+    res.json(ALL_FLOWS.SURVEY);
+  });
+  app.get("/api/flows/price", (req, res) => {
+    res.json(ALL_FLOWS.PRICE);
+  });
+  app.get("/api/flows/service", (req, res) => {
+    res.json(ALL_FLOWS.SERVICE);
+  });
+  app.get("/api/flows/callback", (req, res) => {
+    res.json(ALL_FLOWS.CALLBACK);
+  });
+  app.get("/api/flows/trust", (req, res) => {
+    res.json(ALL_FLOWS.TRUST);
+  });
+  app.get("/api/flows/eligibility", (req, res) => {
+    res.json(ALL_FLOWS.ELIGIBILITY);
+  });
+  
+  // English flow handlers (POST endpoints)
   app.post("/api/flows/survey", (req, res) => flowHandlers.handleSurveyFlow(req, res));
   app.post("/api/flows/price", (req, res) => flowHandlers.handlePriceFlow(req, res));
   app.post("/api/flows/service", (req, res) => flowHandlers.handleServiceFlow(req, res));
@@ -833,12 +854,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/flows/callback-hi", (req, res) => {
     res.json(ALL_FLOWS.CALLBACK_HI);
   });
+  app.get("/api/flows/trust-hi", (req, res) => {
+    res.json(ALL_FLOWS.TRUST_HI);
+  });
+  app.get("/api/flows/eligibility-hi", (req, res) => {
+    res.json(ALL_FLOWS.ELIGIBILITY_HI);
+  });
   
   // Hindi flow handlers (same as English, data structure is identical)
   app.post("/api/flows/survey-hi", (req, res) => flowHandlers.handleSurveyFlow(req, res));
   app.post("/api/flows/price-hi", (req, res) => flowHandlers.handlePriceFlow(req, res));
   app.post("/api/flows/service-hi", (req, res) => flowHandlers.handleServiceFlow(req, res));
   app.post("/api/flows/callback-hi", (req, res) => flowHandlers.handleCallbackFlow(req, res));
+  app.post("/api/flows/trust-hi", (req, res) => flowHandlers.handleTrustFlow(req, res));
+  app.post("/api/flows/eligibility-hi", (req, res) => flowHandlers.handleEligibilityFlow(req, res));
 
   // Diagnostic endpoint to test encryption key
   app.get("/api/crypto/test-key", async (req, res) => {

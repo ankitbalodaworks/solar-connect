@@ -7,16 +7,16 @@ async function seedTemplates() {
   console.log("🌱 Starting template seed...");
 
   try {
-    // Campaign Entry Template (First message with language selection)
+    // Campaign Entry Template - Trust-first (SP_CAMPAIGN_TRUST_V1)
     const campaignEntry = {
-      name: "sunshine_welcome",
+      name: "SP_CAMPAIGN_TRUST_V1",
       flowType: "campaign",
       stepKey: "campaign_entry",
       messageType: "button",
       language: "en",
-      bodyText: "Welcome to Sunshine Power.\nWe handle everything: application → subsidy → installation → net-metering.\nChoose your language to continue.",
+      bodyText: "Hello,\n\nWe are a PM Surya Ghar registered vendor and Class-B Electrical Contractor. We use ALMM/BIS-compliant modules.\n\n(Subsidy as per portal; subject to eligibility & updates.)\n\nTo Continue, Choose:",
       headerMediaId: "4245254242364293",
-      footerText: "Save upto Rs. 40,000/- Per Year for a 3kW System",
+      footerText: "Licensed PM Surya Ghar Solar Vendor",
       buttons: [
         { id: "hindi", title: "हिंदी", nextStep: "main_menu" },
         { id: "english", title: "English", nextStep: "main_menu" },
@@ -25,7 +25,7 @@ async function seedTemplates() {
       metaStatus: "draft"
     };
 
-    console.log("📝 Inserting campaign_entry template...");
+    console.log("📝 Inserting campaign_entry template (SP_CAMPAIGN_TRUST_V1)...");
     await db.insert(messageTemplates)
       .values(campaignEntry)
       .onConflictDoUpdate({
@@ -33,25 +33,25 @@ async function seedTemplates() {
         set: campaignEntry
       });
 
-    // Main Menu - English
+    // Main Menu - English (SP_MAIN_EN_TRIO_V1)
     const mainMenuEn = {
-      name: "sunshine_main_menu_en",
+      name: "SP_MAIN_EN_TRIO_V1",
       flowType: "campaign",
       stepKey: "main_menu",
       messageType: "button",
       language: "en",
       headerText: "Main Menu",
-      bodyText: "Go solar with Sunshine Power. Get a quick estimate or book a site survey in 60 seconds.",
-      footerText: null,
+      bodyText: "Thank you for choosing us! What would you like to do?",
+      footerText: "Sunshine Power - Your Trusted Solar Partner",
       buttons: [
-        { id: "price_estimate", title: "Price Estimate", nextStep: null },
-        { id: "site_survey", title: "Book Site Survey", nextStep: null },
-        { id: "request_callback", title: "Request Callback", nextStep: null }
+        { id: "book_site_survey", title: "Book Site Survey", nextStep: null },
+        { id: "request_callback", title: "Request Callback", nextStep: null },
+        { id: "why_sunshine_power", title: "Why Sunshine Power?", nextStep: null }
       ],
       metaStatus: "draft"
     };
 
-    console.log("📝 Inserting main_menu_en template...");
+    console.log("📝 Inserting main_menu_en template (SP_MAIN_EN_TRIO_V1)...");
     await db.insert(messageTemplates)
       .values(mainMenuEn)
       .onConflictDoUpdate({
@@ -59,25 +59,25 @@ async function seedTemplates() {
         set: mainMenuEn
       });
 
-    // Main Menu - Hindi
+    // Main Menu - Hindi (SP_MAIN_HI_TRIO_V1)
     const mainMenuHi = {
-      name: "sunshine_main_menu_hi",
+      name: "SP_MAIN_HI_TRIO_V1",
       flowType: "campaign",
       stepKey: "main_menu",
       messageType: "button",
       language: "hi",
       headerText: "मुख्य मेनू",
-      bodyText: "Sunshine Power के साथ सोलर लगाएं। 60 सेकंड में तुरंत अनुमान प्राप्त करें या साइट सर्वे बुक करें।",
-      footerText: null,
+      bodyText: "हमें चुनने के लिए धन्यवाद! आप क्या करना चाहेंगे?",
+      footerText: "Sunshine Power - आपका विश्वसनीय सोलर पार्टनर",
       buttons: [
-        { id: "price_estimate", title: "मूल्य अनुमान", nextStep: null },
-        { id: "site_survey", title: "साइट सर्वे बुक करें", nextStep: null },
-        { id: "request_callback", title: "कॉलबैक का अनुरोध करें", nextStep: null }
+        { id: "book_site_survey", title: "साइट सर्वे बुक करें", nextStep: null },
+        { id: "request_callback", title: "कॉलबैक का अनुरोध करें", nextStep: null },
+        { id: "why_sunshine_power", title: "Sunshine Power क्यों?", nextStep: null }
       ],
       metaStatus: "draft"
     };
 
-    console.log("📝 Inserting main_menu_hi template...");
+    console.log("📝 Inserting main_menu_hi template (SP_MAIN_HI_TRIO_V1)...");
     await db.insert(messageTemplates)
       .values(mainMenuHi)
       .onConflictDoUpdate({
