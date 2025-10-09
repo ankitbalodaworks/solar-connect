@@ -577,17 +577,28 @@ export class WhatsAppService {
         const buttonPayload = message.button.payload || buttonText;
         
         const buttonMapping: Record<string, string> = {
+          // Language selection buttons
           "हिंदी": "hindi",
           "English": "english",
+          
+          // New main menu buttons (3-button structure)
           "Book Site Survey": "site_survey",
+          "Request Callback": "request_callback",
+          "Why Sunshine Power?": "why_sunshine",
+          "साइट सर्वे बुक करें": "site_survey",
+          "कॉलबैक का अनुरोध करें": "request_callback",
+          "सनशाइन पावर क्यों?": "why_sunshine",
+          
+          // Website button (optional)
+          "Visit Website": "visit_website",
+          "वेबसाइट देखें": "visit_website",
+          
+          // Legacy button mappings (for backwards compatibility)
           "Book site survey": "site_survey",
           "Price Estimate": "price_estimate",
           "Service & Support": "help",
-          "Request Callback": "request_callback",
-          "साइट सर्वे बुक करें": "site_survey",
           "मूल्य अनुमान": "price_estimate",
           "सेवा और सहायता": "help",
-          "कॉलबैक का अनुरोध करें": "request_callback",
           "Request callback": "callback",
           "कॉलबैक का अनुरोध": "callback",
           "Other help": "other_issue",
@@ -596,6 +607,8 @@ export class WhatsAppService {
           "रखरखाव अनुरोध": "maintenance",
           "Register issue": "other_issue",
           "समस्या दर्ज करें": "other_issue",
+          
+          // Urgency level buttons
           "Low": "low",
           "कम": "low",
           "Medium": "medium",

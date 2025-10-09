@@ -529,61 +529,61 @@ async function seedMessageTemplates() {
   }
 
   await db.insert(messageTemplates).values([
-    // Campaign Entry Point
+    // SP_CAMPAIGN_TRUST_V1 - Premium trust-first campaign entry
     {
       flowType: "campaign",
       stepKey: "campaign_entry",
-      stepName: "Campaign Entry - Language Selection",
+      stepName: "SP_CAMPAIGN_TRUST_V1",
       language: null,
       messageType: "button",
-      bodyText: "🌞 Welcome to Sunshine Power!\n\nWe help rural Rajasthan save money with solar energy under PM Surya Ghar Yojana.\n\n🌞 सनशाइन पावर में आपका स्वागत है!\n\nहम PM सूर्य घर योजना के तहत ग्रामीण राजस्थान को सोलर ऊर्जा से पैसे बचाने में मदद करते हैं।\n\nPlease choose your language / कृपया अपनी भाषा चुनें:",
+      bodyText: "Welcome to Sunshine Power — PM Surya Ghar registered solar vendor.\nWe handle application, subsidy, installation & net-metering. Choose your language to continue.",
       headerText: null,
-      footerText: "Reply 'W' for website / वेबसाइट के लिए 'W' टाइप करें",
+      footerText: null,
       buttons: [
-        { id: "english", title: "English" },
-        { id: "hindi", title: "हिंदी" }
+        { id: "hindi", title: "हिन्दी" },
+        { id: "english", title: "English" }
       ],
       listSections: null,
       headerMediaId: null,
-      name: "Campaign Entry",
+      name: "SP_CAMPAIGN_TRUST_V1",
     },
-    // Main Menu (English)
+    // SP_MAIN_EN_TRIO_V1 - English Main Menu (3 buttons)
     {
       flowType: "campaign",
       stepKey: "main_menu",
-      stepName: "Main Menu",
+      stepName: "SP_MAIN_EN_TRIO_V1",
       language: "en",
       messageType: "button",
-      bodyText: "How can we help you with solar energy today?",
-      headerText: "Main Menu",
-      footerText: "PM Surya Ghar Registered Vendor",
+      bodyText: "Go solar with Sunshine Power.\nBook a site survey or request a callback now — reply takes under 1 minute.\nEnd-to-end support: paperwork, subsidy, installation & net-metering.",
+      headerText: null,
+      footerText: null,
       buttons: [
         { id: "site_survey", title: "Book Site Survey" },
-        { id: "price_info", title: "Price & Info" },
-        { id: "service_support", title: "Service & Support" }
+        { id: "request_callback", title: "Request Callback" },
+        { id: "why_sunshine", title: "Why Sunshine Power?" }
       ],
       listSections: null,
       headerMediaId: null,
-      name: "Main Menu (English)",
+      name: "SP_MAIN_EN_TRIO_V1",
     },
-    // Main Menu (Hindi)
+    // SP_MAIN_HI_TRIO_V1 - Hindi Main Menu (3 buttons)
     {
       flowType: "campaign",
       stepKey: "main_menu",
-      stepName: "Main Menu",
+      stepName: "SP_MAIN_HI_TRIO_V1",
       language: "hi",
       messageType: "button",
-      bodyText: "आज हम सोलर ऊर्जा में आपकी कैसे मदद कर सकते हैं?",
-      headerText: "मुख्य मेनू",
-      footerText: "PM Surya Ghar पंजीकृत विक्रेता",
+      bodyText: "Sunshine Power के साथ सोलर लगवाएँ।\n1 मिनट में साइट सर्वे बुक करें या कॉल-बैक का अनुरोध करें।\nकागज़ात, सब्सिडी, इंस्टॉलेशन और नेट-मीटरिंग—सब कुछ हम संभालते हैं।",
+      headerText: null,
+      footerText: null,
       buttons: [
         { id: "site_survey", title: "साइट सर्वे बुक करें" },
-        { id: "price_info", title: "मूल्य और जानकारी" },
-        { id: "service_support", title: "सेवा और सहायता" }
+        { id: "request_callback", title: "कॉल-बैक अनुरोध" },
+        { id: "why_sunshine", title: "क्यों Sunshine Power?" }
       ],
       listSections: null,
       headerMediaId: null,
-      name: "Main Menu (Hindi)",
+      name: "SP_MAIN_HI_TRIO_V1",
     },
     
   ]);

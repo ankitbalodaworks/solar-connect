@@ -29,9 +29,10 @@ export interface MetaButton {
 }
 
 // Campaign Entry Template (Entry point - MUST be approved by Meta)
+// Trust-first approach with PM Surya Ghar registration prominently displayed
 const campaignEntryTemplates: MetaTemplate[] = [
   {
-    name: "sunshine_welcome",
+    name: "sp_campaign_trust_v1",
     category: "MARKETING",
     language: "en_US",
     components: [
@@ -44,11 +45,11 @@ const campaignEntryTemplates: MetaTemplate[] = [
       },
       {
         type: "BODY",
-        text: "Welcome to Sunshine Power.\nWe handle everything: application → subsidy → installation → net-metering.\nChoose your language to continue."
+        text: "Hello,\n\nWe are a PM Surya Ghar registered Solar Vendor.\n\nFrom application to net-metering and installation - we handle it all.\n\nTo Continue, Choose:"
       },
       {
         type: "FOOTER",
-        text: "Save upto Rs. 40,000/- Per Year for a 3kW System"
+        text: "Licensed PM Surya Ghar Solar Vendor"
       },
       {
         type: "BUTTONS",
@@ -62,52 +63,60 @@ const campaignEntryTemplates: MetaTemplate[] = [
   }
 ];
 
-// Main Menu Templates
+// Main Menu Templates - Trust-first 3-button structure
 const mainMenuTemplates: MetaTemplate[] = [
   {
-    name: "sunshine_main_menu_en",
+    name: "sp_main_en_trio_v1",
     category: "UTILITY",
     language: "en_US",
     components: [
       {
         type: "HEADER",
         format: "TEXT",
-        text: "Main Menu"
+        text: "What would you like to do?"
       },
       {
         type: "BODY",
-        text: "Go solar with Sunshine Power. Get a quick estimate or book a site survey in 60 seconds."
+        text: "Choose an option:"
+      },
+      {
+        type: "FOOTER",
+        text: "Sunshine Power - PM Surya Ghar Registered"
       },
       {
         type: "BUTTONS",
         buttons: [
-          { type: "QUICK_REPLY", text: "Price Estimate" },
           { type: "QUICK_REPLY", text: "Book Site Survey" },
-          { type: "QUICK_REPLY", text: "Request Callback" }
+          { type: "QUICK_REPLY", text: "Request Callback" },
+          { type: "QUICK_REPLY", text: "Why Sunshine Power?" }
         ]
       }
     ]
   },
   {
-    name: "sunshine_main_menu_hi",
+    name: "sp_main_hi_trio_v1",
     category: "UTILITY",
     language: "hi",
     components: [
       {
         type: "HEADER",
         format: "TEXT",
-        text: "मुख्य मेनू"
+        text: "आप क्या करना चाहेंगे?"
       },
       {
         type: "BODY",
-        text: "Sunshine Power के साथ सोलर लगाएं। 60 सेकंड में तुरंत अनुमान प्राप्त करें या साइट सर्वे बुक करें।"
+        text: "विकल्प चुनें:"
+      },
+      {
+        type: "FOOTER",
+        text: "Sunshine Power - PM Surya Ghar पंजीकृत"
       },
       {
         type: "BUTTONS",
         buttons: [
-          { type: "QUICK_REPLY", text: "मूल्य अनुमान" },
           { type: "QUICK_REPLY", text: "साइट सर्वे बुक करें" },
-          { type: "QUICK_REPLY", text: "कॉलबैक का अनुरोध करें" }
+          { type: "QUICK_REPLY", text: "कॉलबैक का अनुरोध करें" },
+          { type: "QUICK_REPLY", text: "सनशाइन पावर क्यों?" }
         ]
       }
     ]
@@ -425,6 +434,12 @@ export const allMetaTemplates: MetaTemplate[] = [
 // Template name to database step key mapping
 // This helps map Meta template names to our database template step keys
 export const metaToStepKeyMapping: Record<string, { flowType: string, stepKey: string, language: string }> = {
+  // New trust-first templates
+  "sp_campaign_trust_v1": { flowType: "campaign", stepKey: "campaign_entry", language: "en" },
+  "sp_main_en_trio_v1": { flowType: "campaign", stepKey: "main_menu", language: "en" },
+  "sp_main_hi_trio_v1": { flowType: "campaign", stepKey: "main_menu", language: "hi" },
+  
+  // Legacy templates (for backwards compatibility)
   "sunshine_welcome": { flowType: "campaign", stepKey: "campaign_entry", language: "en" },
   "sunshine_main_menu_en": { flowType: "campaign", stepKey: "main_menu", language: "en" },
   "sunshine_main_menu_hi": { flowType: "campaign", stepKey: "main_menu", language: "hi" },

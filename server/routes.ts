@@ -772,6 +772,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return flowHandlers.handleServiceFlow(req, res);
         } else if (flowType === "callback") {
           return flowHandlers.handleCallbackFlow(req, res);
+        } else if (flowType === "trust") {
+          return flowHandlers.handleTrustFlow(req, res);
+        } else if (flowType === "eligibility") {
+          return flowHandlers.handleEligibilityFlow(req, res);
         } else {
           return flowHandlers.handleSurveyFlow(req, res);
         }
@@ -790,6 +794,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else if (op === "submit_callback_form" || screen === "CALLBACK_FORM") {
         console.log('[DATA_EXCHANGE] Routing to Callback handler');
         return flowHandlers.handleCallbackFlow(req, res);
+      } else if (op === "show_trust_topic" || screen === "TRUST_MENU") {
+        console.log('[DATA_EXCHANGE] Routing to Trust handler');
+        return flowHandlers.handleTrustFlow(req, res);
+      } else if (op === "eligibility_check" || screen === "ELIG_FORM") {
+        console.log('[DATA_EXCHANGE] Routing to Eligibility handler');
+        return flowHandlers.handleEligibilityFlow(req, res);
       } else {
         console.error('[DATA_EXCHANGE] Unknown operation - op:', op, 'screen:', screen);
         return res.status(400).json({ 
@@ -807,6 +817,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/flows/price", (req, res) => flowHandlers.handlePriceFlow(req, res));
   app.post("/api/flows/service", (req, res) => flowHandlers.handleServiceFlow(req, res));
   app.post("/api/flows/callback", (req, res) => flowHandlers.handleCallbackFlow(req, res));
+  app.post("/api/flows/trust", (req, res) => flowHandlers.handleTrustFlow(req, res));
+  app.post("/api/flows/eligibility", (req, res) => flowHandlers.handleEligibilityFlow(req, res));
   
   // Hindi flow endpoints (serve Hindi flow JSON definitions)
   app.get("/api/flows/survey-hi", (req, res) => {

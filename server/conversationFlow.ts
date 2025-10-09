@@ -39,8 +39,12 @@ export class ConversationFlowEngine {
       if (message.selectedButtonId) {
         const flowMapping: Record<string, string> = {
           "site_survey": "survey",
-          "price_estimate": "price",
           "request_callback": "callback",
+          "why_sunshine": "trust",
+          // Legacy mappings for backwards compatibility
+          "price_estimate": "price",
+          "maintenance": "service",
+          "callback": "callback",
         };
 
         const flowType = flowMapping[message.selectedButtonId];
@@ -55,43 +59,6 @@ export class ConversationFlowEngine {
           const flowResult = await this.sendWhatsAppFlow(
             message.customerPhone,
             flowType,
-            language
-          );
-
-          if (flowResult.success) {
-            // Delete conversation state as flow will handle the rest
-            await storage.deleteConversationState(message.customerPhone);
-
-            return {
-              template: null,
-              shouldSend: false,
-              isFlow: true,
-              flowSent: true,
-            };
-          } else {
-            return {
-              template: null,
-              shouldSend: false,
-              error: flowResult.error || "Failed to send WhatsApp Flow",
-            };
-          }
-        }
-
-        // Check for help submenu button IDs
-        const helpFlowMapping: Record<string, string> = {
-          "maintenance": "service",
-          "callback": "callback",
-        };
-
-        const helpFlowType = helpFlowMapping[message.selectedButtonId];
-
-        if (helpFlowType) {
-          let conversationState = await storage.getConversationState(message.customerPhone);
-          const language = conversationState?.language || "en";
-
-          const flowResult = await this.sendWhatsAppFlow(
-            message.customerPhone,
-            helpFlowType,
             language
           );
 
@@ -396,6 +363,19 @@ export class ConversationFlowEngine {
           en: process.env.WHATSAPP_FLOW_ID_SURVEY || "",
           hi: process.env.WHATSAPP_FLOW_ID_SURVEY_HI || process.env.WHATSAPP_FLOW_ID_SURVEY || "",
         },
+        callback: {
+          en: process.env.WHATSAPP_FLOW_ID_CALLBACK || "",
+          hi: process.env.WHATSAPP_FLOW_ID_CALLBACK_HI || process.env.WHATSAPP_FLOW_ID_CALLBACK || "",
+        },
+        trust: {
+          en: process.env.WHATSAPP_FLOW_ID_TRUST || "",
+          hi: process.env.WHATSAPP_FLOW_ID_TRUST_HI || process.env.WHATSAPP_FLOW_ID_TRUST || "",
+        },
+        eligibility: {
+          en: process.env.WHATSAPP_FLOW_ID_ELIGIBILITY || "",
+          hi: process.env.WHATSAPP_FLOW_ID_ELIGIBILITY_HI || process.env.WHATSAPP_FLOW_ID_ELIGIBILITY || "",
+        },
+        // Legacy flow types (for backwards compatibility)
         price: {
           en: process.env.WHATSAPP_FLOW_ID_PRICE || "",
           hi: process.env.WHATSAPP_FLOW_ID_PRICE_HI || process.env.WHATSAPP_FLOW_ID_PRICE || "",
@@ -403,10 +383,6 @@ export class ConversationFlowEngine {
         service: {
           en: process.env.WHATSAPP_FLOW_ID_SERVICE || "",
           hi: process.env.WHATSAPP_FLOW_ID_SERVICE_HI || process.env.WHATSAPP_FLOW_ID_SERVICE || "",
-        },
-        callback: {
-          en: process.env.WHATSAPP_FLOW_ID_CALLBACK || "",
-          hi: process.env.WHATSAPP_FLOW_ID_CALLBACK_HI || process.env.WHATSAPP_FLOW_ID_CALLBACK || "",
         },
       };
 
@@ -439,6 +415,37 @@ export class ConversationFlowEngine {
             button: "सर्वे बुक करें",
           },
         },
+        callback: {
+          en: {
+            body: "Request a callback from our team - takes under 1 minute.",
+            button: "Request Callback",
+          },
+          hi: {
+            body: "हमारी टीम से कॉलबैक का अनुरोध करें - 1 मिनट से कम में।",
+            button: "कॉलबैक का अनुरोध करें",
+          },
+        },
+        trust: {
+          en: {
+            body: "Learn more about our credentials, warranties, and successful installations.",
+            button: "Learn More",
+          },
+          hi: {
+            body: "हमारे प्रमाणपत्र, वारंटी और सफल इंस्टॉलेशन के बारे में जानें।",
+            button: "और जानें",
+          },
+        },
+        eligibility: {
+          en: {
+            body: "Check your eligibility and get a quick estimate based on your electricity bill.",
+            button: "Check Eligibility",
+          },
+          hi: {
+            body: "अपनी पात्रता जांचें और अपने बिजली बिल के आधार पर त्वरित अनुमान प्राप्त करें।",
+            button: "पात्रता जांचें",
+          },
+        },
+        // Legacy flow texts (for backwards compatibility)
         price: {
           en: {
             body: "Get an instant price estimate for your solar installation.",
@@ -457,16 +464,6 @@ export class ConversationFlowEngine {
           hi: {
             body: "अपने मौजूदा सोलर इंस्टॉलेशन के लिए रखरखाव या सेवा का अनुरोध करें।",
             button: "सेवा का अनुरोध करें",
-          },
-        },
-        callback: {
-          en: {
-            body: "Request a callback from our team.",
-            button: "Request Callback",
-          },
-          hi: {
-            body: "हमारी टीम से कॉलबैक का अनुरोध करें।",
-            button: "कॉलबैक का अनुरोध करें",
           },
         },
       };

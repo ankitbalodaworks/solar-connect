@@ -1,6 +1,7 @@
 // WhatsApp Flow JSON Definitions
 // Version 7.2, Data API Version 3.0
-// All forms are single-screen with submit buttons that trigger data_exchange
+// Premium trust-first conversation flow
+// All forms simplified - no DISCOM/pincode/phase/roof fields
 
 export interface WhatsAppFlow {
   version: string;
@@ -18,7 +19,9 @@ export interface FlowScreen {
   };
 }
 
-// Site Survey Flow
+// ============================================================================
+// SURVEY FLOW (Book Site Survey) - English
+// ============================================================================
 export const SURVEY_FLOW: WhatsAppFlow = {
   version: "7.2",
   data_api_version: "3.0",
@@ -40,16 +43,16 @@ export const SURVEY_FLOW: WhatsAppFlow = {
               {
                 type: "TextInput",
                 name: "full_name",
-                label: "Full Name",
+                label: "Full Name (as per bill)",
                 required: true,
                 "input-type": "text",
                 "max-length": 120,
-                "error-message": "Please enter your name"
+                "error-message": "Enter your name"
               },
               {
                 type: "PhoneNumber",
                 name: "mobile",
-                label: "Mobile",
+                label: "Mobile (10-digit)",
                 required: true,
                 "error-message": "Enter a valid mobile number"
               },
@@ -65,40 +68,8 @@ export const SURVEY_FLOW: WhatsAppFlow = {
                 name: "village",
                 label: "Village/Town",
                 required: true,
-                "input-type": "text"
-              },
-              {
-                type: "NumberInput",
-                name: "avg_bill",
-                label: "Avg Monthly Bill (₹)",
-                required: true
-              },
-              {
-                type: "SingleSelect",
-                name: "phase",
-                label: "Phase",
-                required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "1p", title: "1φ" },
-                    { id: "3p", title: "3φ" }
-                  ]
-                }
-              },
-              {
-                type: "SingleSelect",
-                name: "roof_type",
-                label: "Roof Type",
-                required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "rcc", title: "RCC" },
-                    { id: "tin", title: "Tin/Sheet" },
-                    { id: "other", title: "Other" }
-                  ]
-                }
+                "input-type": "text",
+                "max-length": 120
               },
               {
                 type: "DatePicker",
@@ -119,8 +90,7 @@ export const SURVEY_FLOW: WhatsAppFlow = {
                 "on-click-action": {
                   name: "data_exchange",
                   payload: {
-                    op: "submit_survey_form",
-                    form: "${form}"
+                    op: "submit_survey_form"
                   }
                 }
               }
@@ -137,7 +107,7 @@ export const SURVEY_FLOW: WhatsAppFlow = {
         children: [
           {
             type: "Description",
-            text: "Your survey request has been recorded. Our team will contact you shortly."
+            text: "Your site survey request has been recorded. Our team will contact you shortly."
           }
         ]
       }
@@ -145,18 +115,20 @@ export const SURVEY_FLOW: WhatsAppFlow = {
   ]
 };
 
-// Price Estimate Flow
-export const PRICE_FLOW: WhatsAppFlow = {
+// ============================================================================
+// SURVEY FLOW (Book Site Survey) - Hindi
+// ============================================================================
+export const SURVEY_FLOW_HI: WhatsAppFlow = {
   version: "7.2",
   data_api_version: "3.0",
   routing_model: {
-    PRICE_FORM: ["PRICE_SUCCESS"],
-    PRICE_SUCCESS: []
+    SURVEY_FORM: ["SURVEY_SUCCESS"],
+    SURVEY_SUCCESS: []
   },
   screens: [
     {
-      id: "PRICE_FORM",
-      title: "Price Estimate",
+      id: "SURVEY_FORM",
+      title: "साइट सर्वे बुक करें",
       layout: {
         type: "SingleColumnLayout",
         children: [
@@ -167,205 +139,54 @@ export const PRICE_FLOW: WhatsAppFlow = {
               {
                 type: "TextInput",
                 name: "full_name",
-                label: "Full Name",
+                label: "पूरा नाम (बिल के अनुसार)",
                 required: true,
                 "input-type": "text",
                 "max-length": 120,
-                "error-message": "Please enter your name"
+                "error-message": "अपना नाम दर्ज करें"
               },
               {
                 type: "PhoneNumber",
                 name: "mobile",
-                label: "Mobile",
+                label: "मोबाइल (10-अंक)",
                 required: true,
-                "error-message": "Enter a valid mobile number"
+                "error-message": "वैध मोबाइल नंबर दर्ज करें"
               },
               {
                 type: "TextArea",
                 name: "address",
-                label: "Address",
+                label: "पता",
                 required: true,
                 "max-length": 400
               },
               {
                 type: "TextInput",
                 name: "village",
-                label: "Village/Town",
-                required: true,
-                "input-type": "text"
-              },
-              {
-                type: "NumberInput",
-                name: "avg_bill",
-                label: "Avg Monthly Bill (₹)",
-                required: true
-              },
-              {
-                type: "NumberInput",
-                name: "monthly_units",
-                label: "Avg Monthly Units (kWh)",
-                required: true
-              },
-              {
-                type: "SingleSelect",
-                name: "phase",
-                label: "Phase",
-                required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "1p", title: "1φ" },
-                    { id: "3p", title: "3φ" }
-                  ]
-                }
-              },
-              {
-                type: "SingleSelect",
-                name: "roof_type",
-                label: "Roof Type",
-                required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "rcc", title: "RCC" },
-                    { id: "tin", title: "Tin/Sheet" },
-                    { id: "other", title: "Other" }
-                  ]
-                }
-              }
-            ],
-            actions: {
-              submit: {
-                label: "Submit",
-                "on-click-action": {
-                  name: "data_exchange",
-                  payload: {
-                    op: "submit_price_form",
-                    form: "${form}"
-                  }
-                }
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      id: "PRICE_SUCCESS",
-      title: "Thank you!",
-      layout: {
-        type: "SingleColumnLayout",
-        children: [
-          {
-            type: "Description",
-            text: "Your details are saved. We'll send an estimate soon."
-          }
-        ]
-      }
-    }
-  ]
-};
-
-// Service Request Flow
-export const SERVICE_FLOW: WhatsAppFlow = {
-  version: "7.2",
-  data_api_version: "3.0",
-  routing_model: {
-    SERVICE_FORM: ["SERVICE_SUCCESS"],
-    SERVICE_SUCCESS: []
-  },
-  screens: [
-    {
-      id: "SERVICE_FORM",
-      title: "Maintenance / Service",
-      layout: {
-        type: "SingleColumnLayout",
-        children: [
-          {
-            type: "Form",
-            name: "form",
-            children: [
-              {
-                type: "TextInput",
-                name: "full_name",
-                label: "Full Name",
+                label: "गाँव/कस्बा",
                 required: true,
                 "input-type": "text",
-                "max-length": 120,
-                "error-message": "Please enter your name"
-              },
-              {
-                type: "PhoneNumber",
-                name: "mobile",
-                label: "Mobile",
-                required: true,
-                "error-message": "Enter a valid mobile number"
-              },
-              {
-                type: "TextArea",
-                name: "address",
-                label: "Address",
-                required: true,
-                "max-length": 400
-              },
-              {
-                type: "TextInput",
-                name: "village",
-                label: "Village/Town",
-                required: true,
-                "input-type": "text"
-              },
-              {
-                type: "SingleSelect",
-                name: "issue_type",
-                label: "Issue Type",
-                required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "inverter", title: "Inverter" },
-                    { id: "panels", title: "Panels" },
-                    { id: "wiring", title: "Wiring" },
-                    { id: "meter", title: "Meter/Net-Meter" },
-                    { id: "other", title: "Other" }
-                  ]
-                }
-              },
-              {
-                type: "SingleSelect",
-                name: "urgency",
-                label: "Urgency",
-                required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "low", title: "Low" },
-                    { id: "normal", title: "Normal" },
-                    { id: "high", title: "High" }
-                  ]
-                }
+                "max-length": 120
               },
               {
                 type: "DatePicker",
                 name: "preferred_date",
-                label: "Preferred Date",
+                label: "पसंदीदा तारीख",
                 required: true
               },
               {
                 type: "TimePicker",
                 name: "preferred_time",
-                label: "Preferred Time",
+                label: "पसंदीदा समय",
                 required: true
               }
             ],
             actions: {
               submit: {
-                label: "Submit",
+                label: "सबमिट करें",
                 "on-click-action": {
                   name: "data_exchange",
                   payload: {
-                    op: "submit_service_form",
-                    form: "${form}"
+                    op: "submit_survey_form"
                   }
                 }
               }
@@ -375,14 +196,14 @@ export const SERVICE_FLOW: WhatsAppFlow = {
       }
     },
     {
-      id: "SERVICE_SUCCESS",
-      title: "Thank you!",
+      id: "SURVEY_SUCCESS",
+      title: "धन्यवाद!",
       layout: {
         type: "SingleColumnLayout",
         children: [
           {
             type: "Description",
-            text: "Your service request has been logged. We'll reach out."
+            text: "आपका साइट सर्वे अनुरोध दर्ज कर लिया गया है। हमारी टीम जल्द ही आपसे संपर्क करेगी।"
           }
         ]
       }
@@ -390,7 +211,9 @@ export const SERVICE_FLOW: WhatsAppFlow = {
   ]
 };
 
-// Callback Request Flow
+// ============================================================================
+// CALLBACK FLOW (Request Callback) - English
+// ============================================================================
 export const CALLBACK_FLOW: WhatsAppFlow = {
   version: "7.2",
   data_api_version: "3.0",
@@ -416,12 +239,12 @@ export const CALLBACK_FLOW: WhatsAppFlow = {
                 required: true,
                 "input-type": "text",
                 "max-length": 120,
-                "error-message": "Please enter your name"
+                "error-message": "Enter your name"
               },
               {
                 type: "PhoneNumber",
                 name: "mobile",
-                label: "Mobile",
+                label: "Mobile (10-digit)",
                 required: true,
                 "error-message": "Enter a valid mobile number"
               },
@@ -447,17 +270,15 @@ export const CALLBACK_FLOW: WhatsAppFlow = {
                 "data-source": {
                   type: "STATIC",
                   data: [
-                    { id: "site_survey", title: "Site Survey" },
-                    { id: "price_estimate", title: "Price Estimate" },
-                    { id: "maintenance", title: "Maintenance/Service" },
-                    { id: "other", title: "Other" }
+                    { id: "survey", title: "Site Survey" },
+                    { id: "general", title: "General Enquiry" }
                   ]
                 }
               },
               {
                 type: "TextArea",
                 name: "notes",
-                label: "Notes (Optional)",
+                label: "Notes (optional)",
                 required: false,
                 "max-length": 400
               }
@@ -468,8 +289,7 @@ export const CALLBACK_FLOW: WhatsAppFlow = {
                 "on-click-action": {
                   name: "data_exchange",
                   payload: {
-                    op: "submit_callback_form",
-                    form: "${form}"
+                    op: "submit_callback_form"
                   }
                 }
               }
@@ -486,7 +306,7 @@ export const CALLBACK_FLOW: WhatsAppFlow = {
         children: [
           {
             type: "Description",
-            text: "We'll call you at your preferred time."
+            text: "Your callback request has been logged. We will contact you at your preferred time."
           }
         ]
       }
@@ -494,379 +314,9 @@ export const CALLBACK_FLOW: WhatsAppFlow = {
   ]
 };
 
-// Hindi Site Survey Flow
-export const SURVEY_FLOW_HI: WhatsAppFlow = {
-  version: "7.2",
-  data_api_version: "3.0",
-  routing_model: {
-    SURVEY_FORM: ["SURVEY_SUCCESS"],
-    SURVEY_SUCCESS: []
-  },
-  screens: [
-    {
-      id: "SURVEY_FORM",
-      title: "साइट सर्वे बुक करें",
-      layout: {
-        type: "SingleColumnLayout",
-        children: [
-          {
-            type: "Form",
-            name: "form",
-            children: [
-              {
-                type: "TextInput",
-                name: "full_name",
-                label: "पूरा नाम",
-                required: true,
-                "input-type": "text",
-                "max-length": 120,
-                "error-message": "कृपया अपना नाम दर्ज करें"
-              },
-              {
-                type: "PhoneNumber",
-                name: "mobile",
-                label: "मोबाइल",
-                required: true,
-                "error-message": "वैध मोबाइल नंबर दर्ज करें"
-              },
-              {
-                type: "TextArea",
-                name: "address",
-                label: "पता",
-                required: true,
-                "max-length": 400
-              },
-              {
-                type: "TextInput",
-                name: "village",
-                label: "गांव/शहर",
-                required: true,
-                "input-type": "text"
-              },
-              {
-                type: "NumberInput",
-                name: "avg_bill",
-                label: "औसत मासिक बिल (₹)",
-                required: true
-              },
-              {
-                type: "SingleSelect",
-                name: "phase",
-                label: "फेज",
-                required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "1p", title: "1φ" },
-                    { id: "3p", title: "3φ" }
-                  ]
-                }
-              },
-              {
-                type: "SingleSelect",
-                name: "roof_type",
-                label: "छत का प्रकार",
-                required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "rcc", title: "RCC" },
-                    { id: "tin", title: "टिन/शीट" },
-                    { id: "other", title: "अन्य" }
-                  ]
-                }
-              },
-              {
-                type: "DatePicker",
-                name: "preferred_date",
-                label: "पसंदीदा तारीख",
-                required: true
-              },
-              {
-                type: "TimePicker",
-                name: "preferred_time",
-                label: "पसंदीदा समय",
-                required: true
-              }
-            ],
-            actions: {
-              submit: {
-                label: "जमा करें",
-                "on-click-action": {
-                  name: "data_exchange",
-                  payload: {
-                    op: "submit_survey_form",
-                    form: "${form}"
-                  }
-                }
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      id: "SURVEY_SUCCESS",
-      title: "धन्यवाद!",
-      layout: {
-        type: "SingleColumnLayout",
-        children: [
-          {
-            type: "Description",
-            text: "आपका सर्वे अनुरोध दर्ज किया गया है। हमारी टीम जल्द ही आपसे संपर्क करेगी।"
-          }
-        ]
-      }
-    }
-  ]
-};
-
-// Hindi Price Estimate Flow
-export const PRICE_FLOW_HI: WhatsAppFlow = {
-  version: "7.2",
-  data_api_version: "3.0",
-  routing_model: {
-    PRICE_FORM: ["PRICE_SUCCESS"],
-    PRICE_SUCCESS: []
-  },
-  screens: [
-    {
-      id: "PRICE_FORM",
-      title: "मूल्य अनुमान",
-      layout: {
-        type: "SingleColumnLayout",
-        children: [
-          {
-            type: "Form",
-            name: "form",
-            children: [
-              {
-                type: "TextInput",
-                name: "full_name",
-                label: "पूरा नाम",
-                required: true,
-                "input-type": "text",
-                "max-length": 120,
-                "error-message": "कृपया अपना नाम दर्ज करें"
-              },
-              {
-                type: "PhoneNumber",
-                name: "mobile",
-                label: "मोबाइल",
-                required: true,
-                "error-message": "वैध मोबाइल नंबर दर्ज करें"
-              },
-              {
-                type: "TextArea",
-                name: "address",
-                label: "पता",
-                required: true,
-                "max-length": 400
-              },
-              {
-                type: "TextInput",
-                name: "village",
-                label: "गांव/शहर",
-                required: true,
-                "input-type": "text"
-              },
-              {
-                type: "NumberInput",
-                name: "avg_bill",
-                label: "औसत मासिक बिल (₹)",
-                required: true
-              },
-              {
-                type: "NumberInput",
-                name: "monthly_units",
-                label: "औसत मासिक यूनिट (kWh)",
-                required: true
-              },
-              {
-                type: "SingleSelect",
-                name: "phase",
-                label: "फेज",
-                required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "1p", title: "1φ" },
-                    { id: "3p", title: "3φ" }
-                  ]
-                }
-              },
-              {
-                type: "SingleSelect",
-                name: "roof_type",
-                label: "छत का प्रकार",
-                required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "rcc", title: "RCC" },
-                    { id: "tin", title: "टिन/शीट" },
-                    { id: "other", title: "अन्य" }
-                  ]
-                }
-              }
-            ],
-            actions: {
-              submit: {
-                label: "जमा करें",
-                "on-click-action": {
-                  name: "data_exchange",
-                  payload: {
-                    op: "submit_price_form",
-                    form: "${form}"
-                  }
-                }
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      id: "PRICE_SUCCESS",
-      title: "धन्यवाद!",
-      layout: {
-        type: "SingleColumnLayout",
-        children: [
-          {
-            type: "Description",
-            text: "आपका विवरण सहेजा गया है। हम जल्द ही अनुमान भेजेंगे।"
-          }
-        ]
-      }
-    }
-  ]
-};
-
-// Hindi Service Request Flow
-export const SERVICE_FLOW_HI: WhatsAppFlow = {
-  version: "7.2",
-  data_api_version: "3.0",
-  routing_model: {
-    SERVICE_FORM: ["SERVICE_SUCCESS"],
-    SERVICE_SUCCESS: []
-  },
-  screens: [
-    {
-      id: "SERVICE_FORM",
-      title: "रखरखाव / सेवा",
-      layout: {
-        type: "SingleColumnLayout",
-        children: [
-          {
-            type: "Form",
-            name: "form",
-            children: [
-              {
-                type: "TextInput",
-                name: "full_name",
-                label: "पूरा नाम",
-                required: true,
-                "input-type": "text",
-                "max-length": 120,
-                "error-message": "कृपया अपना नाम दर्ज करें"
-              },
-              {
-                type: "PhoneNumber",
-                name: "mobile",
-                label: "मोबाइल",
-                required: true,
-                "error-message": "वैध मोबाइल नंबर दर्ज करें"
-              },
-              {
-                type: "TextArea",
-                name: "address",
-                label: "पता",
-                required: true,
-                "max-length": 400
-              },
-              {
-                type: "TextInput",
-                name: "village",
-                label: "गांव/शहर",
-                required: true,
-                "input-type": "text"
-              },
-              {
-                type: "SingleSelect",
-                name: "issue_type",
-                label: "समस्या का प्रकार",
-                required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "inverter", title: "इन्वर्टर" },
-                    { id: "panels", title: "पैनल" },
-                    { id: "wiring", title: "वायरिंग" },
-                    { id: "meter", title: "मीटर/नेट-मीटर" },
-                    { id: "other", title: "अन्य" }
-                  ]
-                }
-              },
-              {
-                type: "SingleSelect",
-                name: "urgency",
-                label: "तात्कालिकता",
-                required: true,
-                "data-source": {
-                  type: "STATIC",
-                  data: [
-                    { id: "low", title: "कम" },
-                    { id: "normal", title: "सामान्य" },
-                    { id: "high", title: "उच्च" }
-                  ]
-                }
-              },
-              {
-                type: "DatePicker",
-                name: "preferred_date",
-                label: "पसंदीदा तारीख",
-                required: true
-              },
-              {
-                type: "TimePicker",
-                name: "preferred_time",
-                label: "पसंदीदा समय",
-                required: true
-              }
-            ],
-            actions: {
-              submit: {
-                label: "जमा करें",
-                "on-click-action": {
-                  name: "data_exchange",
-                  payload: {
-                    op: "submit_service_form",
-                    form: "${form}"
-                  }
-                }
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      id: "SERVICE_SUCCESS",
-      title: "धन्यवाद!",
-      layout: {
-        type: "SingleColumnLayout",
-        children: [
-          {
-            type: "Description",
-            text: "आपका सेवा अनुरोध लॉग किया गया है। हम संपर्क करेंगे।"
-          }
-        ]
-      }
-    }
-  ]
-};
-
-// Hindi Callback Request Flow
+// ============================================================================
+// CALLBACK FLOW (Request Callback) - Hindi
+// ============================================================================
 export const CALLBACK_FLOW_HI: WhatsAppFlow = {
   version: "7.2",
   data_api_version: "3.0",
@@ -877,7 +327,7 @@ export const CALLBACK_FLOW_HI: WhatsAppFlow = {
   screens: [
     {
       id: "CALLBACK_FORM",
-      title: "कॉलबैक का अनुरोध",
+      title: "कॉल-बैक अनुरोध",
       layout: {
         type: "SingleColumnLayout",
         children: [
@@ -892,12 +342,12 @@ export const CALLBACK_FLOW_HI: WhatsAppFlow = {
                 required: true,
                 "input-type": "text",
                 "max-length": 120,
-                "error-message": "कृपया अपना नाम दर्ज करें"
+                "error-message": "अपना नाम दर्ज करें"
               },
               {
                 type: "PhoneNumber",
                 name: "mobile",
-                label: "मोबाइल",
+                label: "मोबाइल (10-अंक)",
                 required: true,
                 "error-message": "वैध मोबाइल नंबर दर्ज करें"
               },
@@ -923,10 +373,8 @@ export const CALLBACK_FLOW_HI: WhatsAppFlow = {
                 "data-source": {
                   type: "STATIC",
                   data: [
-                    { id: "site_survey", title: "साइट सर्वे" },
-                    { id: "price_estimate", title: "मूल्य अनुमान" },
-                    { id: "maintenance", title: "रखरखाव/सेवा" },
-                    { id: "other", title: "अन्य" }
+                    { id: "survey", title: "साइट सर्वे" },
+                    { id: "general", title: "सामान्य पूछताछ" }
                   ]
                 }
               },
@@ -940,12 +388,11 @@ export const CALLBACK_FLOW_HI: WhatsAppFlow = {
             ],
             actions: {
               submit: {
-                label: "जमा करें",
+                label: "सबमिट करें",
                 "on-click-action": {
                   name: "data_exchange",
                   payload: {
-                    op: "submit_callback_form",
-                    form: "${form}"
+                    op: "submit_callback_form"
                   }
                 }
               }
@@ -962,7 +409,7 @@ export const CALLBACK_FLOW_HI: WhatsAppFlow = {
         children: [
           {
             type: "Description",
-            text: "हम आपके पसंदीदा समय पर आपको कॉल करेंगे।"
+            text: "आपका कॉल-बैक अनुरोध दर्ज कर लिया गया है। हम आपके पसंदीदा समय पर आपसे संपर्क करेंगे।"
           }
         ]
       }
@@ -970,14 +417,729 @@ export const CALLBACK_FLOW_HI: WhatsAppFlow = {
   ]
 };
 
-// Export all flows
+// ============================================================================
+// TRUST FLOW (Why Sunshine Power?) - English
+// ============================================================================
+export const TRUST_FLOW: WhatsAppFlow = {
+  version: "7.2",
+  data_api_version: "3.0",
+  routing_model: {
+    TRUST_MENU: ["TRUST_RESULT"],
+    TRUST_RESULT: []
+  },
+  screens: [
+    {
+      id: "TRUST_MENU",
+      title: "Why Sunshine Power?",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Description",
+            text: "We are a PM Surya Ghar registered vendor. We use ALMM/BIS-compliant modules and follow DISCOM norms. (Subsidy as per portal; subject to eligibility & updates.)"
+          },
+          {
+            type: "Form",
+            name: "form",
+            children: [
+              {
+                type: "SingleSelect",
+                name: "topic",
+                label: "Choose what you'd like to see",
+                required: true,
+                "data-source": {
+                  type: "STATIC",
+                  data: [
+                    { id: "credentials", title: "Credentials & Licenses" },
+                    { id: "warranty", title: "Warranties & Materials" },
+                    { id: "installs", title: "Recent Installs & Coverage" }
+                  ]
+                }
+              }
+            ],
+            actions: {
+              submit: {
+                label: "Show",
+                "on-click-action": {
+                  name: "data_exchange",
+                  payload: {
+                    op: "show_trust_topic"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "TRUST_RESULT",
+      title: "Details",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Description",
+            text: "Here are the highlights you requested. Ready to proceed? Book a site survey in under a minute."
+          },
+          {
+            type: "Form",
+            name: "cta",
+            children: [],
+            actions: {
+              submit: {
+                label: "Book Site Survey",
+                "on-click-action": {
+                  name: "navigate",
+                  payload: {
+                    screen: "SURVEY_FORM"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+};
+
+// ============================================================================
+// TRUST FLOW (Why Sunshine Power?) - Hindi
+// ============================================================================
+export const TRUST_FLOW_HI: WhatsAppFlow = {
+  version: "7.2",
+  data_api_version: "3.0",
+  routing_model: {
+    TRUST_MENU: ["TRUST_RESULT"],
+    TRUST_RESULT: []
+  },
+  screens: [
+    {
+      id: "TRUST_MENU",
+      title: "क्यों Sunshine Power?",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Description",
+            text: "हम PM सूर्य घर पंजीकृत विक्रेता हैं। हम ALMM/BIS-अनुपालन मॉड्यूल का उपयोग करते हैं और DISCOM मानदंडों का पालन करते हैं। (सब्सिडी पोर्टल के अनुसार; पात्रता और अपडेट के अधीन।)"
+          },
+          {
+            type: "Form",
+            name: "form",
+            children: [
+              {
+                type: "SingleSelect",
+                name: "topic",
+                label: "चुनें कि आप क्या देखना चाहते हैं",
+                required: true,
+                "data-source": {
+                  type: "STATIC",
+                  data: [
+                    { id: "credentials", title: "प्रमाणपत्र और लाइसेंस" },
+                    { id: "warranty", title: "वारंटी और सामग्री" },
+                    { id: "installs", title: "हालिया इंस्टॉल और कवरेज" }
+                  ]
+                }
+              }
+            ],
+            actions: {
+              submit: {
+                label: "दिखाएं",
+                "on-click-action": {
+                  name: "data_exchange",
+                  payload: {
+                    op: "show_trust_topic"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "TRUST_RESULT",
+      title: "विवरण",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Description",
+            text: "यहां आपके द्वारा अनुरोधित मुख्य बातें हैं। आगे बढ़ने के लिए तैयार हैं? 1 मिनट से कम में साइट सर्वे बुक करें।"
+          },
+          {
+            type: "Form",
+            name: "cta",
+            children: [],
+            actions: {
+              submit: {
+                label: "साइट सर्वे बुक करें",
+                "on-click-action": {
+                  name: "navigate",
+                  payload: {
+                    screen: "SURVEY_FORM"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+};
+
+// ============================================================================
+// ELIGIBILITY FLOW (Check Eligibility) - English
+// ============================================================================
+export const ELIGIBILITY_FLOW: WhatsAppFlow = {
+  version: "7.2",
+  data_api_version: "3.0",
+  routing_model: {
+    ELIG_FORM: ["ELIG_RESULT"],
+    ELIG_RESULT: []
+  },
+  screens: [
+    {
+      id: "ELIG_FORM",
+      title: "Check Eligibility",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Form",
+            name: "form",
+            children: [
+              {
+                type: "NumberInput",
+                name: "avg_bill",
+                label: "Avg Monthly Bill (₹)",
+                required: true
+              }
+            ],
+            actions: {
+              submit: {
+                label: "Get Result",
+                "on-click-action": {
+                  name: "data_exchange",
+                  payload: {
+                    op: "eligibility_check"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "ELIG_RESULT",
+      title: "Suggested Capacity",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Description",
+            text: "Based on your inputs, here's a suggested kW range and next steps. Subsidy as per PM Surya Ghar portal; subject to eligibility & updates."
+          },
+          {
+            type: "Form",
+            name: "cta",
+            children: [],
+            actions: {
+              submit: {
+                label: "Book Site Survey",
+                "on-click-action": {
+                  name: "navigate",
+                  payload: {
+                    screen: "SURVEY_FORM"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+};
+
+// ============================================================================
+// ELIGIBILITY FLOW (Check Eligibility) - Hindi
+// ============================================================================
+export const ELIGIBILITY_FLOW_HI: WhatsAppFlow = {
+  version: "7.2",
+  data_api_version: "3.0",
+  routing_model: {
+    ELIG_FORM: ["ELIG_RESULT"],
+    ELIG_RESULT: []
+  },
+  screens: [
+    {
+      id: "ELIG_FORM",
+      title: "पात्रता जांचें",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Form",
+            name: "form",
+            children: [
+              {
+                type: "NumberInput",
+                name: "avg_bill",
+                label: "औसत मासिक बिल (₹)",
+                required: true
+              }
+            ],
+            actions: {
+              submit: {
+                label: "परिणाम प्राप्त करें",
+                "on-click-action": {
+                  name: "data_exchange",
+                  payload: {
+                    op: "eligibility_check"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "ELIG_RESULT",
+      title: "सुझाई गई क्षमता",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Description",
+            text: "आपके इनपुट के आधार पर, यहां एक सुझाई गई kW रेंज और अगले कदम हैं। सब्सिडी PM सूर्य घर पोर्टल के अनुसार; पात्रता और अपडेट के अधीन।"
+          },
+          {
+            type: "Form",
+            name: "cta",
+            children: [],
+            actions: {
+              submit: {
+                label: "साइट सर्वे बुक करें",
+                "on-click-action": {
+                  name: "navigate",
+                  payload: {
+                    screen: "SURVEY_FORM"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+};
+
+// Legacy flows kept for backwards compatibility with existing price/service flows
+// These will be phased out in favor of the new simplified flows above
+
+// Price Flow - English
+export const PRICE_FLOW: WhatsAppFlow = {
+  version: "7.2",
+  data_api_version: "3.0",
+  routing_model: {
+    PRICE_FORM: ["PRICE_SUCCESS"],
+    PRICE_SUCCESS: []
+  },
+  screens: [
+    {
+      id: "PRICE_FORM",
+      title: "Get Price Estimate",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Form",
+            name: "form",
+            children: [
+              {
+                type: "TextInput",
+                name: "full_name",
+                label: "Full Name",
+                required: true,
+                "input-type": "text",
+                "max-length": 120,
+                "error-message": "Please enter your name"
+              },
+              {
+                type: "PhoneNumber",
+                name: "mobile",
+                label: "Mobile",
+                required: true,
+                "error-message": "Enter a valid mobile number"
+              },
+              {
+                type: "TextArea",
+                name: "address",
+                label: "Address",
+                required: false,
+                "max-length": 400
+              },
+              {
+                type: "TextInput",
+                name: "village",
+                label: "Village/Town",
+                required: false,
+                "input-type": "text"
+              },
+              {
+                type: "NumberInput",
+                name: "avg_bill",
+                label: "Avg Monthly Bill (₹)",
+                required: true
+              }
+            ],
+            actions: {
+              submit: {
+                label: "Submit",
+                "on-click-action": {
+                  name: "data_exchange",
+                  payload: {
+                    op: "submit_price_form"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "PRICE_SUCCESS",
+      title: "Thank you!",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Description",
+            text: "Your price estimate request has been received. Our team will contact you with a customized quote."
+          }
+        ]
+      }
+    }
+  ]
+};
+
+// Price Flow - Hindi
+export const PRICE_FLOW_HI: WhatsAppFlow = {
+  version: "7.2",
+  data_api_version: "3.0",
+  routing_model: {
+    PRICE_FORM: ["PRICE_SUCCESS"],
+    PRICE_SUCCESS: []
+  },
+  screens: [
+    {
+      id: "PRICE_FORM",
+      title: "मूल्य अनुमान प्राप्त करें",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Form",
+            name: "form",
+            children: [
+              {
+                type: "TextInput",
+                name: "full_name",
+                label: "पूरा नाम",
+                required: true,
+                "input-type": "text",
+                "max-length": 120,
+                "error-message": "कृपया अपना नाम दर्ज करें"
+              },
+              {
+                type: "PhoneNumber",
+                name: "mobile",
+                label: "मोबाइल",
+                required: true,
+                "error-message": "वैध मोबाइल नंबर दर्ज करें"
+              },
+              {
+                type: "TextArea",
+                name: "address",
+                label: "पता",
+                required: false,
+                "max-length": 400
+              },
+              {
+                type: "TextInput",
+                name: "village",
+                label: "गाँव/कस्बा",
+                required: false,
+                "input-type": "text"
+              },
+              {
+                type: "NumberInput",
+                name: "avg_bill",
+                label: "औसत मासिक बिल (₹)",
+                required: true
+              }
+            ],
+            actions: {
+              submit: {
+                label: "सबमिट करें",
+                "on-click-action": {
+                  name: "data_exchange",
+                  payload: {
+                    op: "submit_price_form"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "PRICE_SUCCESS",
+      title: "धन्यवाद!",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Description",
+            text: "आपका मूल्य अनुमान अनुरोध प्राप्त हो गया है। हमारी टीम एक कस्टमाइज्ड उद्धरण के साथ आपसे संपर्क करेगी।"
+          }
+        ]
+      }
+    }
+  ]
+};
+
+// Service Flow - English
+export const SERVICE_FLOW: WhatsAppFlow = {
+  version: "7.2",
+  data_api_version: "3.0",
+  routing_model: {
+    SERVICE_FORM: ["SERVICE_SUCCESS"],
+    SERVICE_SUCCESS: []
+  },
+  screens: [
+    {
+      id: "SERVICE_FORM",
+      title: "Request Service",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Form",
+            name: "form",
+            children: [
+              {
+                type: "TextInput",
+                name: "full_name",
+                label: "Full Name",
+                required: true,
+                "input-type": "text",
+                "max-length": 120,
+                "error-message": "Please enter your name"
+              },
+              {
+                type: "PhoneNumber",
+                name: "mobile",
+                label: "Mobile",
+                required: true,
+                "error-message": "Enter a valid mobile number"
+              },
+              {
+                type: "TextArea",
+                name: "address",
+                label: "Address",
+                required: false,
+                "max-length": 400
+              },
+              {
+                type: "TextInput",
+                name: "village",
+                label: "Village/Town",
+                required: false,
+                "input-type": "text"
+              },
+              {
+                type: "SingleSelect",
+                name: "issue_type",
+                label: "Issue Type",
+                required: true,
+                "data-source": {
+                  type: "STATIC",
+                  data: [
+                    { id: "installation", title: "Installation" },
+                    { id: "maintenance", title: "Maintenance" },
+                    { id: "repair", title: "Repair" },
+                    { id: "other", title: "Other" }
+                  ]
+                }
+              },
+              {
+                type: "TextArea",
+                name: "description",
+                label: "Description",
+                required: true,
+                "max-length": 400
+              }
+            ],
+            actions: {
+              submit: {
+                label: "Submit",
+                "on-click-action": {
+                  name: "data_exchange",
+                  payload: {
+                    op: "submit_service_form"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "SERVICE_SUCCESS",
+      title: "Thank you!",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Description",
+            text: "Your service request has been logged. Our team will contact you shortly to schedule."
+          }
+        ]
+      }
+    }
+  ]
+};
+
+// Service Flow - Hindi
+export const SERVICE_FLOW_HI: WhatsAppFlow = {
+  version: "7.2",
+  data_api_version: "3.0",
+  routing_model: {
+    SERVICE_FORM: ["SERVICE_SUCCESS"],
+    SERVICE_SUCCESS: []
+  },
+  screens: [
+    {
+      id: "SERVICE_FORM",
+      title: "सेवा अनुरोध",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Form",
+            name: "form",
+            children: [
+              {
+                type: "TextInput",
+                name: "full_name",
+                label: "पूरा नाम",
+                required: true,
+                "input-type": "text",
+                "max-length": 120,
+                "error-message": "कृपया अपना नाम दर्ज करें"
+              },
+              {
+                type: "PhoneNumber",
+                name: "mobile",
+                label: "मोबाइल",
+                required: true,
+                "error-message": "वैध मोबाइल नंबर दर्ज करें"
+              },
+              {
+                type: "TextArea",
+                name: "address",
+                label: "पता",
+                required: false,
+                "max-length": 400
+              },
+              {
+                type: "TextInput",
+                name: "village",
+                label: "गाँव/कस्बा",
+                required: false,
+                "input-type": "text"
+              },
+              {
+                type: "SingleSelect",
+                name: "issue_type",
+                label: "समस्या का प्रकार",
+                required: true,
+                "data-source": {
+                  type: "STATIC",
+                  data: [
+                    { id: "installation", title: "स्थापना" },
+                    { id: "maintenance", title: "रखरखाव" },
+                    { id: "repair", title: "मरम्मत" },
+                    { id: "other", title: "अन्य" }
+                  ]
+                }
+              },
+              {
+                type: "TextArea",
+                name: "description",
+                label: "विवरण",
+                required: true,
+                "max-length": 400
+              }
+            ],
+            actions: {
+              submit: {
+                label: "सबमिट करें",
+                "on-click-action": {
+                  name: "data_exchange",
+                  payload: {
+                    op: "submit_service_form"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      id: "SERVICE_SUCCESS",
+      title: "धन्यवाद!",
+      layout: {
+        type: "SingleColumnLayout",
+        children: [
+          {
+            type: "Description",
+            text: "आपका सेवा अनुरोध दर्ज कर लिया गया है। हमारी टीम शेड्यूल करने के लिए जल्द ही आपसे संपर्क करेगी।"
+          }
+        ]
+      }
+    }
+  ]
+};
+
+// ============================================================================
+// ALL_FLOWS Export - For routes.ts endpoint mapping
+// ============================================================================
 export const ALL_FLOWS = {
+  // New simplified flows
   SURVEY: SURVEY_FLOW,
-  PRICE: PRICE_FLOW,
-  SERVICE: SERVICE_FLOW,
-  CALLBACK: CALLBACK_FLOW,
   SURVEY_HI: SURVEY_FLOW_HI,
+  CALLBACK: CALLBACK_FLOW,
+  CALLBACK_HI: CALLBACK_FLOW_HI,
+  TRUST: TRUST_FLOW,
+  TRUST_HI: TRUST_FLOW_HI,
+  ELIGIBILITY: ELIGIBILITY_FLOW,
+  ELIGIBILITY_HI: ELIGIBILITY_FLOW_HI,
+  // Legacy flows (for backwards compatibility)
+  PRICE: PRICE_FLOW,
   PRICE_HI: PRICE_FLOW_HI,
-  SERVICE_HI: SERVICE_FLOW_HI,
-  CALLBACK_HI: CALLBACK_FLOW_HI
+  SERVICE: SERVICE_FLOW,
+  SERVICE_HI: SERVICE_FLOW_HI
 };

@@ -124,9 +124,6 @@ export class FlowHandlers {
           address: formData.address,
           village: formData.village,
           interestedIn: formData.interested_in || "site_survey",
-          avgBill: this.parseIntOrUndefined(formData.avg_bill),
-          phase: formData.phase,
-          roofType: formData.roof_type,
           preferredSurveyDate: formData.preferred_date,
           preferredSurveyTime: formData.preferred_time,
           notes: formData.notes,
@@ -515,7 +512,7 @@ export class FlowHandlers {
           bestTime: formData.best_time,
           topic: formData.topic,
           notes: formData.notes,
-          source: "flow_request",
+          source: "callback_flow",
         };
 
         const validatedCallback = insertCallbackRequestSchema.parse(callbackData);
@@ -561,6 +558,256 @@ export class FlowHandlers {
         return res.status(400).json({ error: "Validation failed", details: error.errors });
       }
       return res.status(500).json({ error: "Failed to process callback flow" });
+    }
+  }
+
+  async handleTrustFlow(req: Request, res: Response) {
+    try {
+      const body: FlowDataExchangeRequest = req.body;
+      let decryptedData;
+      
+      try {
+        decryptedData = this.decryptFlowData(body);
+      } catch (decryptError: any) {
+        const errorMsg = decryptError.message || String(decryptError);
+        if (errorMsg.includes('Invalid AES key length') || 
+            errorMsg.includes('OAEP') ||
+            errorMsg.includes('oaep') ||
+            errorMsg.includes('Public/private key mismatch') ||
+            errorMsg.includes('Failed to decrypt')) {
+          console.error('[FLOW TRUST] Decryption failed - forcing WhatsApp to refresh public key (HTTP 421)');
+          console.error('[FLOW TRUST] Error:', errorMsg);
+          return res.status(421).json({ 
+            error: "Encryption key mismatch - forcing client to refresh public key. Wait 30 minutes and try again." 
+          });
+        }
+        throw decryptError;
+      }
+      
+      const action = decryptedData.action?.toUpperCase() as "PING" | "INIT" | "DATA_EXCHANGE";
+      const aesKey = (decryptedData as any)._aesKey;
+      const initialVector = (decryptedData as any)._initialVector;
+
+      if (action === "PING") {
+        const response = {
+          version: "3.0",
+          data: { status: "active" }
+        };
+        
+        if (aesKey && initialVector) {
+          const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
+          return res.status(200).contentType('text/plain').send(encryptedResponse);
+        }
+        return res.json(response);
+      }
+
+      if (action === "INIT") {
+        const response = {
+          version: "3.0",
+          screen: "TRUST_MENU",
+          data: {}
+        };
+        
+        if (aesKey && initialVector) {
+          const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
+          return res.status(200).contentType('text/plain').send(encryptedResponse);
+        }
+        return res.json(response);
+      }
+
+      if (action === "DATA_EXCHANGE") {
+        if (decryptedData.version !== "3.0") {
+          return res.status(400).json({ error: "Unsupported version" });
+        }
+
+        console.log('[FLOW DEBUG] Full decryptedData:', JSON.stringify(decryptedData, null, 2));
+        console.log('[FLOW DEBUG] decryptedData.data structure:', JSON.stringify(decryptedData.data, null, 2));
+        
+        const formData = decryptedData.data?.form || decryptedData.data;
+        const operation = formData.op || decryptedData.data?.op;
+        console.log('[FLOW DEBUG] Extracted formData:', JSON.stringify(formData, null, 2));
+        console.log('[FLOW DEBUG] Operation:', operation);
+        
+        const customerPhone = this.extractPhoneFromFlowToken(decryptedData.flow_token);
+        
+        if (!this.validatePhone(customerPhone)) {
+          return res.status(400).json({ 
+            error: "Invalid phone number format" 
+          });
+        }
+        
+        if (operation === "show_trust_topic") {
+          const topic = formData.topic;
+
+          const validatedEvent = insertEventSchema.parse({
+            customerPhone,
+            type: "trust_topic_viewed",
+            meta: { topic, flowType: "trust" },
+          });
+          await this.storage.createEvent(validatedEvent);
+
+          const validatedForm = insertFormSchema.parse({
+            customerPhone,
+            formType: "trust_inquiry",
+            data: formData,
+          });
+          await this.storage.createForm(validatedForm);
+
+          const response: FlowDataExchangeResponse = {
+            version: "3.0",
+            screen: "TRUST_RESULT",
+            data: {
+              extension_message_response: {
+                params: {
+                  flow_token: decryptedData.flow_token,
+                }
+              }
+            }
+          };
+
+          if (aesKey && initialVector) {
+            const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
+            return res.status(200).contentType('text/plain').send(encryptedResponse);
+          }
+          return res.json(response);
+        }
+
+        return res.status(400).json({ error: "Unknown operation" });
+      }
+
+      return res.status(400).json({ error: "Invalid action" });
+    } catch (error) {
+      console.error("Trust flow error:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Validation failed", details: error.errors });
+      }
+      return res.status(500).json({ error: "Failed to process trust flow" });
+    }
+  }
+
+  async handleEligibilityFlow(req: Request, res: Response) {
+    try {
+      const body: FlowDataExchangeRequest = req.body;
+      let decryptedData;
+      
+      try {
+        decryptedData = this.decryptFlowData(body);
+      } catch (decryptError: any) {
+        const errorMsg = decryptError.message || String(decryptError);
+        if (errorMsg.includes('Invalid AES key length') || 
+            errorMsg.includes('OAEP') ||
+            errorMsg.includes('oaep') ||
+            errorMsg.includes('Public/private key mismatch') ||
+            errorMsg.includes('Failed to decrypt')) {
+          console.error('[FLOW ELIGIBILITY] Decryption failed - forcing WhatsApp to refresh public key (HTTP 421)');
+          console.error('[FLOW ELIGIBILITY] Error:', errorMsg);
+          return res.status(421).json({ 
+            error: "Encryption key mismatch - forcing client to refresh public key. Wait 30 minutes and try again." 
+          });
+        }
+        throw decryptError;
+      }
+      
+      const action = decryptedData.action?.toUpperCase() as "PING" | "INIT" | "DATA_EXCHANGE";
+      const aesKey = (decryptedData as any)._aesKey;
+      const initialVector = (decryptedData as any)._initialVector;
+
+      if (action === "PING") {
+        const response = {
+          version: "3.0",
+          data: { status: "active" }
+        };
+        
+        if (aesKey && initialVector) {
+          const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
+          return res.status(200).contentType('text/plain').send(encryptedResponse);
+        }
+        return res.json(response);
+      }
+
+      if (action === "INIT") {
+        const response = {
+          version: "3.0",
+          screen: "ELIG_FORM",
+          data: {}
+        };
+        
+        if (aesKey && initialVector) {
+          const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
+          return res.status(200).contentType('text/plain').send(encryptedResponse);
+        }
+        return res.json(response);
+      }
+
+      if (action === "DATA_EXCHANGE") {
+        if (decryptedData.version !== "3.0") {
+          return res.status(400).json({ error: "Unsupported version" });
+        }
+
+        console.log('[FLOW DEBUG] Full decryptedData:', JSON.stringify(decryptedData, null, 2));
+        console.log('[FLOW DEBUG] decryptedData.data structure:', JSON.stringify(decryptedData.data, null, 2));
+        
+        const formData = decryptedData.data?.form || decryptedData.data;
+        const operation = formData.op || decryptedData.data?.op;
+        console.log('[FLOW DEBUG] Extracted formData:', JSON.stringify(formData, null, 2));
+        console.log('[FLOW DEBUG] Operation:', operation);
+        
+        const customerPhone = this.extractPhoneFromFlowToken(decryptedData.flow_token);
+        
+        if (!this.validatePhone(customerPhone)) {
+          return res.status(400).json({ 
+            error: "Invalid phone number format" 
+          });
+        }
+        
+        if (operation === "eligibility_check") {
+          const avgBill = this.parseIntOrUndefined(formData.avg_bill);
+          const suggestedKw = avgBill ? avgBill / 1000 : 0;
+
+          const validatedEvent = insertEventSchema.parse({
+            customerPhone,
+            type: "eligibility_checked",
+            meta: { avgBill, suggestedKw, flowType: "eligibility" },
+          });
+          await this.storage.createEvent(validatedEvent);
+
+          const validatedForm = insertFormSchema.parse({
+            customerPhone,
+            formType: "eligibility",
+            data: { ...formData, suggestedKw },
+          });
+          await this.storage.createForm(validatedForm);
+
+          const response: FlowDataExchangeResponse = {
+            version: "3.0",
+            screen: "ELIG_RESULT",
+            data: {
+              suggested_kw: suggestedKw.toFixed(1),
+              extension_message_response: {
+                params: {
+                  flow_token: decryptedData.flow_token,
+                }
+              }
+            }
+          };
+
+          if (aesKey && initialVector) {
+            const encryptedResponse = this.encryptResponse(response, aesKey, initialVector);
+            return res.status(200).contentType('text/plain').send(encryptedResponse);
+          }
+          return res.json(response);
+        }
+
+        return res.status(400).json({ error: "Unknown operation" });
+      }
+
+      return res.status(400).json({ error: "Invalid action" });
+    } catch (error) {
+      console.error("Eligibility flow error:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Validation failed", details: error.errors });
+      }
+      return res.status(500).json({ error: "Failed to process eligibility flow" });
     }
   }
 
