@@ -1,0 +1,305 @@
+# Replit Brief (improved, do this exactly)
+
+1. **Templates to create/submit** (use names below; if name exists already, create the next version: `_V2`, `_V3`, …).
+2. **Send order**
+
+   * Send **`SP_CAMPAIGN_TRUST_V1`** first (Language Picker, EN body only, buttons: **Hindi → English → Visit Website**).
+   * If user taps **Hindi (हिन्दी)** → send **`SP_MAIN_HI_TRIO_V1`** (no header, 3 buttons).
+   * If user taps **English** → send **`SP_MAIN_EN_TRIO_V1`** (no header, 3 buttons).
+3. **Buttons → Flows**
+
+   * **Book Site Survey** → open **SURVEY_FLOW** at `SURVEY_FORM`.
+   * **Request Callback** → open **CALLBACK_FLOW** at `CALLBACK_FORM`.
+   * **Why Sunshine Power?** → open **TRUST_FLOW** at `TRUST_MENU` (info + CTA).
+   * (Optional high-intent) **Check Eligibility** → open **ELIGIBILITY_FLOW** at `ELIG_FORM`.
+4. **Re-entry**: if user taps again later, **open the form again** and **upsert** the contact (latest wins).
+5. **URL button**: “Visit Website” must open `https://sunshinepower.net.in`.
+6. **Limits sanity**: keep **≤3 quick replies** per template (typical platform limit). ([respond.io][2])
+
+> Note: CTWA leads (from ads/Page button) enjoy a **72-hour free entry-point window** for messaging; use it to push Flow forms and confirmations. Outside that, use approved templates and maintain opt-in. ([Facebook Developers][3])
+
+---
+
+## 1) Message Templates (copy-paste ready)
+
+### A) Campaign – Language Picker (EN body only, **no footer**)
+
+**Name:** `SP_CAMPAIGN_TRUST_V1`
+**Header:** IMAGE (Sunshine Power logo/rooftop visual)
+**Buttons (order):**
+
+1. **हिन्दी** (Quick Reply)
+2. **English** (Quick Reply)
+3. **Visit Website** (URL → `https://sunshinepower.net.in`)
+
+**Body (English only):**
+
+```
+Welcome to Sunshine Power — PM Surya Ghar registered solar vendor.
+Licensed Class-B Electrical Contractor.
+We handle application, subsidy, installation & net-metering. Choose your language to continue.
+```
+
+> If name taken: `SP_CAMPAIGN_TRUST_V2`, `…_V3`, etc.
+
+---
+
+### B) Main Menu – English (no header image, **3 buttons**)
+
+**Name:** `SP_MAIN_EN_TRIO_V1`
+**Header:** None
+**Footer:** None
+**Buttons (order):**
+
+1. **Book Site Survey** (Quick Reply)
+2. **Request Callback** (Quick Reply)
+3. **Why Sunshine Power?** (Quick Reply)
+
+**Body (EN):**
+
+```
+Go solar with Sunshine Power.
+Book a site survey or request a callback now — reply takes under 1 minute.
+End-to-end support: paperwork, subsidy, installation & net-metering.
+```
+
+---
+
+### C) Main Menu – Hindi (no header image, **3 buttons**)
+
+**Name:** `SP_MAIN_HI_TRIO_V1`
+**Header:** None
+**Footer:** None
+**Buttons (order):**
+
+1. **साइट सर्वे बुक करें (Book Site Survey)**
+2. **कॉल-बैक अनुरोध (Request Callback)**
+3. **क्यों Sunshine Power? (Why Sunshine Power?)**
+
+**Body (HI):**
+
+```
+Sunshine Power के साथ सोलर लगवाएँ।
+1 मिनट में साइट सर्वे बुक करें या कॉल-बैक का अनुरोध करें।
+कागज़ात, सब्सिडी, इंस्टॉलेशन और नेट-मीटरिंग—सब कुछ हम संभालते हैं।
+```
+
+> Keep 3 buttons total to fit WhatsApp interactive template norms. ([respond.io][2])
+
+---
+
+## 2) WhatsApp Flows (v7.2, hyphenated keys)
+
+### 2.1 SURVEY_FLOW (Book Site Survey)
+
+* Keeps fields tight to finish in ~60s.
+
+```json
+{
+  "version": "7.2",
+  "data_api_version": "3.0",
+  "routing_model": { "SURVEY_FORM": ["SURVEY_SUCCESS"], "SURVEY_SUCCESS": [] },
+  "screens": [
+    {
+      "id": "SURVEY_FORM",
+      "title": "Book Site Survey",
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          { "type": "Form", "name": "form",
+            "children": [
+              { "type": "TextInput", "name": "full_name", "label": "Full Name (as per bill)", "required": true, "input-type": "text", "max-length": 120, "error-message": "Enter your name" },
+              { "type": "PhoneNumber", "name": "mobile", "label": "Mobile (10-digit)", "required": true, "error-message": "Enter a valid mobile number" },
+              { "type": "TextArea", "name": "address", "label": "Address", "required": true, "max-length": 400 },
+              { "type": "TextInput", "name": "village", "label": "Village/Town", "required": true, "input-type": "text", "max-length": 120 },
+              { "type": "DatePicker", "name": "preferred_date", "label": "Preferred Date", "required": true },
+              { "type": "TimePicker", "name": "preferred_time", "label": "Preferred Time", "required": true }
+            ],
+            "actions": { "submit": { "label": "Submit",
+              "on-click-action": { "name": "data_exchange", "payload": { "op": "submit_survey_form" } } } }
+          }
+        ]
+      }
+    },
+    { "id": "SURVEY_SUCCESS", "title": "Thank you!",
+      "layout": { "type": "SingleColumnLayout",
+        "children": [ { "type": "Description",
+          "text": "Your site survey request has been recorded. Our team will contact you shortly." } ] } }
+  ]
+}
+```
+
+### 2.2 CALLBACK_FLOW (Request Callback)
+
+```json
+{
+  "version": "7.2",
+  "data_api_version": "3.0",
+  "routing_model": { "CALLBACK_FORM": ["CALLBACK_SUCCESS"], "CALLBACK_SUCCESS": [] },
+  "screens": [
+    {
+      "id": "CALLBACK_FORM",
+      "title": "Request Callback",
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          { "type": "Form", "name": "form",
+            "children": [
+              { "type": "TextInput", "name": "full_name", "label": "Full Name", "required": true, "input-type": "text", "max-length": 120, "error-message": "Enter your name" },
+              { "type": "PhoneNumber", "name": "mobile", "label": "Mobile (10-digit)", "required": true, "error-message": "Enter a valid mobile number" },
+              { "type": "SingleSelect", "name": "best_time", "label": "Best Time to Call", "required": true,
+                "data-source": { "type": "STATIC", "data": [ { "id": "morning", "title": "Morning" }, { "id": "afternoon", "title": "Afternoon" }, { "id": "evening", "title": "Evening" } ] } },
+              { "type": "SingleSelect", "name": "topic", "label": "Topic", "required": true,
+                "data-source": { "type": "STATIC", "data": [ { "id": "survey", "title": "Site Survey" }, { "id": "general", "title": "General Enquiry" } ] } },
+              { "type": "TextArea", "name": "notes", "label": "Notes (optional)", "required": false, "max-length": 400 }
+            ],
+            "actions": { "submit": { "label": "Submit",
+              "on-click-action": { "name": "data_exchange", "payload": { "op": "submit_callback_form" } } } }
+          }
+        ]
+      }
+    },
+    { "id": "CALLBACK_SUCCESS", "title": "Thank you!",
+      "layout": { "type": "SingleColumnLayout",
+        "children": [ { "type": "Description",
+          "text": "Your callback request has been logged. We will contact you at your preferred time." } ] } }
+  ]
+}
+```
+
+### 2.3 TRUST_FLOW (Why Sunshine Power?)
+
+* Trust page that **shows credentials and reassures** before conversion.
+* Keep it simple: user picks what to view → we show a summary + CTA to book survey.
+
+```json
+{
+  "version": "7.2",
+  "data_api_version": "3.0",
+  "routing_model": { "TRUST_MENU": ["TRUST_RESULT"], "TRUST_RESULT": [] },
+  "screens": [
+    {
+      "id": "TRUST_MENU",
+      "title": "Why Sunshine Power?",
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          { "type": "Description", "text": "We are a PM Surya Ghar registered vendor and Class-B Electrical Contractor. We use ALMM/BIS-compliant modules. (Subsidy as per portal; subject to eligibility & updates.)" },
+          { "type": "Form", "name": "form",
+            "children": [
+              { "type": "SingleSelect", "name": "topic", "label": "Choose what you’d like to see", "required": true,
+                "data-source": { "type": "STATIC", "data": [
+                  { "id": "cred", "title": "Credentials & Licenses" },
+                  { "id": "warranty", "title": "Warranties & Materials" },
+                  { "id": "installs", "title": "Recent Installs & Coverage" }
+                ] } }
+            ],
+            "actions": { "submit": { "label": "Show",
+              "on-click-action": { "name": "data_exchange", "payload": { "op": "show_trust_topic" } } } }
+          }
+        ]
+      }
+    },
+    {
+      "id": "TRUST_RESULT",
+      "title": "Details",
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          { "type": "Description", "text": "Here are the highlights you requested. Ready to proceed? Book a site survey in under a minute." },
+          { "type": "Form", "name": "cta",
+            "children": [],
+            "actions": { "submit": { "label": "Book Site Survey",
+              "on-click-action": { "name": "navigate", "payload": { "screen": "SURVEY_FORM" } } } }
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+> Server for `show_trust_topic` can return topic-specific copy inside the same `TRUST_RESULT` screen via description text. Flows v7.2 is correct. ([Facebook Developers][4])
+
+### 2.4 ELIGIBILITY_FLOW (optional, high-intent checker)
+
+* Collect minimal info → show **suggested kW & next step** (do not print subsidy numbers in-chat; just say “as per PM Surya Ghar portal”). You can pull current info from **pmsuryaghar.gov.in** on your backend and keep it updated. ([PMSuryaghar][5])
+
+```json
+{
+  "version": "7.2",
+  "data_api_version": "3.0",
+  "routing_model": { "ELIG_FORM": ["ELIG_RESULT"], "ELIG_RESULT": [] },
+  "screens": [
+    {
+      "id": "ELIG_FORM",
+      "title": "Check Eligibility",
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          { "type": "Form", "name": "form",
+            "children": [],
+            "actions": { "submit": { "label": "Get Result",
+              "on-click-action": { "name": "data_exchange", "payload": { "op": "eligibility_check" } } } }
+          }
+        ]
+      }
+    },
+    {
+      "id": "ELIG_RESULT",
+      "title": "Suggested Capacity",
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          { "type": "Description", "text": "Based on your inputs, here’s a suggested kW range and next steps. Subsidy as per PM Surya Ghar portal; subject to eligibility & updates." },
+          { "type": "Form", "name": "cta",
+            "children": [],
+            "actions": { "submit": { "label": "Book Site Survey",
+              "on-click-action": { "name": "navigate", "payload": { "screen": "SURVEY_FORM" } } } }
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+---
+
+## 3) How Replit should wire buttons → flows
+
+* From **`SP_CAMPAIGN_TRUST_V1`**
+
+  * **हिन्दी** → `SP_MAIN_HI_TRIO_V1` (no header).
+  * **English** → `SP_MAIN_EN_TRIO_V1` (no header).
+  * **Visit Website** → open `https://sunshinepower.net.in`.
+
+* From **`SP_MAIN_*_TRIO_V1`**
+
+  * **Book Site Survey** → open **SURVEY_FLOW** (`SURVEY_FORM`).
+  * **Request Callback** → open **CALLBACK_FLOW** (`CALLBACK_FORM`).
+  * **Why Sunshine Power?** → open **TRUST_FLOW** (`TRUST_MENU`).
+  * (If you add **Check Eligibility** anywhere) → open **ELIGIBILITY_FLOW** (`ELIG_FORM`).
+
+> Use env vars for flow IDs:
+> `WHATSAPP_FLOW_ID_SURVEY`, `WHATSAPP_FLOW_ID_CALLBACK`, `WHATSAPP_FLOW_ID_TRUST`, `WHATSAPP_FLOW_ID_ELIGIBILITY`.
+
+---
+
+## 4) Post-form follow-ups (templates you can add later)
+
+* **`SP_SURVEY_CONFIRM_V1`** (Utility): “Hi {{1}}, your site survey is booked for {{2}} at {{3}}. Reply STOP to opt out.”
+* **`SP_CALLBACK_CONFIRM_V1`** (Utility): “Hi {{1}}, we’ll call you in the {{2}}. If you need a different time, reply here.”
+* Use within **24h window** or via templates with stored opt-in afterwards. ([Facebook Developers][3])
+
+---
+
+## 5) Trust signals you should always surface
+
+* “PM Surya Ghar registered vendor” (link users to portal; show only general messaging, avoid fixed subsidy numbers in ads). ([PMSuryaghar][5])
+* “Class-B Electrical Contractor.”
+* “ALMM/BIS-compliant modules” (keep it current with MNRE ALMM updates). ([Ministry of New and Renewable Energy][6])
+* Service areas list (Rajasthan focus; optionally MP/Haryana coverage as you expand).
+* Photo proofs/testimonials (send as separate media messages after first template).
+
+---
