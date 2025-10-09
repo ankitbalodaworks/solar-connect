@@ -1269,6 +1269,118 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // WhatsApp Flow Management API
+  app.get("/api/whatsapp-flows", async (req, res) => {
+    try {
+      const flows = await storage.getWhatsappFlows();
+      res.json(flows);
+    } catch (error) {
+      console.error("Error fetching WhatsApp flows:", error);
+      res.status(500).json({ error: "Failed to fetch WhatsApp flows" });
+    }
+  });
+
+  app.get("/api/whatsapp-flows/:flowKey", async (req, res) => {
+    try {
+      const flow = await storage.getWhatsappFlow(req.params.flowKey);
+      if (!flow) {
+        return res.status(404).json({ error: "WhatsApp flow not found" });
+      }
+      res.json(flow);
+    } catch (error) {
+      console.error("Error fetching WhatsApp flow:", error);
+      res.status(500).json({ error: "Failed to fetch WhatsApp flow" });
+    }
+  });
+
+  app.post("/api/whatsapp-flows/sync", async (req, res) => {
+    try {
+      const { flowManager } = await import("./whatsappFlowManager");
+      const result = await flowManager.syncAllFlows();
+      res.json(result);
+    } catch (error) {
+      console.error("Error syncing WhatsApp flows:", error);
+      res.status(500).json({ 
+        error: "Failed to sync WhatsApp flows", 
+        details: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
+  app.get("/api/whatsapp-flows/status/summary", async (req, res) => {
+    try {
+      const { flowManager } = await import("./whatsappFlowManager");
+      const summary = await flowManager.getFlowStatusSummary();
+      res.json(summary);
+    } catch (error) {
+      console.error("Error fetching flow status summary:", error);
+      res.status(500).json({ error: "Failed to fetch flow status summary" });
+    }
+  });
+
+  app.post("/api/whatsapp-flows/:flowKey/publish", async (req, res) => {
+    try {
+      const { flowManager } = await import("./whatsappFlowManager");
+      const flow = await storage.getWhatsappFlow(req.params.flowKey);
+      
+      if (!flow) {
+        return res.status(404).json({ error: "WhatsApp flow not found" });
+      }
+      
+      if (!flow.metaFlowId) {
+        return res.status(400).json({ error: "Flow has not been created in WhatsApp yet. Run sync first." });
+      }
+      
+      const result = await flowManager.publishFlow(flow.metaFlowId);
+      
+      if (result.success) {
+        await storage.updateWhatsappFlow(req.params.flowKey, {
+          status: "published",
+          lastSyncedAt: new Date()
+        });
+        res.json({ success: true, message: "Flow published successfully" });
+      } else {
+        res.status(500).json({ error: result.error || "Failed to publish flow" });
+      }
+    } catch (error) {
+      console.error("Error publishing WhatsApp flow:", error);
+      res.status(500).json({ error: "Failed to publish WhatsApp flow" });
+    }
+  });
+
+  app.delete("/api/whatsapp-flows/:flowKey", async (req, res) => {
+    try {
+      const { flowManager } = await import("./whatsappFlowManager");
+      const flow = await storage.getWhatsappFlow(req.params.flowKey);
+      
+      if (!flow) {
+        return res.status(404).json({ error: "WhatsApp flow not found" });
+      }
+      
+      // If flow exists in WhatsApp, delete or deprecate it
+      if (flow.metaFlowId) {
+        if (flow.status === "published") {
+          // Deprecate published flows (can't delete them)
+          await flowManager.deprecateFlow(flow.metaFlowId);
+        } else {
+          // Delete draft flows
+          await flowManager.deleteFlow(flow.metaFlowId);
+        }
+      }
+      
+      // Delete from database
+      const success = await storage.deleteWhatsappFlow(req.params.flowKey);
+      if (success) {
+        res.status(204).send();
+      } else {
+        res.status(404).json({ error: "WhatsApp flow not found" });
+      }
+    } catch (error) {
+      console.error("Error deleting WhatsApp flow:", error);
+      res.status(500).json({ error: "Failed to delete WhatsApp flow" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
