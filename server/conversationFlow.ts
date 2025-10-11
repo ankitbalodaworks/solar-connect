@@ -225,6 +225,19 @@ export class ConversationFlowEngine {
           language = "en";
           nextStep = "main_menu";
           console.log('[LANG] User selected English, setting language to "en"');
+        } else if (message.selectedButtonId === "visit_website") {
+          // Handle "Visit Website" button - send link and complete conversation
+          console.log('[WEBSITE] User clicked Visit Website button');
+          
+          // Create event for tracking
+          await storage.createEvent({
+            customerPhone: message.customerPhone,
+            type: "website_visit_requested",
+            meta: { source: "campaign_entry_button" },
+          });
+          
+          // Transition to website_complete step
+          nextStep = "website_complete";
         } else {
           // Unrecognized button at entry, restart
           console.log(`Unrecognized button ${message.selectedButtonId} at campaign_entry, restarting flow`);
