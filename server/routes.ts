@@ -966,6 +966,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // QR Codes endpoints
+  app.get("/api/qr-codes", async (req, res) => {
+    try {
+      const qrCodes = await storage.getQrCodes();
+      res.json(qrCodes);
+    } catch (error) {
+      console.error("Error fetching QR codes:", error);
+      res.status(500).json({ error: "Failed to fetch QR codes" });
+    }
+  });
+
+  app.post("/api/qr-codes", async (req, res) => {
+    try {
+      const qrCode = await storage.createQrCode(req.body);
+      res.json(qrCode);
+    } catch (error) {
+      console.error("Error creating QR code:", error);
+      res.status(500).json({ error: "Failed to create QR code" });
+    }
+  });
+
   // Statistics endpoint
   app.get("/api/statistics", async (req, res) => {
     try {

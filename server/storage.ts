@@ -1,7 +1,7 @@
-import { type User, type InsertUser, type Customer, type InsertCustomer, type MessageTemplate, type InsertMessageTemplate, type ConversationState, type InsertConversationState, type WhatsappLog, type InsertWhatsappLog, type Lead, type InsertLead, type ServiceRequest, type InsertServiceRequest, type CallbackRequest, type InsertCallbackRequest, type PriceEstimate, type InsertPriceEstimate, type OtherIssue, type InsertOtherIssue, type Event, type InsertEvent, type Form, type InsertForm, type WhatsappFlow, type InsertWhatsappFlow } from "@shared/schema";
+import { type User, type InsertUser, type Customer, type InsertCustomer, type MessageTemplate, type InsertMessageTemplate, type ConversationState, type InsertConversationState, type WhatsappLog, type InsertWhatsappLog, type Lead, type InsertLead, type ServiceRequest, type InsertServiceRequest, type CallbackRequest, type InsertCallbackRequest, type PriceEstimate, type InsertPriceEstimate, type OtherIssue, type InsertOtherIssue, type Event, type InsertEvent, type Form, type InsertForm, type WhatsappFlow, type InsertWhatsappFlow, type QrCode, type InsertQrCode } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
-import { messageTemplates, conversationStates, whatsappLogs, leads, serviceRequests, customers, campaigns, callbackRequests, priceEstimates, otherIssues, events, forms, whatsappFlows } from "@shared/schema";
+import { messageTemplates, conversationStates, whatsappLogs, leads, serviceRequests, customers, campaigns, callbackRequests, priceEstimates, otherIssues, events, forms, whatsappFlows, qrCodes } from "@shared/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 
 // modify the interface with any CRUD methods
@@ -90,6 +90,10 @@ export interface IStorage {
   updateWhatsappFlow(flowKey: string, flow: Partial<InsertWhatsappFlow>): Promise<WhatsappFlow | undefined>;
   updateWhatsappFlowMetaId(flowKey: string, metaFlowId: string): Promise<WhatsappFlow | undefined>;
   deleteWhatsappFlow(flowKey: string): Promise<boolean>;
+
+  // QR Codes
+  getQrCodes(): Promise<QrCode[]>;
+  createQrCode(qrCode: InsertQrCode): Promise<QrCode>;
 
   // Contact Status Summary (for Status Page)
   getContactStatusSummary(): Promise<Array<{
@@ -540,6 +544,16 @@ export class MemStorage implements IStorage {
   async deleteWhatsappFlow(flowKey: string): Promise<boolean> {
     const result = await db.delete(whatsappFlows).where(eq(whatsappFlows.flowKey, flowKey)).returning();
     return result.length > 0;
+  }
+
+  // QR Codes - Database-backed
+  async getQrCodes(): Promise<QrCode[]> {
+    return await db.select().from(qrCodes).orderBy(desc(qrCodes.createdAt));
+  }
+
+  async createQrCode(qrCode: InsertQrCode): Promise<QrCode> {
+    const result = await db.insert(qrCodes).values(qrCode).returning();
+    return result[0];
   }
 
   // Statistics
