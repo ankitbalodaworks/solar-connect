@@ -396,7 +396,7 @@ export class WhatsAppFlowManager {
             flowJson: flowDef.flowJson,
             categories: flowDef.categories,
             status: "draft",
-            version: 1
+            version: "7.2"
           };
           
           if (existingMetaFlow) {

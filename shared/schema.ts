@@ -172,7 +172,7 @@ export const whatsappFlows = pgTable("whatsapp_flows", {
   flowJson: jsonb("flow_json").notNull(), // Complete flow JSON definition
   categories: jsonb("categories"), // Flow categories like APPOINTMENT_BOOKING, LEAD_GENERATION
   status: text("status").notNull().default("draft"), // 'draft', 'published', 'deprecated', 'error'
-  version: integer("version").notNull().default(1),
+  version: text("version").notNull().default("7.2"), // WhatsApp Flow version (e.g., "7.2")
   errorMessage: text("error_message"), // Error details if creation/update failed
   lastSyncedAt: timestamp("last_synced_at"),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
