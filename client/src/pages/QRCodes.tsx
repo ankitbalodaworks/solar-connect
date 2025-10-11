@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import QRCodeLibrary from "qrcode";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +25,7 @@ export default function QRCodes() {
   const [message, setMessage] = useState("Hi");
   const [phoneNumber, setPhoneNumber] = useState("917725920701");
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
+  const [currentQrCodeUrl, setCurrentQrCodeUrl] = useState<string>("");
 
   const { data: qrCodes = [], isLoading } = useQuery<QrCodeType[]>({
     queryKey: ["/api/qr-codes"],
@@ -72,15 +74,32 @@ export default function QRCodes() {
     return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
   };
 
-  const getQrCodeImageUrl = (phone: string, msg: string) => {
+  const generateQrCode = async (phone: string, msg: string): Promise<string> => {
     const waUrl = getWhatsAppUrl(phone, msg);
-    return `https://chart.googleapis.com/chart?cht=qr&chs=400x400&chl=${encodeURIComponent(waUrl)}`;
+    try {
+      const dataUrl = await QRCodeLibrary.toDataURL(waUrl, {
+        width: 400,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      });
+      return dataUrl;
+    } catch (err) {
+      console.error("Error generating QR code:", err);
+      return "";
+    }
   };
 
-  const handleDownload = (phone: string, msg: string, name: string) => {
-    const imageUrl = getQrCodeImageUrl(phone, msg);
+  useEffect(() => {
+    generateQrCode(phoneNumber, message).then(setCurrentQrCodeUrl);
+  }, [phoneNumber, message]);
+
+  const handleDownload = async (phone: string, msg: string, name: string) => {
+    const dataUrl = await generateQrCode(phone, msg);
     const link = document.createElement("a");
-    link.href = imageUrl;
+    link.href = dataUrl;
     link.download = `${name.replace(/\s+/g, "_")}_QR.png`;
     document.body.appendChild(link);
     link.click();
@@ -102,8 +121,6 @@ export default function QRCodes() {
       description: "WhatsApp URL copied to clipboard.",
     });
   };
-
-  const currentQrCodeUrl = getQrCodeImageUrl(phoneNumber, message);
 
   return (
     <div className="space-y-6">
