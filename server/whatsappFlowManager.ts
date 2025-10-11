@@ -434,8 +434,8 @@ export class WhatsAppFlowManager {
           dbFlow = await storage.createWhatsappFlow(flowData);
         } else if (existingMetaFlow) {
           // Flow exists in both DB and WhatsApp - update if needed
-          const needsUpdate = dbFlow.version < (flowDef.flowJson.version || 1) ||
-                            dbFlow.status === "draft";
+          // Always update flows to ensure latest JSON is in Meta (no version comparison needed)
+          const needsUpdate = true; // Force update to ensure Meta has latest flow JSON
           
           if (needsUpdate) {
             const updateResult = await this.updateFlow(existingMetaFlow.id, flowDef);
@@ -447,7 +447,7 @@ export class WhatsAppFlowManager {
               
               await storage.updateWhatsappFlow(flowDef.flowKey, {
                 flowJson: flowDef.flowJson,
-                version: flowDef.flowJson.version || 1,
+                version: "7.2", // WhatsApp Flow version is always "7.2"
                 status: "published",
                 lastSyncedAt: new Date(),
                 errorMessage: null

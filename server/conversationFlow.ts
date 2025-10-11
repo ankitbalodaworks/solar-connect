@@ -34,6 +34,27 @@ export class ConversationFlowEngine {
         status: "received",
       });
 
+      // Handle URL buttons FIRST - these are handled natively by WhatsApp
+      if (message.selectedButtonId === "visit_website") {
+        console.log('[WEBSITE] User clicked Visit Website button - handled by WhatsApp natively');
+        
+        // Track the event
+        await storage.createEvent({
+          customerPhone: message.customerPhone,
+          type: "website_visit_requested",
+          meta: { source: "campaign_entry_button" },
+        });
+        
+        // Delete conversation state
+        await storage.deleteConversationState(message.customerPhone);
+        
+        // Return success without sending any message - WhatsApp handles the URL button
+        return {
+          template: null,
+          shouldSend: false,
+        };
+      }
+
       // Check for main menu button IDs FIRST - these should trigger flows regardless of conversation state
       // This prevents timing issues where conversation state might be missing after a flow is sent
       if (message.selectedButtonId) {
@@ -225,19 +246,6 @@ export class ConversationFlowEngine {
           language = "en";
           nextStep = "main_menu";
           console.log('[LANG] User selected English, setting language to "en"');
-        } else if (message.selectedButtonId === "visit_website") {
-          // Handle "Visit Website" button - send link and complete conversation
-          console.log('[WEBSITE] User clicked Visit Website button');
-          
-          // Create event for tracking
-          await storage.createEvent({
-            customerPhone: message.customerPhone,
-            type: "website_visit_requested",
-            meta: { source: "campaign_entry_button" },
-          });
-          
-          // Transition to website_complete step
-          nextStep = "website_complete";
         } else {
           // Unrecognized button at entry, restart
           console.log(`Unrecognized button ${message.selectedButtonId} at campaign_entry, restarting flow`);
