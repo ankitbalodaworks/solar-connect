@@ -28,7 +28,13 @@ export const SURVEY_FLOW: WhatsAppFlow = {
   routing_model: {
     SURVEY_FORM: ["SURVEY_SUCCESS"],
     SURVEY_SUCCESS: []
-  },
+  },Please check if all the flows are working properly and they are not showing any error.
+
+  Because when I am opening the survey flow, it is showing me an error. Moreover, the automatic flow submission page is not working, and when I open it, it shows an error as a status of each and every one.
+
+  Also, at this point, it shows an error, and I am not able to open it.
+
+  So, find out what the issue is, then make a plan to rectify the issue, and make sure not to break down anything else. 
   screens: [
     {
       id: "SURVEY_FORM",
