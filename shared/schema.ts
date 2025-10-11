@@ -181,6 +181,14 @@ export const whatsappFlows = pgTable("whatsapp_flows", {
   uniqueFlowType: unique().on(table.flowType, table.language),
 }));
 
+export const qrCodes = pgTable("qr_codes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  campaignName: text("campaign_name").notNull(),
+  message: text("message").notNull(),
+  phoneNumber: text("phone_number").notNull(),
+  createdAt: timestamp("created_at").notNull().default(sql`now()`),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({ id: true });
 export const insertCustomerSchema = createInsertSchema(customers).omit({ id: true });
 export const insertLeadSchema = createInsertSchema(leads).omit({ id: true, createdAt: true });
@@ -195,6 +203,7 @@ export const insertOtherIssueSchema = createInsertSchema(otherIssues).omit({ id:
 export const insertEventSchema = createInsertSchema(events).omit({ id: true, createdAt: true });
 export const insertFormSchema = createInsertSchema(forms).omit({ id: true, submittedAt: true });
 export const insertWhatsappFlowSchema = createInsertSchema(whatsappFlows).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertQrCodeSchema = createInsertSchema(qrCodes).omit({ id: true, createdAt: true });
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -224,3 +233,5 @@ export type Form = typeof forms.$inferSelect;
 export type InsertForm = z.infer<typeof insertFormSchema>;
 export type WhatsappFlow = typeof whatsappFlows.$inferSelect;
 export type InsertWhatsappFlow = z.infer<typeof insertWhatsappFlowSchema>;
+export type QrCode = typeof qrCodes.$inferSelect;
+export type InsertQrCode = z.infer<typeof insertQrCodeSchema>;
