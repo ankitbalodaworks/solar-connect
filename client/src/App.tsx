@@ -19,6 +19,7 @@ import Conversations from "@/pages/Conversations";
 import ConversationDetails from "@/pages/ConversationDetails";
 import Status from "@/pages/Status";
 import WhatsappFlows from "@/pages/WhatsappFlows";
+import QRCodes from "@/pages/QRCodes";
 
 function Router() {
   return (
@@ -30,6 +31,7 @@ function Router() {
       <Route path="/service-requests" component={ServiceRequests} />
       <Route path="/message-templates" component={MessageTemplates} />
       <Route path="/whatsapp-flows" component={WhatsappFlows} />
+      <Route path="/qr-codes" component={QRCodes} />
       <Route path="/conversations" component={Conversations} />
       <Route path="/conversations/:phone" component={ConversationDetails} />
       <Route path="/status" component={Status} />
