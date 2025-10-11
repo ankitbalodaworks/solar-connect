@@ -31,7 +31,7 @@ export default function QRCodes() {
 
   const createMutation = useMutation({
     mutationFn: async (data: InsertQrCode) => {
-      return await apiRequest<QrCodeType>("/api/qr-codes", "POST", data);
+      return await apiRequest("POST", "/api/qr-codes", data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/qr-codes"] });
