@@ -137,6 +137,64 @@ async function seedTemplates() {
         set: helpSubmenuHi
       });
 
+    // QR Survey Template - English (sp_qr_survey_en_v1)
+    const qrSurveyEn = {
+      name: "sp_qr_survey_en_v1",
+      flowType: "qr_survey",
+      stepKey: "qr_survey",
+      messageType: "button",
+      language: "en",
+      headerText: "Solar Site Survey Visit Request",
+      bodyText: "Thank you for your interest in solar power! We're here to help you get started with a free site survey.\n\nClick below to book your visit:",
+      footerText: "PM Surya Ghar Registered Solar Vendor",
+      buttons: [
+        { 
+          type: "FLOW", 
+          text: "Book Site Visit", 
+          flow_id: "1339797841199667",
+          flow_action: "navigate"
+        }
+      ],
+      metaStatus: "draft"
+    };
+
+    console.log("📝 Inserting qr_survey_en template (sp_qr_survey_en_v1)...");
+    await db.insert(messageTemplates)
+      .values(qrSurveyEn)
+      .onConflictDoUpdate({
+        target: [messageTemplates.flowType, messageTemplates.language, messageTemplates.stepKey],
+        set: qrSurveyEn
+      });
+
+    // QR Survey Template - Hindi (sp_qr_survey_hi_v1)
+    const qrSurveyHi = {
+      name: "sp_qr_survey_hi_v1",
+      flowType: "qr_survey",
+      stepKey: "qr_survey",
+      messageType: "button",
+      language: "hi",
+      headerText: "सोलर साइट सर्वे विज़िट अनुरोध",
+      bodyText: "सोलर पावर में आपकी रुचि के लिए धन्यवाद! हम आपको मुफ्त साइट सर्वे के साथ शुरू करने में मदद करने के लिए यहां हैं।\n\nअपनी विज़िट बुक करने के लिए नीचे क्लिक करें:",
+      footerText: "PM सूर्य घर पंजीकृत सोलर विक्रेता",
+      buttons: [
+        { 
+          type: "FLOW", 
+          text: "साइट विज़िट बुक करें", 
+          flow_id: "1517637389655322",
+          flow_action: "navigate"
+        }
+      ],
+      metaStatus: "draft"
+    };
+
+    console.log("📝 Inserting qr_survey_hi template (sp_qr_survey_hi_v1)...");
+    await db.insert(messageTemplates)
+      .values(qrSurveyHi)
+      .onConflictDoUpdate({
+        target: [messageTemplates.flowType, messageTemplates.language, messageTemplates.stepKey],
+        set: qrSurveyHi
+      });
+
     console.log("✅ Template seed completed successfully!");
     console.log("\nTemplates loaded:");
     console.log("  - Campaign Entry (with image header, 3 buttons)");
@@ -144,6 +202,8 @@ async function seedTemplates() {
     console.log("  - Main Menu Hindi (3 buttons)");
     console.log("  - Help Submenu English (3 buttons)");
     console.log("  - Help Submenu Hindi (3 buttons)");
+    console.log("  - QR Survey English (FLOW button)");
+    console.log("  - QR Survey Hindi (FLOW button)");
 
     process.exit(0);
   } catch (error) {
