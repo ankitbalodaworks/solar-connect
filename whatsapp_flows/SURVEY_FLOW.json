@@ -46,34 +46,6 @@
                 "input-type": "text"
               },
               {
-                "type": "TextInput",
-                "name": "avg_bill",
-                "label": "Avg Monthly Bill (₹)",
-                "required": true,
-                "input-type": "number"
-              },
-              {
-                "type": "RadioButtonsGroup",
-                "name": "phase",
-                "label": "Phase",
-                "required": true,
-                "data-source": [
-                  { "id": "1p", "title": "1φ" },
-                  { "id": "3p", "title": "3φ" }
-                ]
-              },
-              {
-                "type": "Dropdown",
-                "name": "roof_type",
-                "label": "Roof Type",
-                "required": true,
-                "data-source": [
-                  { "id": "rcc", "title": "RCC" },
-                  { "id": "tin", "title": "Tin/Sheet" },
-                  { "id": "other", "title": "Other" }
-                ]
-              },
-              {
                 "type": "DatePicker",
                 "name": "preferred_date",
                 "label": "Preferred Date",
