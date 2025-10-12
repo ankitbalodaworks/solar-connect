@@ -184,7 +184,10 @@ export const whatsappFlows = pgTable("whatsapp_flows", {
 export const qrCodes = pgTable("qr_codes", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   campaignName: text("campaign_name").notNull(),
-  message: text("message").notNull(),
+  qrType: text("qr_type").notNull().default("message"), // 'message' or 'flow'
+  message: text("message"), // For message type QR codes
+  flowKey: text("flow_key"), // For flow type QR codes (e.g., "survey_en")
+  metaFlowId: text("meta_flow_id"), // Stored Meta Flow ID for flow type (for resilience)
   phoneNumber: text("phone_number").notNull(),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
 });
@@ -203,7 +206,27 @@ export const insertOtherIssueSchema = createInsertSchema(otherIssues).omit({ id:
 export const insertEventSchema = createInsertSchema(events).omit({ id: true, createdAt: true });
 export const insertFormSchema = createInsertSchema(forms).omit({ id: true, submittedAt: true });
 export const insertWhatsappFlowSchema = createInsertSchema(whatsappFlows).omit({ id: true, createdAt: true, updatedAt: true });
-export const insertQrCodeSchema = createInsertSchema(qrCodes).omit({ id: true, createdAt: true });
+export const insertQrCodeSchema = createInsertSchema(qrCodes)
+  .omit({ id: true, createdAt: true })
+  .extend({
+    qrType: z.enum(['message', 'flow']).default('message'),
+    message: z.string().optional().transform((val) => val?.trim()),
+    flowKey: z.string().optional().transform((val) => val?.trim()),
+  })
+  .refine(
+    (data) => {
+      if (data.qrType === 'message') {
+        return !!data.message;
+      }
+      if (data.qrType === 'flow') {
+        return !!data.flowKey;
+      }
+      return false;
+    },
+    {
+      message: "Message is required for message-type QR codes, and flowKey is required for flow-type QR codes",
+    }
+  );
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;

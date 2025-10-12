@@ -1330,6 +1330,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/whatsapp-flows/available", async (req, res) => {
+    try {
+      const flows = await storage.getWhatsappFlows();
+      const availableFlows = flows.filter(f => f.status === 'published' && f.metaFlowId);
+      res.json(availableFlows);
+    } catch (error) {
+      console.error("Error fetching available WhatsApp flows:", error);
+      res.status(500).json({ error: "Failed to fetch available WhatsApp flows" });
+    }
+  });
+
   app.get("/api/whatsapp-flows/:flowKey", async (req, res) => {
     try {
       const flow = await storage.getWhatsappFlow(req.params.flowKey);

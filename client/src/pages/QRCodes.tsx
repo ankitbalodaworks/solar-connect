@@ -6,7 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { QrCode, Download, Copy, Check } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { QrCode, Download, Copy, Check, Zap } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -15,20 +22,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import type { QrCode as QrCodeType, InsertQrCode } from "@shared/schema";
+import type { QrCode as QrCodeType, InsertQrCode, WhatsappFlow } from "@shared/schema";
 
 export default function QRCodes() {
   const { toast } = useToast();
   const [campaignName, setCampaignName] = useState("");
+  const [qrType, setQrType] = useState<"message" | "flow">("message");
   const [message, setMessage] = useState("Hi");
+  const [flowKey, setFlowKey] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("917725920701");
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
   const [currentQrCodeUrl, setCurrentQrCodeUrl] = useState<string>("");
 
   const { data: qrCodes = [], isLoading } = useQuery<QrCodeType[]>({
     queryKey: ["/api/qr-codes"],
+  });
+
+  const { data: availableFlows = [] } = useQuery<WhatsappFlow[]>({
+    queryKey: ["/api/whatsapp-flows/available"],
   });
 
   const createMutation = useMutation({
@@ -43,11 +57,12 @@ export default function QRCodes() {
       });
       setCampaignName("");
       setMessage("Hi");
+      setFlowKey("");
     },
-    onError: () => {
+    onError: (error: any) => {
       toast({
         title: "Error",
-        description: "Failed to create QR code. Please try again.",
+        description: error?.message || "Failed to create QR code. Please try again.",
         variant: "destructive",
       });
     },
@@ -63,21 +78,68 @@ export default function QRCodes() {
       });
       return;
     }
-    createMutation.mutate({
+
+    if (qrType === "flow" && !flowKey) {
+      toast({
+        title: "Validation Error",
+        description: "Please select a WhatsApp Flow.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (qrType === "message" && !message.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter a message.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const data: InsertQrCode = {
       campaignName: campaignName.trim(),
-      message: message.trim() || "Hi",
+      qrType,
+      message: qrType === "message" ? message.trim() : undefined,
+      flowKey: qrType === "flow" ? flowKey : undefined,
       phoneNumber: phoneNumber.trim(),
-    });
+    };
+
+    // Add metaFlowId for flow-type QR codes
+    if (qrType === "flow" && flowKey) {
+      const flow = availableFlows.find(f => f.flowKey === flowKey);
+      if (flow?.metaFlowId) {
+        data.metaFlowId = flow.metaFlowId;
+      }
+    }
+
+    createMutation.mutate(data);
   };
 
-  const getWhatsAppUrl = (phone: string, msg: string) => {
-    return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  const getWhatsAppUrl = (qr: QrCodeType): string => {
+    if (qr.qrType === "flow") {
+      // Use stored metaFlowId if available, otherwise fallback to lookup
+      const metaFlowId = qr.metaFlowId || availableFlows.find(f => f.flowKey === qr.flowKey)?.metaFlowId;
+      if (metaFlowId) {
+        return `https://wa.me/${qr.phoneNumber}?flow_id=${metaFlowId}`;
+      }
+    }
+    return `https://wa.me/${qr.phoneNumber}?text=${encodeURIComponent(qr.message || "")}`;
   };
 
-  const generateQrCode = async (phone: string, msg: string): Promise<string> => {
-    const waUrl = getWhatsAppUrl(phone, msg);
+  const getCurrentWhatsAppUrl = (): string => {
+    if (qrType === "flow" && flowKey) {
+      const flow = availableFlows.find(f => f.flowKey === flowKey);
+      if (flow?.metaFlowId) {
+        return `https://wa.me/${phoneNumber}?flow_id=${flow.metaFlowId}`;
+      }
+    }
+    return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+  };
+
+  const generateQrCode = async (url: string): Promise<string> => {
     try {
-      const dataUrl = await QRCodeLibrary.toDataURL(waUrl, {
+      const dataUrl = await QRCodeLibrary.toDataURL(url, {
         width: 400,
         margin: 2,
         color: {
@@ -93,14 +155,16 @@ export default function QRCodes() {
   };
 
   useEffect(() => {
-    generateQrCode(phoneNumber, message).then(setCurrentQrCodeUrl);
-  }, [phoneNumber, message]);
+    const url = getCurrentWhatsAppUrl();
+    generateQrCode(url).then(setCurrentQrCodeUrl);
+  }, [phoneNumber, message, qrType, flowKey, availableFlows]);
 
-  const handleDownload = async (phone: string, msg: string, name: string) => {
-    const dataUrl = await generateQrCode(phone, msg);
+  const handleDownload = async (qr: QrCodeType) => {
+    const url = getWhatsAppUrl(qr);
+    const dataUrl = await generateQrCode(url);
     const link = document.createElement("a");
     link.href = dataUrl;
-    link.download = `${name.replace(/\s+/g, "_")}_QR.png`;
+    link.download = `${qr.campaignName.replace(/\s+/g, "_")}_QR.png`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -122,12 +186,17 @@ export default function QRCodes() {
     });
   };
 
+  const getFlowDisplayName = (flowKey: string): string => {
+    const flow = availableFlows.find(f => f.flowKey === flowKey);
+    return flow?.flowName || flowKey;
+  };
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold mb-1">QR Code Generator</h1>
         <p className="text-sm text-muted-foreground">
-          Create custom WhatsApp QR codes for different campaigns
+          Create custom WhatsApp QR codes for messages or direct Flow access
         </p>
       </div>
 
@@ -136,7 +205,7 @@ export default function QRCodes() {
           <CardHeader>
             <CardTitle>Create QR Code</CardTitle>
             <CardDescription>
-              Generate a QR code that opens WhatsApp with a pre-filled message
+              Generate a QR code that opens WhatsApp with a message or directly opens a Flow
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -153,16 +222,62 @@ export default function QRCodes() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="message">Pre-filled Message</Label>
-                <Textarea
-                  id="message"
-                  placeholder="Enter the message that will be pre-filled in WhatsApp"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  rows={3}
-                  data-testid="input-message"
-                />
+                <Label htmlFor="qr-type">QR Code Type *</Label>
+                <Select value={qrType} onValueChange={(value: "message" | "flow") => setQrType(value)}>
+                  <SelectTrigger id="qr-type" data-testid="select-qr-type">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="message" data-testid="option-message">Message (Pre-filled text)</SelectItem>
+                    <SelectItem value="flow" data-testid="option-flow">
+                      <div className="flex items-center gap-2">
+                        <Zap className="h-4 w-4" />
+                        WhatsApp Flow (Direct form access)
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  {qrType === "message" 
+                    ? "Opens WhatsApp with a pre-filled message" 
+                    : "Directly opens a WhatsApp Flow form when scanned"}
+                </p>
               </div>
+
+              {qrType === "message" ? (
+                <div className="space-y-2">
+                  <Label htmlFor="message">Pre-filled Message *</Label>
+                  <Textarea
+                    id="message"
+                    placeholder="Enter the message that will be pre-filled in WhatsApp"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    rows={3}
+                    data-testid="input-message"
+                  />
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Label htmlFor="flow-select">WhatsApp Flow *</Label>
+                  <Select value={flowKey} onValueChange={setFlowKey}>
+                    <SelectTrigger id="flow-select" data-testid="select-flow">
+                      <SelectValue placeholder="Select a flow..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableFlows.map((flow) => (
+                        <SelectItem key={flow.flowKey} value={flow.flowKey} data-testid={`option-flow-${flow.flowKey}`}>
+                          {flow.flowName} ({flow.language.toUpperCase()})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {availableFlows.length === 0 && (
+                    <p className="text-xs text-orange-600">
+                      No published flows available. Please sync flows in the WhatsApp Flows page.
+                    </p>
+                  )}
+                </div>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="phone">WhatsApp Business Phone</Label>
@@ -213,17 +328,17 @@ export default function QRCodes() {
               <div className="flex gap-2">
                 <Input
                   readOnly
-                  value={getWhatsAppUrl(phoneNumber, message)}
+                  value={getCurrentWhatsAppUrl()}
                   className="text-xs"
                   data-testid="input-whatsapp-url"
                 />
                 <Button
                   size="icon"
                   variant="outline"
-                  onClick={() => handleCopyUrl(getWhatsAppUrl(phoneNumber, message))}
+                  onClick={() => handleCopyUrl(getCurrentWhatsAppUrl())}
                   data-testid="button-copy-url"
                 >
-                  {copiedUrl === getWhatsAppUrl(phoneNumber, message) ? (
+                  {copiedUrl === getCurrentWhatsAppUrl() ? (
                     <Check className="h-4 w-4" />
                   ) : (
                     <Copy className="h-4 w-4" />
@@ -278,7 +393,8 @@ export default function QRCodes() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Campaign Name</TableHead>
-                  <TableHead>Message</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Details</TableHead>
                   <TableHead>Phone</TableHead>
                   <TableHead>Created</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
@@ -290,8 +406,20 @@ export default function QRCodes() {
                     <TableCell className="font-medium" data-testid={`text-campaign-${qrCode.id}`}>
                       {qrCode.campaignName}
                     </TableCell>
-                    <TableCell className="max-w-xs truncate" data-testid={`text-message-${qrCode.id}`}>
-                      {qrCode.message}
+                    <TableCell data-testid={`text-type-${qrCode.id}`}>
+                      {qrCode.qrType === "flow" ? (
+                        <Badge variant="secondary" className="gap-1">
+                          <Zap className="h-3 w-3" />
+                          Flow
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline">Message</Badge>
+                      )}
+                    </TableCell>
+                    <TableCell className="max-w-xs truncate" data-testid={`text-details-${qrCode.id}`}>
+                      {qrCode.qrType === "flow" && qrCode.flowKey 
+                        ? getFlowDisplayName(qrCode.flowKey)
+                        : qrCode.message}
                     </TableCell>
                     <TableCell data-testid={`text-phone-${qrCode.id}`}>
                       {qrCode.phoneNumber}
@@ -304,7 +432,7 @@ export default function QRCodes() {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => handleDownload(qrCode.phoneNumber, qrCode.message, qrCode.campaignName)}
+                          onClick={() => handleDownload(qrCode)}
                           data-testid={`button-download-${qrCode.id}`}
                         >
                           <Download className="h-4 w-4 mr-1" />
@@ -313,10 +441,10 @@ export default function QRCodes() {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => handleCopyUrl(getWhatsAppUrl(qrCode.phoneNumber, qrCode.message))}
+                          onClick={() => handleCopyUrl(getWhatsAppUrl(qrCode))}
                           data-testid={`button-copy-${qrCode.id}`}
                         >
-                          {copiedUrl === getWhatsAppUrl(qrCode.phoneNumber, qrCode.message) ? (
+                          {copiedUrl === getWhatsAppUrl(qrCode) ? (
                             <Check className="h-4 w-4 mr-1" />
                           ) : (
                             <Copy className="h-4 w-4 mr-1" />
