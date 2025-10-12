@@ -481,11 +481,40 @@ export class WhatsAppService {
     
     // Otherwise, send as interactive message
     if (template.messageType === "button" && template.buttons) {
-      const buttons = template.buttons as Array<{ id: string; title: string }>;
+      const buttons = template.buttons as Array<{ 
+        id?: string; 
+        title?: string; 
+        type?: string; 
+        text?: string;
+        flow_id?: string; 
+        flow_action?: string;
+      }>;
+      
+      // Check if this is a Flow button template
+      const firstButton = buttons[0];
+      if (firstButton && firstButton.type === "FLOW" && firstButton.flow_id) {
+        // Send as Flow message
+        const flowToken = this.generateFlowToken(to);
+        return this.sendFlowMessage(
+          to,
+          firstButton.flow_id,
+          template.bodyText,
+          firstButton.text || "Open",
+          flowToken,
+          template.headerText || undefined,
+          template.footerText || undefined
+        );
+      }
+      
+      // Send as regular button message (Quick Reply)
+      const regularButtons = buttons.map(btn => ({
+        id: btn.id || "",
+        title: btn.title || btn.text || ""
+      }));
       return this.sendButtonMessage(
         to,
         template.bodyText,
-        buttons,
+        regularButtons,
         template.headerText || undefined,
         template.footerText || undefined,
         template.headerMediaId || undefined

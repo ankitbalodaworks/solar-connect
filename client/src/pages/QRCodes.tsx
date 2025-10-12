@@ -118,21 +118,22 @@ export default function QRCodes() {
 
   const getWhatsAppUrl = (qr: QrCodeType): string => {
     if (qr.qrType === "flow") {
-      // Use stored metaFlowId if available, otherwise fallback to lookup
-      const metaFlowId = qr.metaFlowId || availableFlows.find(f => f.flowKey === qr.flowKey)?.metaFlowId;
-      if (metaFlowId) {
-        return `https://wa.me/${qr.phoneNumber}?flow_id=${metaFlowId}`;
-      }
+      // Flow QR codes use BOOK_SITE_VISIT keyword trigger
+      // Determine language from flow and use language-specific keyword for Hindi
+      const flow = availableFlows.find(f => f.flowKey === qr.flowKey);
+      const keyword = flow?.language === "hi" ? "BOOK_SITE_VISIT_HI" : "BOOK_SITE_VISIT";
+      return `https://wa.me/${qr.phoneNumber}?text=${keyword}`;
     }
     return `https://wa.me/${qr.phoneNumber}?text=${encodeURIComponent(qr.message || "")}`;
   };
 
   const getCurrentWhatsAppUrl = (): string => {
     if (qrType === "flow" && flowKey) {
+      // Flow QR codes use BOOK_SITE_VISIT keyword trigger
+      // Determine language from selected flow and use language-specific keyword for Hindi
       const flow = availableFlows.find(f => f.flowKey === flowKey);
-      if (flow?.metaFlowId) {
-        return `https://wa.me/${phoneNumber}?flow_id=${flow.metaFlowId}`;
-      }
+      const keyword = flow?.language === "hi" ? "BOOK_SITE_VISIT_HI" : "BOOK_SITE_VISIT";
+      return `https://wa.me/${phoneNumber}?text=${keyword}`;
     }
     return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
   };

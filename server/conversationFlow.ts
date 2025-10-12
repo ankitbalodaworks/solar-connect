@@ -55,6 +55,56 @@ export class ConversationFlowEngine {
         };
       }
 
+      // Handle BOOK_SITE_VISIT keyword - QR code trigger for Flow template
+      const normalizedContent = message.content.trim().toUpperCase();
+      if (normalizedContent === "BOOK_SITE_VISIT" || normalizedContent === "BOOK_SITE_VISIT_HI") {
+        console.log('[QR-KEYWORD] Detected BOOK_SITE_VISIT keyword from', message.customerPhone);
+        
+        // Determine language from keyword suffix or conversation state
+        let language = "en"; // Default to English
+        
+        if (normalizedContent === "BOOK_SITE_VISIT_HI") {
+          language = "hi";
+        } else {
+          // Check conversation state for language preference
+          let conversationState = await storage.getConversationState(message.customerPhone);
+          language = conversationState?.language || "en";
+        }
+        
+        console.log('[QR-KEYWORD] User language:', language);
+        
+        // Get the appropriate QR survey template
+        const templates = await storage.getMessageTemplates("qr_survey", language, "qr_survey");
+        const template = templates[0];
+        
+        if (!template) {
+          console.error('[QR-KEYWORD] QR survey template not found for language:', language);
+          return {
+            template: null,
+            shouldSend: false,
+            error: `QR survey template not found for language: ${language}`,
+          };
+        }
+
+        // Track the event
+        await storage.createEvent({
+          customerPhone: message.customerPhone,
+          type: "qr_keyword_triggered",
+          meta: { 
+            keyword: "BOOK_SITE_VISIT",
+            language: language,
+            templateId: template.id
+          },
+        });
+
+        console.log('[QR-KEYWORD] Sending QR survey template:', template.name);
+        
+        return {
+          template: template,
+          shouldSend: true,
+        };
+      }
+
       // Check for main menu button IDs FIRST - these should trigger flows regardless of conversation state
       // This prevents timing issues where conversation state might be missing after a flow is sent
       if (message.selectedButtonId) {

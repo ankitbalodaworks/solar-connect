@@ -22,10 +22,12 @@ export interface MetaTemplateComponent {
 }
 
 export interface MetaButton {
-  type: "QUICK_REPLY" | "URL" | "PHONE_NUMBER";
+  type: "QUICK_REPLY" | "URL" | "PHONE_NUMBER" | "FLOW";
   text: string;
   url?: string;
   phone_number?: string;
+  flow_id?: string;
+  flow_action?: "navigate" | "data_exchange";
 }
 
 // Campaign Entry Template (Entry point - MUST be approved by Meta)
@@ -421,6 +423,72 @@ const completionTemplates: MetaTemplate[] = [
   }
 ];
 
+// QR Code Survey Templates with Flow Buttons
+const qrSurveyTemplates: MetaTemplate[] = [
+  {
+    name: "sp_qr_survey_en_v1",
+    category: "UTILITY",
+    language: "en_US",
+    components: [
+      {
+        type: "HEADER",
+        format: "TEXT",
+        text: "Solar Site Survey Visit Request"
+      },
+      {
+        type: "BODY",
+        text: "Thank you for your interest! Click below to book your free solar site survey."
+      },
+      {
+        type: "FOOTER",
+        text: "PM Surya Ghar Registered Solar Vendor"
+      },
+      {
+        type: "BUTTONS",
+        buttons: [
+          { 
+            type: "FLOW", 
+            text: "Book Site Visit",
+            flow_id: "1339797841199667",
+            flow_action: "navigate"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    name: "sp_qr_survey_hi_v1",
+    category: "UTILITY",
+    language: "hi",
+    components: [
+      {
+        type: "HEADER",
+        format: "TEXT",
+        text: "सोलर साइट सर्वे विज़िट अनुरोध"
+      },
+      {
+        type: "BODY",
+        text: "आपकी रुचि के लिए धन्यवाद! अपना मुफ्त सोलर साइट सर्वे बुक करने के लिए नीचे क्लिक करें।"
+      },
+      {
+        type: "FOOTER",
+        text: "PM सूर्य घर पंजीकृत सोलर विक्रेता"
+      },
+      {
+        type: "BUTTONS",
+        buttons: [
+          { 
+            type: "FLOW", 
+            text: "साइट विज़िट बुक करें",
+            flow_id: "1517637389655322",
+            flow_action: "navigate"
+          }
+        ]
+      }
+    ]
+  }
+];
+
 // Export all templates
 export const allMetaTemplates: MetaTemplate[] = [
   ...campaignEntryTemplates,
@@ -428,7 +496,8 @@ export const allMetaTemplates: MetaTemplate[] = [
   ...priceSubmenuTemplates,
   ...helpSubmenuTemplates,
   ...serviceUrgencyTemplates,
-  ...completionTemplates
+  ...completionTemplates,
+  ...qrSurveyTemplates
 ];
 
 // Template name to database step key mapping
@@ -438,6 +507,10 @@ export const metaToStepKeyMapping: Record<string, { flowType: string, stepKey: s
   "sp_campaign_trust_v1": { flowType: "campaign", stepKey: "campaign_entry", language: "en" },
   "sp_main_en_trio_v1": { flowType: "campaign", stepKey: "main_menu", language: "en" },
   "sp_main_hi_trio_v1": { flowType: "campaign", stepKey: "main_menu", language: "hi" },
+  
+  // QR Survey Flow templates
+  "sp_qr_survey_en_v1": { flowType: "qr_survey", stepKey: "qr_survey", language: "en" },
+  "sp_qr_survey_hi_v1": { flowType: "qr_survey", stepKey: "qr_survey", language: "hi" },
   
   // Legacy templates (for backwards compatibility)
   "sunshine_welcome": { flowType: "campaign", stepKey: "campaign_entry", language: "en" },
