@@ -437,7 +437,7 @@ const qrSurveyTemplates: MetaTemplate[] = [
       },
       {
         type: "BODY",
-        text: "Thank you for your interest! Click below to book your free solar site survey."
+        text: "Choose one language:"
       },
       {
         type: "FOOTER",

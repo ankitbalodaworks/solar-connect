@@ -144,8 +144,8 @@ async function seedTemplates() {
       stepKey: "qr_survey",
       messageType: "button",
       language: "en",
-      headerText: "Site Survey Visit Request\nसाइट सर्वे विज़िट अनुरोध",
-      bodyText: "Thank you for your interest in solar power! We're here to help you get started.\n\nसोलर पावर में आपकी रुचि के लिए धन्यवाद! हम आपकी मदद के लिए यहां हैं।",
+      headerText: "Solar Site Survey Visit Request",
+      bodyText: "Choose one language:",
       footerText: "PM Surya Ghar Registered Solar Vendor",
       buttons: [
         { 
