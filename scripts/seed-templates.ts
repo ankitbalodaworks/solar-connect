@@ -137,33 +137,28 @@ async function seedTemplates() {
         set: helpSubmenuHi
       });
 
-    // QR Survey Template - Bilingual List (sp_qr_bilingual_survey_v1)
+    // QR Survey Template - Bilingual (sp_qr_bilingual_survey_v1)
     const qrBilingualSurvey = {
       name: "sp_qr_bilingual_survey_v1",
       flowType: "qr_survey",
       stepKey: "qr_survey",
-      messageType: "list",
+      messageType: "button",
       language: "en",
-      headerText: "Site Survey Visit Request",
-      bodyText: "Thank you for your interest in solar power! We're here to help you get started.\n\nसोलर पावर में आपकी रुचि के लिए धन्यवाद! हम आपकी मदद के लिए यहां हैं।\n\nPlease select your language:",
-      footerText: "Choose Language",
-      listSections: [
-        {
-          title: "Select Language",
-          rows: [
-            {
-              id: "survey_en",
-              title: "Book site survey",
-              description: "English",
-              nextStep: "flow:survey_en"
-            },
-            {
-              id: "survey_hi",
-              title: "Site survey book karein",
-              description: "हिंदी",
-              nextStep: "flow:survey_hi"
-            }
-          ]
+      headerText: "Site Survey Visit Request\nसाइट सर्वे विज़िट अनुरोध",
+      bodyText: "Thank you for your interest in solar power! We're here to help you get started.\n\nसोलर पावर में आपकी रुचि के लिए धन्यवाद! हम आपकी मदद के लिए यहां हैं।",
+      footerText: "PM Surya Ghar Registered Solar Vendor",
+      buttons: [
+        { 
+          type: "FLOW", 
+          text: "Book site survey", 
+          flow_id: "1339797841199667",
+          flow_action: "navigate"
+        },
+        { 
+          type: "FLOW", 
+          text: "Site survey book karein", 
+          flow_id: "1517637389655322",
+          flow_action: "navigate"
         }
       ],
       metaStatus: "draft"
@@ -184,7 +179,7 @@ async function seedTemplates() {
     console.log("  - Main Menu Hindi (3 buttons)");
     console.log("  - Help Submenu English (3 buttons)");
     console.log("  - Help Submenu Hindi (3 buttons)");
-    console.log("  - QR Bilingual Survey (List message - EN/HI options)");
+    console.log("  - QR Bilingual Survey (2 FLOW buttons - EN/HI)");
 
     process.exit(0);
   } catch (error) {
