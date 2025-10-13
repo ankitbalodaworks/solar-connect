@@ -91,6 +91,41 @@ export class ConversationFlowEngine {
         };
       }
 
+      // Handle QR Survey language selection (from list message)
+      const listSelection = message.selectedListItemId || message.selectedButtonId;
+      if (listSelection === "survey_en" || listSelection === "survey_hi") {
+        console.log('[QR-SURVEY] User selected language option:', listSelection);
+        
+        const language = listSelection === "survey_hi" ? "hi" : "en";
+        const flowId = language === "hi" ? "1517637389655322" : "1339797841199667";
+        
+        // Track the event
+        await storage.createEvent({
+          customerPhone: message.customerPhone,
+          type: "qr_language_selected",
+          meta: { 
+            selection: listSelection,
+            language: language,
+            flowId: flowId
+          },
+        });
+        
+        // Send the flow directly
+        const flowResult = await this.sendWhatsAppFlow(
+          message.customerPhone,
+          "survey",
+          language
+        );
+
+        if (flowResult.success) {
+          return {
+            template: null,
+            shouldSend: false,
+            isFlow: true,
+          };
+        }
+      }
+
       // Check for main menu button IDs FIRST - these should trigger flows regardless of conversation state
       // This prevents timing issues where conversation state might be missing after a flow is sent
       if (message.selectedButtonId) {
