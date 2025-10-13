@@ -119,10 +119,8 @@ export default function QRCodes() {
   const getWhatsAppUrl = (qr: QrCodeType): string => {
     if (qr.qrType === "flow") {
       // Flow QR codes use BOOK_SITE_VISIT keyword trigger
-      // Determine language from flow and use language-specific keyword for Hindi
-      const flow = availableFlows.find(f => f.flowKey === qr.flowKey);
-      const keyword = flow?.language === "hi" ? "BOOK_SITE_VISIT_HI" : "BOOK_SITE_VISIT";
-      return `https://wa.me/${qr.phoneNumber}?text=${keyword}`;
+      // Bilingual template shows both language options
+      return `https://wa.me/${qr.phoneNumber}?text=BOOK_SITE_VISIT`;
     }
     return `https://wa.me/${qr.phoneNumber}?text=${encodeURIComponent(qr.message || "")}`;
   };
@@ -130,10 +128,8 @@ export default function QRCodes() {
   const getCurrentWhatsAppUrl = (): string => {
     if (qrType === "flow" && flowKey) {
       // Flow QR codes use BOOK_SITE_VISIT keyword trigger
-      // Determine language from selected flow and use language-specific keyword for Hindi
-      const flow = availableFlows.find(f => f.flowKey === flowKey);
-      const keyword = flow?.language === "hi" ? "BOOK_SITE_VISIT_HI" : "BOOK_SITE_VISIT";
-      return `https://wa.me/${phoneNumber}?text=${keyword}`;
+      // Bilingual template shows both language options
+      return `https://wa.me/${phoneNumber}?text=BOOK_SITE_VISIT`;
     }
     return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
   };
