@@ -119,16 +119,16 @@ export default function QRCodes() {
   const getWhatsAppUrl = (qr: QrCodeType): string => {
     if (qr.qrType === "flow") {
       // Flow QR codes use BOOK_SITE_VISIT keyword trigger
-      // Bilingual template shows both language options
+      // English-only template opens survey directly
       return `https://wa.me/${qr.phoneNumber}?text=BOOK_SITE_VISIT`;
     }
     return `https://wa.me/${qr.phoneNumber}?text=${encodeURIComponent(qr.message || "")}`;
   };
 
   const getCurrentWhatsAppUrl = (): string => {
-    if (qrType === "flow" && flowKey) {
+    if (qrType === "flow") {
       // Flow QR codes use BOOK_SITE_VISIT keyword trigger
-      // Bilingual template shows both language options
+      // English-only template opens survey directly
       return `https://wa.me/${phoneNumber}?text=BOOK_SITE_VISIT`;
     }
     return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;

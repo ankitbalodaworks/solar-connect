@@ -137,39 +137,33 @@ async function seedTemplates() {
         set: helpSubmenuHi
       });
 
-    // QR Survey Template - Bilingual (sp_qr_bilingual_survey_v1)
-    const qrBilingualSurvey = {
-      name: "sp_qr_bilingual_survey_v1",
+    // QR Survey Template - English Only (sp_qr_english_survey_v1)
+    const qrEnglishSurvey = {
+      name: "sp_qr_english_survey_v1",
       flowType: "qr_survey",
       stepKey: "qr_survey",
       messageType: "button",
       language: "en",
-      headerText: "Site Survey Visit Request\nसाइट सर्वे विज़िट अनुरोध",
-      bodyText: "Thank you for your interest in solar power! We're here to help you get started.\n\nसोलर पावर में आपकी रुचि के लिए धन्यवाद! हम आपकी मदद के लिए यहां हैं।",
+      headerText: "Site Survey Visit Request",
+      bodyText: "Thank you for your interest in solar power! We're here to help you get started with a free site survey.\n\nClick below to book your visit:",
       footerText: "PM Surya Ghar Registered Solar Vendor",
       buttons: [
         { 
           type: "FLOW", 
-          text: "Book site survey", 
+          text: "Book Site Survey", 
           flow_id: "1339797841199667",
-          flow_action: "navigate"
-        },
-        { 
-          type: "FLOW", 
-          text: "Site survey book karein", 
-          flow_id: "1517637389655322",
           flow_action: "navigate"
         }
       ],
       metaStatus: "draft"
     };
 
-    console.log("📝 Inserting qr_bilingual_survey template (sp_qr_bilingual_survey_v1)...");
+    console.log("📝 Inserting qr_english_survey template (sp_qr_english_survey_v1)...");
     await db.insert(messageTemplates)
-      .values(qrBilingualSurvey)
+      .values(qrEnglishSurvey)
       .onConflictDoUpdate({
         target: [messageTemplates.flowType, messageTemplates.language, messageTemplates.stepKey],
-        set: qrBilingualSurvey
+        set: qrEnglishSurvey
       });
 
     console.log("✅ Template seed completed successfully!");
@@ -179,7 +173,7 @@ async function seedTemplates() {
     console.log("  - Main Menu Hindi (3 buttons)");
     console.log("  - Help Submenu English (3 buttons)");
     console.log("  - Help Submenu Hindi (3 buttons)");
-    console.log("  - QR Bilingual Survey (2 FLOW buttons - EN/HI)");
+    console.log("  - QR English Survey (1 FLOW button - Direct to EN)");
 
     process.exit(0);
   } catch (error) {
